@@ -65,6 +65,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
 
     final db = ref.read(appDatabaseProvider);
     await db.into(db.userProfiles).insert(UserProfilesCompanion.insert(
@@ -120,7 +121,11 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
                   ),
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return 'Name is required';
+                    if (v.trim().length < 2) return 'Name must be at least 2 characters';
+                    return null;
+                  },
                   textCapitalization: TextCapitalization.words,
                 ),
                 const SizedBox(height: 16),
