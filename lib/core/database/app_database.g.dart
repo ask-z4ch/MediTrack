@@ -612,16 +612,709 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
   }
 }
 
+class $VitalsEntriesTable extends VitalsEntries
+    with TableInfo<$VitalsEntriesTable, VitalsEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VitalsEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _loggedAtMeta = const VerificationMeta(
+    'loggedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> loggedAt = GeneratedColumn<DateTime>(
+    'logged_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bpSystolicMeta = const VerificationMeta(
+    'bpSystolic',
+  );
+  @override
+  late final GeneratedColumn<int> bpSystolic = GeneratedColumn<int>(
+    'bp_systolic',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bpDiastolicMeta = const VerificationMeta(
+    'bpDiastolic',
+  );
+  @override
+  late final GeneratedColumn<int> bpDiastolic = GeneratedColumn<int>(
+    'bp_diastolic',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bloodSugarFastingMeta = const VerificationMeta(
+    'bloodSugarFasting',
+  );
+  @override
+  late final GeneratedColumn<double> bloodSugarFasting =
+      GeneratedColumn<double>(
+        'blood_sugar_fasting',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _bloodSugarPostMealMeta =
+      const VerificationMeta('bloodSugarPostMeal');
+  @override
+  late final GeneratedColumn<double> bloodSugarPostMeal =
+      GeneratedColumn<double>(
+        'blood_sugar_post_meal',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _temperatureCelsiusMeta =
+      const VerificationMeta('temperatureCelsius');
+  @override
+  late final GeneratedColumn<double> temperatureCelsius =
+      GeneratedColumn<double>(
+        'temperature_celsius',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _weightKgMeta = const VerificationMeta(
+    'weightKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+    'weight_kg',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _spo2PercentMeta = const VerificationMeta(
+    'spo2Percent',
+  );
+  @override
+  late final GeneratedColumn<int> spo2Percent = GeneratedColumn<int>(
+    'spo2_percent',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
+  @override
+  late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
+    'synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    loggedAt,
+    bpSystolic,
+    bpDiastolic,
+    bloodSugarFasting,
+    bloodSugarPostMeal,
+    temperatureCelsius,
+    weightKg,
+    spo2Percent,
+    notes,
+    synced,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vitals_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VitalsEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('logged_at')) {
+      context.handle(
+        _loggedAtMeta,
+        loggedAt.isAcceptableOrUnknown(data['logged_at']!, _loggedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_loggedAtMeta);
+    }
+    if (data.containsKey('bp_systolic')) {
+      context.handle(
+        _bpSystolicMeta,
+        bpSystolic.isAcceptableOrUnknown(data['bp_systolic']!, _bpSystolicMeta),
+      );
+    }
+    if (data.containsKey('bp_diastolic')) {
+      context.handle(
+        _bpDiastolicMeta,
+        bpDiastolic.isAcceptableOrUnknown(
+          data['bp_diastolic']!,
+          _bpDiastolicMeta,
+        ),
+      );
+    }
+    if (data.containsKey('blood_sugar_fasting')) {
+      context.handle(
+        _bloodSugarFastingMeta,
+        bloodSugarFasting.isAcceptableOrUnknown(
+          data['blood_sugar_fasting']!,
+          _bloodSugarFastingMeta,
+        ),
+      );
+    }
+    if (data.containsKey('blood_sugar_post_meal')) {
+      context.handle(
+        _bloodSugarPostMealMeta,
+        bloodSugarPostMeal.isAcceptableOrUnknown(
+          data['blood_sugar_post_meal']!,
+          _bloodSugarPostMealMeta,
+        ),
+      );
+    }
+    if (data.containsKey('temperature_celsius')) {
+      context.handle(
+        _temperatureCelsiusMeta,
+        temperatureCelsius.isAcceptableOrUnknown(
+          data['temperature_celsius']!,
+          _temperatureCelsiusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(
+        _weightKgMeta,
+        weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta),
+      );
+    }
+    if (data.containsKey('spo2_percent')) {
+      context.handle(
+        _spo2PercentMeta,
+        spo2Percent.isAcceptableOrUnknown(
+          data['spo2_percent']!,
+          _spo2PercentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('synced')) {
+      context.handle(
+        _syncedMeta,
+        synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VitalsEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VitalsEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      loggedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}logged_at'],
+      )!,
+      bpSystolic: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bp_systolic'],
+      ),
+      bpDiastolic: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bp_diastolic'],
+      ),
+      bloodSugarFasting: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}blood_sugar_fasting'],
+      ),
+      bloodSugarPostMeal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}blood_sugar_post_meal'],
+      ),
+      temperatureCelsius: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}temperature_celsius'],
+      ),
+      weightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_kg'],
+      ),
+      spo2Percent: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}spo2_percent'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+      synced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}synced'],
+      )!,
+    );
+  }
+
+  @override
+  $VitalsEntriesTable createAlias(String alias) {
+    return $VitalsEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class VitalsEntry extends DataClass implements Insertable<VitalsEntry> {
+  final int id;
+  final DateTime loggedAt;
+  final int? bpSystolic;
+  final int? bpDiastolic;
+  final double? bloodSugarFasting;
+  final double? bloodSugarPostMeal;
+  final double? temperatureCelsius;
+  final double? weightKg;
+  final int? spo2Percent;
+  final String notes;
+  final bool synced;
+  const VitalsEntry({
+    required this.id,
+    required this.loggedAt,
+    this.bpSystolic,
+    this.bpDiastolic,
+    this.bloodSugarFasting,
+    this.bloodSugarPostMeal,
+    this.temperatureCelsius,
+    this.weightKg,
+    this.spo2Percent,
+    required this.notes,
+    required this.synced,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['logged_at'] = Variable<DateTime>(loggedAt);
+    if (!nullToAbsent || bpSystolic != null) {
+      map['bp_systolic'] = Variable<int>(bpSystolic);
+    }
+    if (!nullToAbsent || bpDiastolic != null) {
+      map['bp_diastolic'] = Variable<int>(bpDiastolic);
+    }
+    if (!nullToAbsent || bloodSugarFasting != null) {
+      map['blood_sugar_fasting'] = Variable<double>(bloodSugarFasting);
+    }
+    if (!nullToAbsent || bloodSugarPostMeal != null) {
+      map['blood_sugar_post_meal'] = Variable<double>(bloodSugarPostMeal);
+    }
+    if (!nullToAbsent || temperatureCelsius != null) {
+      map['temperature_celsius'] = Variable<double>(temperatureCelsius);
+    }
+    if (!nullToAbsent || weightKg != null) {
+      map['weight_kg'] = Variable<double>(weightKg);
+    }
+    if (!nullToAbsent || spo2Percent != null) {
+      map['spo2_percent'] = Variable<int>(spo2Percent);
+    }
+    map['notes'] = Variable<String>(notes);
+    map['synced'] = Variable<bool>(synced);
+    return map;
+  }
+
+  VitalsEntriesCompanion toCompanion(bool nullToAbsent) {
+    return VitalsEntriesCompanion(
+      id: Value(id),
+      loggedAt: Value(loggedAt),
+      bpSystolic: bpSystolic == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bpSystolic),
+      bpDiastolic: bpDiastolic == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bpDiastolic),
+      bloodSugarFasting: bloodSugarFasting == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bloodSugarFasting),
+      bloodSugarPostMeal: bloodSugarPostMeal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bloodSugarPostMeal),
+      temperatureCelsius: temperatureCelsius == null && nullToAbsent
+          ? const Value.absent()
+          : Value(temperatureCelsius),
+      weightKg: weightKg == null && nullToAbsent
+          ? const Value.absent()
+          : Value(weightKg),
+      spo2Percent: spo2Percent == null && nullToAbsent
+          ? const Value.absent()
+          : Value(spo2Percent),
+      notes: Value(notes),
+      synced: Value(synced),
+    );
+  }
+
+  factory VitalsEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VitalsEntry(
+      id: serializer.fromJson<int>(json['id']),
+      loggedAt: serializer.fromJson<DateTime>(json['loggedAt']),
+      bpSystolic: serializer.fromJson<int?>(json['bpSystolic']),
+      bpDiastolic: serializer.fromJson<int?>(json['bpDiastolic']),
+      bloodSugarFasting: serializer.fromJson<double?>(
+        json['bloodSugarFasting'],
+      ),
+      bloodSugarPostMeal: serializer.fromJson<double?>(
+        json['bloodSugarPostMeal'],
+      ),
+      temperatureCelsius: serializer.fromJson<double?>(
+        json['temperatureCelsius'],
+      ),
+      weightKg: serializer.fromJson<double?>(json['weightKg']),
+      spo2Percent: serializer.fromJson<int?>(json['spo2Percent']),
+      notes: serializer.fromJson<String>(json['notes']),
+      synced: serializer.fromJson<bool>(json['synced']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'loggedAt': serializer.toJson<DateTime>(loggedAt),
+      'bpSystolic': serializer.toJson<int?>(bpSystolic),
+      'bpDiastolic': serializer.toJson<int?>(bpDiastolic),
+      'bloodSugarFasting': serializer.toJson<double?>(bloodSugarFasting),
+      'bloodSugarPostMeal': serializer.toJson<double?>(bloodSugarPostMeal),
+      'temperatureCelsius': serializer.toJson<double?>(temperatureCelsius),
+      'weightKg': serializer.toJson<double?>(weightKg),
+      'spo2Percent': serializer.toJson<int?>(spo2Percent),
+      'notes': serializer.toJson<String>(notes),
+      'synced': serializer.toJson<bool>(synced),
+    };
+  }
+
+  VitalsEntry copyWith({
+    int? id,
+    DateTime? loggedAt,
+    Value<int?> bpSystolic = const Value.absent(),
+    Value<int?> bpDiastolic = const Value.absent(),
+    Value<double?> bloodSugarFasting = const Value.absent(),
+    Value<double?> bloodSugarPostMeal = const Value.absent(),
+    Value<double?> temperatureCelsius = const Value.absent(),
+    Value<double?> weightKg = const Value.absent(),
+    Value<int?> spo2Percent = const Value.absent(),
+    String? notes,
+    bool? synced,
+  }) => VitalsEntry(
+    id: id ?? this.id,
+    loggedAt: loggedAt ?? this.loggedAt,
+    bpSystolic: bpSystolic.present ? bpSystolic.value : this.bpSystolic,
+    bpDiastolic: bpDiastolic.present ? bpDiastolic.value : this.bpDiastolic,
+    bloodSugarFasting: bloodSugarFasting.present
+        ? bloodSugarFasting.value
+        : this.bloodSugarFasting,
+    bloodSugarPostMeal: bloodSugarPostMeal.present
+        ? bloodSugarPostMeal.value
+        : this.bloodSugarPostMeal,
+    temperatureCelsius: temperatureCelsius.present
+        ? temperatureCelsius.value
+        : this.temperatureCelsius,
+    weightKg: weightKg.present ? weightKg.value : this.weightKg,
+    spo2Percent: spo2Percent.present ? spo2Percent.value : this.spo2Percent,
+    notes: notes ?? this.notes,
+    synced: synced ?? this.synced,
+  );
+  VitalsEntry copyWithCompanion(VitalsEntriesCompanion data) {
+    return VitalsEntry(
+      id: data.id.present ? data.id.value : this.id,
+      loggedAt: data.loggedAt.present ? data.loggedAt.value : this.loggedAt,
+      bpSystolic: data.bpSystolic.present
+          ? data.bpSystolic.value
+          : this.bpSystolic,
+      bpDiastolic: data.bpDiastolic.present
+          ? data.bpDiastolic.value
+          : this.bpDiastolic,
+      bloodSugarFasting: data.bloodSugarFasting.present
+          ? data.bloodSugarFasting.value
+          : this.bloodSugarFasting,
+      bloodSugarPostMeal: data.bloodSugarPostMeal.present
+          ? data.bloodSugarPostMeal.value
+          : this.bloodSugarPostMeal,
+      temperatureCelsius: data.temperatureCelsius.present
+          ? data.temperatureCelsius.value
+          : this.temperatureCelsius,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      spo2Percent: data.spo2Percent.present
+          ? data.spo2Percent.value
+          : this.spo2Percent,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      synced: data.synced.present ? data.synced.value : this.synced,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VitalsEntry(')
+          ..write('id: $id, ')
+          ..write('loggedAt: $loggedAt, ')
+          ..write('bpSystolic: $bpSystolic, ')
+          ..write('bpDiastolic: $bpDiastolic, ')
+          ..write('bloodSugarFasting: $bloodSugarFasting, ')
+          ..write('bloodSugarPostMeal: $bloodSugarPostMeal, ')
+          ..write('temperatureCelsius: $temperatureCelsius, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('spo2Percent: $spo2Percent, ')
+          ..write('notes: $notes, ')
+          ..write('synced: $synced')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    loggedAt,
+    bpSystolic,
+    bpDiastolic,
+    bloodSugarFasting,
+    bloodSugarPostMeal,
+    temperatureCelsius,
+    weightKg,
+    spo2Percent,
+    notes,
+    synced,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VitalsEntry &&
+          other.id == this.id &&
+          other.loggedAt == this.loggedAt &&
+          other.bpSystolic == this.bpSystolic &&
+          other.bpDiastolic == this.bpDiastolic &&
+          other.bloodSugarFasting == this.bloodSugarFasting &&
+          other.bloodSugarPostMeal == this.bloodSugarPostMeal &&
+          other.temperatureCelsius == this.temperatureCelsius &&
+          other.weightKg == this.weightKg &&
+          other.spo2Percent == this.spo2Percent &&
+          other.notes == this.notes &&
+          other.synced == this.synced);
+}
+
+class VitalsEntriesCompanion extends UpdateCompanion<VitalsEntry> {
+  final Value<int> id;
+  final Value<DateTime> loggedAt;
+  final Value<int?> bpSystolic;
+  final Value<int?> bpDiastolic;
+  final Value<double?> bloodSugarFasting;
+  final Value<double?> bloodSugarPostMeal;
+  final Value<double?> temperatureCelsius;
+  final Value<double?> weightKg;
+  final Value<int?> spo2Percent;
+  final Value<String> notes;
+  final Value<bool> synced;
+  const VitalsEntriesCompanion({
+    this.id = const Value.absent(),
+    this.loggedAt = const Value.absent(),
+    this.bpSystolic = const Value.absent(),
+    this.bpDiastolic = const Value.absent(),
+    this.bloodSugarFasting = const Value.absent(),
+    this.bloodSugarPostMeal = const Value.absent(),
+    this.temperatureCelsius = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.spo2Percent = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.synced = const Value.absent(),
+  });
+  VitalsEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime loggedAt,
+    this.bpSystolic = const Value.absent(),
+    this.bpDiastolic = const Value.absent(),
+    this.bloodSugarFasting = const Value.absent(),
+    this.bloodSugarPostMeal = const Value.absent(),
+    this.temperatureCelsius = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.spo2Percent = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.synced = const Value.absent(),
+  }) : loggedAt = Value(loggedAt);
+  static Insertable<VitalsEntry> custom({
+    Expression<int>? id,
+    Expression<DateTime>? loggedAt,
+    Expression<int>? bpSystolic,
+    Expression<int>? bpDiastolic,
+    Expression<double>? bloodSugarFasting,
+    Expression<double>? bloodSugarPostMeal,
+    Expression<double>? temperatureCelsius,
+    Expression<double>? weightKg,
+    Expression<int>? spo2Percent,
+    Expression<String>? notes,
+    Expression<bool>? synced,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (loggedAt != null) 'logged_at': loggedAt,
+      if (bpSystolic != null) 'bp_systolic': bpSystolic,
+      if (bpDiastolic != null) 'bp_diastolic': bpDiastolic,
+      if (bloodSugarFasting != null) 'blood_sugar_fasting': bloodSugarFasting,
+      if (bloodSugarPostMeal != null)
+        'blood_sugar_post_meal': bloodSugarPostMeal,
+      if (temperatureCelsius != null) 'temperature_celsius': temperatureCelsius,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (spo2Percent != null) 'spo2_percent': spo2Percent,
+      if (notes != null) 'notes': notes,
+      if (synced != null) 'synced': synced,
+    });
+  }
+
+  VitalsEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? loggedAt,
+    Value<int?>? bpSystolic,
+    Value<int?>? bpDiastolic,
+    Value<double?>? bloodSugarFasting,
+    Value<double?>? bloodSugarPostMeal,
+    Value<double?>? temperatureCelsius,
+    Value<double?>? weightKg,
+    Value<int?>? spo2Percent,
+    Value<String>? notes,
+    Value<bool>? synced,
+  }) {
+    return VitalsEntriesCompanion(
+      id: id ?? this.id,
+      loggedAt: loggedAt ?? this.loggedAt,
+      bpSystolic: bpSystolic ?? this.bpSystolic,
+      bpDiastolic: bpDiastolic ?? this.bpDiastolic,
+      bloodSugarFasting: bloodSugarFasting ?? this.bloodSugarFasting,
+      bloodSugarPostMeal: bloodSugarPostMeal ?? this.bloodSugarPostMeal,
+      temperatureCelsius: temperatureCelsius ?? this.temperatureCelsius,
+      weightKg: weightKg ?? this.weightKg,
+      spo2Percent: spo2Percent ?? this.spo2Percent,
+      notes: notes ?? this.notes,
+      synced: synced ?? this.synced,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (loggedAt.present) {
+      map['logged_at'] = Variable<DateTime>(loggedAt.value);
+    }
+    if (bpSystolic.present) {
+      map['bp_systolic'] = Variable<int>(bpSystolic.value);
+    }
+    if (bpDiastolic.present) {
+      map['bp_diastolic'] = Variable<int>(bpDiastolic.value);
+    }
+    if (bloodSugarFasting.present) {
+      map['blood_sugar_fasting'] = Variable<double>(bloodSugarFasting.value);
+    }
+    if (bloodSugarPostMeal.present) {
+      map['blood_sugar_post_meal'] = Variable<double>(bloodSugarPostMeal.value);
+    }
+    if (temperatureCelsius.present) {
+      map['temperature_celsius'] = Variable<double>(temperatureCelsius.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (spo2Percent.present) {
+      map['spo2_percent'] = Variable<int>(spo2Percent.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (synced.present) {
+      map['synced'] = Variable<bool>(synced.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VitalsEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('loggedAt: $loggedAt, ')
+          ..write('bpSystolic: $bpSystolic, ')
+          ..write('bpDiastolic: $bpDiastolic, ')
+          ..write('bloodSugarFasting: $bloodSugarFasting, ')
+          ..write('bloodSugarPostMeal: $bloodSugarPostMeal, ')
+          ..write('temperatureCelsius: $temperatureCelsius, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('spo2Percent: $spo2Percent, ')
+          ..write('notes: $notes, ')
+          ..write('synced: $synced')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $UserProfilesTable userProfiles = $UserProfilesTable(this);
+  late final $VitalsEntriesTable vitalsEntries = $VitalsEntriesTable(this);
   late final ProfileDao profileDao = ProfileDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [userProfiles];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    userProfiles,
+    vitalsEntries,
+  ];
 }
 
 typedef $$UserProfilesTableCreateCompanionBuilder =
@@ -906,10 +1599,332 @@ typedef $$UserProfilesTableProcessedTableManager =
       UserProfile,
       PrefetchHooks Function()
     >;
+typedef $$VitalsEntriesTableCreateCompanionBuilder =
+    VitalsEntriesCompanion Function({
+      Value<int> id,
+      required DateTime loggedAt,
+      Value<int?> bpSystolic,
+      Value<int?> bpDiastolic,
+      Value<double?> bloodSugarFasting,
+      Value<double?> bloodSugarPostMeal,
+      Value<double?> temperatureCelsius,
+      Value<double?> weightKg,
+      Value<int?> spo2Percent,
+      Value<String> notes,
+      Value<bool> synced,
+    });
+typedef $$VitalsEntriesTableUpdateCompanionBuilder =
+    VitalsEntriesCompanion Function({
+      Value<int> id,
+      Value<DateTime> loggedAt,
+      Value<int?> bpSystolic,
+      Value<int?> bpDiastolic,
+      Value<double?> bloodSugarFasting,
+      Value<double?> bloodSugarPostMeal,
+      Value<double?> temperatureCelsius,
+      Value<double?> weightKg,
+      Value<int?> spo2Percent,
+      Value<String> notes,
+      Value<bool> synced,
+    });
+
+class $$VitalsEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $VitalsEntriesTable> {
+  $$VitalsEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get loggedAt => $composableBuilder(
+    column: $table.loggedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bpSystolic => $composableBuilder(
+    column: $table.bpSystolic,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bpDiastolic => $composableBuilder(
+    column: $table.bpDiastolic,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bloodSugarFasting => $composableBuilder(
+    column: $table.bloodSugarFasting,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get bloodSugarPostMeal => $composableBuilder(
+    column: $table.bloodSugarPostMeal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get temperatureCelsius => $composableBuilder(
+    column: $table.temperatureCelsius,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get spo2Percent => $composableBuilder(
+    column: $table.spo2Percent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VitalsEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $VitalsEntriesTable> {
+  $$VitalsEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get loggedAt => $composableBuilder(
+    column: $table.loggedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bpSystolic => $composableBuilder(
+    column: $table.bpSystolic,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bpDiastolic => $composableBuilder(
+    column: $table.bpDiastolic,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bloodSugarFasting => $composableBuilder(
+    column: $table.bloodSugarFasting,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get bloodSugarPostMeal => $composableBuilder(
+    column: $table.bloodSugarPostMeal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get temperatureCelsius => $composableBuilder(
+    column: $table.temperatureCelsius,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get spo2Percent => $composableBuilder(
+    column: $table.spo2Percent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VitalsEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VitalsEntriesTable> {
+  $$VitalsEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get loggedAt =>
+      $composableBuilder(column: $table.loggedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get bpSystolic => $composableBuilder(
+    column: $table.bpSystolic,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get bpDiastolic => $composableBuilder(
+    column: $table.bpDiastolic,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bloodSugarFasting => $composableBuilder(
+    column: $table.bloodSugarFasting,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get bloodSugarPostMeal => $composableBuilder(
+    column: $table.bloodSugarPostMeal,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get temperatureCelsius => $composableBuilder(
+    column: $table.temperatureCelsius,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<int> get spo2Percent => $composableBuilder(
+    column: $table.spo2Percent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<bool> get synced =>
+      $composableBuilder(column: $table.synced, builder: (column) => column);
+}
+
+class $$VitalsEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $VitalsEntriesTable,
+          VitalsEntry,
+          $$VitalsEntriesTableFilterComposer,
+          $$VitalsEntriesTableOrderingComposer,
+          $$VitalsEntriesTableAnnotationComposer,
+          $$VitalsEntriesTableCreateCompanionBuilder,
+          $$VitalsEntriesTableUpdateCompanionBuilder,
+          (
+            VitalsEntry,
+            BaseReferences<_$AppDatabase, $VitalsEntriesTable, VitalsEntry>,
+          ),
+          VitalsEntry,
+          PrefetchHooks Function()
+        > {
+  $$VitalsEntriesTableTableManager(_$AppDatabase db, $VitalsEntriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VitalsEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VitalsEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VitalsEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> loggedAt = const Value.absent(),
+                Value<int?> bpSystolic = const Value.absent(),
+                Value<int?> bpDiastolic = const Value.absent(),
+                Value<double?> bloodSugarFasting = const Value.absent(),
+                Value<double?> bloodSugarPostMeal = const Value.absent(),
+                Value<double?> temperatureCelsius = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<int?> spo2Percent = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+              }) => VitalsEntriesCompanion(
+                id: id,
+                loggedAt: loggedAt,
+                bpSystolic: bpSystolic,
+                bpDiastolic: bpDiastolic,
+                bloodSugarFasting: bloodSugarFasting,
+                bloodSugarPostMeal: bloodSugarPostMeal,
+                temperatureCelsius: temperatureCelsius,
+                weightKg: weightKg,
+                spo2Percent: spo2Percent,
+                notes: notes,
+                synced: synced,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DateTime loggedAt,
+                Value<int?> bpSystolic = const Value.absent(),
+                Value<int?> bpDiastolic = const Value.absent(),
+                Value<double?> bloodSugarFasting = const Value.absent(),
+                Value<double?> bloodSugarPostMeal = const Value.absent(),
+                Value<double?> temperatureCelsius = const Value.absent(),
+                Value<double?> weightKg = const Value.absent(),
+                Value<int?> spo2Percent = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+              }) => VitalsEntriesCompanion.insert(
+                id: id,
+                loggedAt: loggedAt,
+                bpSystolic: bpSystolic,
+                bpDiastolic: bpDiastolic,
+                bloodSugarFasting: bloodSugarFasting,
+                bloodSugarPostMeal: bloodSugarPostMeal,
+                temperatureCelsius: temperatureCelsius,
+                weightKg: weightKg,
+                spo2Percent: spo2Percent,
+                notes: notes,
+                synced: synced,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VitalsEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $VitalsEntriesTable,
+      VitalsEntry,
+      $$VitalsEntriesTableFilterComposer,
+      $$VitalsEntriesTableOrderingComposer,
+      $$VitalsEntriesTableAnnotationComposer,
+      $$VitalsEntriesTableCreateCompanionBuilder,
+      $$VitalsEntriesTableUpdateCompanionBuilder,
+      (
+        VitalsEntry,
+        BaseReferences<_$AppDatabase, $VitalsEntriesTable, VitalsEntry>,
+      ),
+      VitalsEntry,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
   $$UserProfilesTableTableManager get userProfiles =>
       $$UserProfilesTableTableManager(_db, _db.userProfiles);
+  $$VitalsEntriesTableTableManager get vitalsEntries =>
+      $$VitalsEntriesTableTableManager(_db, _db.vitalsEntries);
 }
