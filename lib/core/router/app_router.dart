@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/profile/screens/profile_setup_screen.dart';
+import '../../features/vitals/screens/vitals_log_screen.dart';
 import '../../home/screens/home_screen.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -35,7 +36,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/vitals',
           builder: (BuildContext context, GoRouterState state) {
-            return const Center(child: Text('Vitals - Coming soon'));
+            return const VitalsLogScreen();
           },
         ),
         GoRoute(
