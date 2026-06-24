@@ -170,7 +170,8 @@ class _ProfileFormState extends ConsumerState<ProfileForm> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              initialValue: _bloodGroup,
+              // ignore: deprecated_member_use
+              value: _bloodGroup,
               decoration: const InputDecoration(
                 labelText: 'Blood Group',
                 prefixIcon: Icon(Icons.bloodtype),
