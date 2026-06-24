@@ -8,7 +8,6 @@
 
 #include <app_links/app_links_plugin_c_api.h>
 #include <file_selector_windows/file_selector_windows.h>
-#include <flutter_unity_widget/flutter_unity_widget_plugin.h>
 #include <geolocator_windows/geolocator_windows.h>
 #include <passkeys_windows/passkeys_windows_plugin.h>
 #include <printing/printing_plugin.h>
@@ -20,8 +19,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("AppLinksPluginCApi"));
   FileSelectorWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FileSelectorWindows"));
-  FlutterUnityWidgetPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("FlutterUnityWidgetPlugin"));
   GeolocatorWindowsRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("GeolocatorWindows"));
   PasskeysWindowsPluginRegisterWithRegistrar(
