@@ -15,6 +15,6 @@ class ProfileDao extends DatabaseAccessor<AppDatabase> with _$ProfileDaoMixin {
   Future<int> insertProfile(UserProfilesCompanion entry) =>
       into(userProfiles).insert(entry);
 
-  Future<bool> updateProfile(UserProfilesCompanion entry) =>
-      update(userProfiles).replace(entry);
+  Future<int> updateProfile(UserProfilesCompanion entry) =>
+      (update(userProfiles)..where((t) => t.id.equals(entry.id.value))).write(entry);
 }
