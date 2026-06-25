@@ -7,6 +7,7 @@ import '../../features/doctor_visits/screens/add_doctor_visit_screen.dart';
 import '../../features/doctor_visits/screens/doctor_visit_list_screen.dart';
 import '../../features/doctor_visits/screens/prescription_viewer_screen.dart';
 import '../../features/medicines/screens/add_medicine_screen.dart';
+import '../../features/reports/screens/report_generator_screen.dart';
 import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/profile/screens/profile_setup_screen.dart';
 import '../../features/vitals/screens/vitals_log_screen.dart';
@@ -40,6 +41,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/doctor-visits',
       builder: (context, state) => const DoctorVisitListScreen(),
+    ),
+    GoRoute(
+      path: '/generate-report',
+      builder: (context, state) => const ReportGeneratorScreen(),
     ),
     GoRoute(
       path: '/prescription-viewer',
