@@ -35,6 +35,15 @@ class NotificationService {
         ?.createNotificationChannel(channel);
   }
 
+  static Future<bool> requestExactAlarmPermission() async {
+    final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    final canSchedule = await androidPlugin?.canScheduleExactNotifications();
+    if (canSchedule == true) return true;
+    await androidPlugin?.requestExactAlarmsPermission();
+    return false;
+  }
+
   static Future<void> Function(int medicineId, String actionId)? _actionHandler;
 
   static void setActionHandler(

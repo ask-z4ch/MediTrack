@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:drift/drift.dart';
 
+import '../../../core/services/notification_service.dart';
 import '../daos/medicine_dao.dart';
 import '../models/medicine.dart';
 import '../providers/medicine_provider.dart';
@@ -104,6 +105,30 @@ class _AddMedicineScreenState extends ConsumerState<AddMedicineScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+
+    if (!await NotificationService.requestExactAlarmPermission()) {
+      final granted = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Exact Alarm Permission'),
+          content: const Text(
+            'MediTrack needs exact alarm permission to deliver medicine reminders on time. '
+            'Please toggle it on in the next screen.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Open Settings'),
+            ),
+          ],
+        ),
+      );
+      if (!granted || !await NotificationService.requestExactAlarmPermission()) return;
+    }
 
     final timesStr = jsonEncode(_times.map((t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}').toList());
 
