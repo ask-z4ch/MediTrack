@@ -254,7 +254,12 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
                               ? const Icon(Icons.picture_as_pdf, size: 40)
                               : ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: Image.file(File(path), fit: BoxFit.cover),
+                                  child: Image.file(
+                                    File(path),
+                                    fit: BoxFit.cover,
+                                    cacheWidth: 160,
+                                    cacheHeight: 160,
+                                  ),
                                 ),
                         ),
                         Positioned(
