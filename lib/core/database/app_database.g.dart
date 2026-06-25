@@ -2567,6 +2567,517 @@ class SymptomEntriesCompanion extends UpdateCompanion<SymptomEntry> {
   }
 }
 
+class $DoctorVisitsTable extends DoctorVisits
+    with TableInfo<$DoctorVisitsTable, DoctorVisit> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DoctorVisitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _doctorNameMeta = const VerificationMeta(
+    'doctorName',
+  );
+  @override
+  late final GeneratedColumn<String> doctorName = GeneratedColumn<String>(
+    'doctor_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _specialtyMeta = const VerificationMeta(
+    'specialty',
+  );
+  @override
+  late final GeneratedColumn<String> specialty = GeneratedColumn<String>(
+    'specialty',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _clinicOrHospitalMeta = const VerificationMeta(
+    'clinicOrHospital',
+  );
+  @override
+  late final GeneratedColumn<String> clinicOrHospital = GeneratedColumn<String>(
+    'clinic_or_hospital',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _visitDateMeta = const VerificationMeta(
+    'visitDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> visitDate = GeneratedColumn<DateTime>(
+    'visit_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _followUpDateMeta = const VerificationMeta(
+    'followUpDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> followUpDate = GeneratedColumn<DateTime>(
+    'follow_up_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _prescriptionPathsMeta = const VerificationMeta(
+    'prescriptionPaths',
+  );
+  @override
+  late final GeneratedColumn<String> prescriptionPaths =
+      GeneratedColumn<String>(
+        'prescription_paths',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    doctorName,
+    specialty,
+    clinicOrHospital,
+    notes,
+    visitDate,
+    followUpDate,
+    prescriptionPaths,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'doctor_visits';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DoctorVisit> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('doctor_name')) {
+      context.handle(
+        _doctorNameMeta,
+        doctorName.isAcceptableOrUnknown(data['doctor_name']!, _doctorNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_doctorNameMeta);
+    }
+    if (data.containsKey('specialty')) {
+      context.handle(
+        _specialtyMeta,
+        specialty.isAcceptableOrUnknown(data['specialty']!, _specialtyMeta),
+      );
+    }
+    if (data.containsKey('clinic_or_hospital')) {
+      context.handle(
+        _clinicOrHospitalMeta,
+        clinicOrHospital.isAcceptableOrUnknown(
+          data['clinic_or_hospital']!,
+          _clinicOrHospitalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('visit_date')) {
+      context.handle(
+        _visitDateMeta,
+        visitDate.isAcceptableOrUnknown(data['visit_date']!, _visitDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_visitDateMeta);
+    }
+    if (data.containsKey('follow_up_date')) {
+      context.handle(
+        _followUpDateMeta,
+        followUpDate.isAcceptableOrUnknown(
+          data['follow_up_date']!,
+          _followUpDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('prescription_paths')) {
+      context.handle(
+        _prescriptionPathsMeta,
+        prescriptionPaths.isAcceptableOrUnknown(
+          data['prescription_paths']!,
+          _prescriptionPathsMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DoctorVisit map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DoctorVisit(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      doctorName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}doctor_name'],
+      )!,
+      specialty: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}specialty'],
+      )!,
+      clinicOrHospital: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}clinic_or_hospital'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      )!,
+      visitDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}visit_date'],
+      )!,
+      followUpDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}follow_up_date'],
+      ),
+      prescriptionPaths: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}prescription_paths'],
+      )!,
+    );
+  }
+
+  @override
+  $DoctorVisitsTable createAlias(String alias) {
+    return $DoctorVisitsTable(attachedDatabase, alias);
+  }
+}
+
+class DoctorVisit extends DataClass implements Insertable<DoctorVisit> {
+  final int id;
+  final String doctorName;
+  final String specialty;
+  final String clinicOrHospital;
+  final String notes;
+  final DateTime visitDate;
+  final DateTime? followUpDate;
+  final String prescriptionPaths;
+  const DoctorVisit({
+    required this.id,
+    required this.doctorName,
+    required this.specialty,
+    required this.clinicOrHospital,
+    required this.notes,
+    required this.visitDate,
+    this.followUpDate,
+    required this.prescriptionPaths,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['doctor_name'] = Variable<String>(doctorName);
+    map['specialty'] = Variable<String>(specialty);
+    map['clinic_or_hospital'] = Variable<String>(clinicOrHospital);
+    map['notes'] = Variable<String>(notes);
+    map['visit_date'] = Variable<DateTime>(visitDate);
+    if (!nullToAbsent || followUpDate != null) {
+      map['follow_up_date'] = Variable<DateTime>(followUpDate);
+    }
+    map['prescription_paths'] = Variable<String>(prescriptionPaths);
+    return map;
+  }
+
+  DoctorVisitsCompanion toCompanion(bool nullToAbsent) {
+    return DoctorVisitsCompanion(
+      id: Value(id),
+      doctorName: Value(doctorName),
+      specialty: Value(specialty),
+      clinicOrHospital: Value(clinicOrHospital),
+      notes: Value(notes),
+      visitDate: Value(visitDate),
+      followUpDate: followUpDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(followUpDate),
+      prescriptionPaths: Value(prescriptionPaths),
+    );
+  }
+
+  factory DoctorVisit.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DoctorVisit(
+      id: serializer.fromJson<int>(json['id']),
+      doctorName: serializer.fromJson<String>(json['doctorName']),
+      specialty: serializer.fromJson<String>(json['specialty']),
+      clinicOrHospital: serializer.fromJson<String>(json['clinicOrHospital']),
+      notes: serializer.fromJson<String>(json['notes']),
+      visitDate: serializer.fromJson<DateTime>(json['visitDate']),
+      followUpDate: serializer.fromJson<DateTime?>(json['followUpDate']),
+      prescriptionPaths: serializer.fromJson<String>(json['prescriptionPaths']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'doctorName': serializer.toJson<String>(doctorName),
+      'specialty': serializer.toJson<String>(specialty),
+      'clinicOrHospital': serializer.toJson<String>(clinicOrHospital),
+      'notes': serializer.toJson<String>(notes),
+      'visitDate': serializer.toJson<DateTime>(visitDate),
+      'followUpDate': serializer.toJson<DateTime?>(followUpDate),
+      'prescriptionPaths': serializer.toJson<String>(prescriptionPaths),
+    };
+  }
+
+  DoctorVisit copyWith({
+    int? id,
+    String? doctorName,
+    String? specialty,
+    String? clinicOrHospital,
+    String? notes,
+    DateTime? visitDate,
+    Value<DateTime?> followUpDate = const Value.absent(),
+    String? prescriptionPaths,
+  }) => DoctorVisit(
+    id: id ?? this.id,
+    doctorName: doctorName ?? this.doctorName,
+    specialty: specialty ?? this.specialty,
+    clinicOrHospital: clinicOrHospital ?? this.clinicOrHospital,
+    notes: notes ?? this.notes,
+    visitDate: visitDate ?? this.visitDate,
+    followUpDate: followUpDate.present ? followUpDate.value : this.followUpDate,
+    prescriptionPaths: prescriptionPaths ?? this.prescriptionPaths,
+  );
+  DoctorVisit copyWithCompanion(DoctorVisitsCompanion data) {
+    return DoctorVisit(
+      id: data.id.present ? data.id.value : this.id,
+      doctorName: data.doctorName.present
+          ? data.doctorName.value
+          : this.doctorName,
+      specialty: data.specialty.present ? data.specialty.value : this.specialty,
+      clinicOrHospital: data.clinicOrHospital.present
+          ? data.clinicOrHospital.value
+          : this.clinicOrHospital,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      visitDate: data.visitDate.present ? data.visitDate.value : this.visitDate,
+      followUpDate: data.followUpDate.present
+          ? data.followUpDate.value
+          : this.followUpDate,
+      prescriptionPaths: data.prescriptionPaths.present
+          ? data.prescriptionPaths.value
+          : this.prescriptionPaths,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DoctorVisit(')
+          ..write('id: $id, ')
+          ..write('doctorName: $doctorName, ')
+          ..write('specialty: $specialty, ')
+          ..write('clinicOrHospital: $clinicOrHospital, ')
+          ..write('notes: $notes, ')
+          ..write('visitDate: $visitDate, ')
+          ..write('followUpDate: $followUpDate, ')
+          ..write('prescriptionPaths: $prescriptionPaths')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    doctorName,
+    specialty,
+    clinicOrHospital,
+    notes,
+    visitDate,
+    followUpDate,
+    prescriptionPaths,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DoctorVisit &&
+          other.id == this.id &&
+          other.doctorName == this.doctorName &&
+          other.specialty == this.specialty &&
+          other.clinicOrHospital == this.clinicOrHospital &&
+          other.notes == this.notes &&
+          other.visitDate == this.visitDate &&
+          other.followUpDate == this.followUpDate &&
+          other.prescriptionPaths == this.prescriptionPaths);
+}
+
+class DoctorVisitsCompanion extends UpdateCompanion<DoctorVisit> {
+  final Value<int> id;
+  final Value<String> doctorName;
+  final Value<String> specialty;
+  final Value<String> clinicOrHospital;
+  final Value<String> notes;
+  final Value<DateTime> visitDate;
+  final Value<DateTime?> followUpDate;
+  final Value<String> prescriptionPaths;
+  const DoctorVisitsCompanion({
+    this.id = const Value.absent(),
+    this.doctorName = const Value.absent(),
+    this.specialty = const Value.absent(),
+    this.clinicOrHospital = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.visitDate = const Value.absent(),
+    this.followUpDate = const Value.absent(),
+    this.prescriptionPaths = const Value.absent(),
+  });
+  DoctorVisitsCompanion.insert({
+    this.id = const Value.absent(),
+    required String doctorName,
+    this.specialty = const Value.absent(),
+    this.clinicOrHospital = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime visitDate,
+    this.followUpDate = const Value.absent(),
+    this.prescriptionPaths = const Value.absent(),
+  }) : doctorName = Value(doctorName),
+       visitDate = Value(visitDate);
+  static Insertable<DoctorVisit> custom({
+    Expression<int>? id,
+    Expression<String>? doctorName,
+    Expression<String>? specialty,
+    Expression<String>? clinicOrHospital,
+    Expression<String>? notes,
+    Expression<DateTime>? visitDate,
+    Expression<DateTime>? followUpDate,
+    Expression<String>? prescriptionPaths,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (doctorName != null) 'doctor_name': doctorName,
+      if (specialty != null) 'specialty': specialty,
+      if (clinicOrHospital != null) 'clinic_or_hospital': clinicOrHospital,
+      if (notes != null) 'notes': notes,
+      if (visitDate != null) 'visit_date': visitDate,
+      if (followUpDate != null) 'follow_up_date': followUpDate,
+      if (prescriptionPaths != null) 'prescription_paths': prescriptionPaths,
+    });
+  }
+
+  DoctorVisitsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? doctorName,
+    Value<String>? specialty,
+    Value<String>? clinicOrHospital,
+    Value<String>? notes,
+    Value<DateTime>? visitDate,
+    Value<DateTime?>? followUpDate,
+    Value<String>? prescriptionPaths,
+  }) {
+    return DoctorVisitsCompanion(
+      id: id ?? this.id,
+      doctorName: doctorName ?? this.doctorName,
+      specialty: specialty ?? this.specialty,
+      clinicOrHospital: clinicOrHospital ?? this.clinicOrHospital,
+      notes: notes ?? this.notes,
+      visitDate: visitDate ?? this.visitDate,
+      followUpDate: followUpDate ?? this.followUpDate,
+      prescriptionPaths: prescriptionPaths ?? this.prescriptionPaths,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (doctorName.present) {
+      map['doctor_name'] = Variable<String>(doctorName.value);
+    }
+    if (specialty.present) {
+      map['specialty'] = Variable<String>(specialty.value);
+    }
+    if (clinicOrHospital.present) {
+      map['clinic_or_hospital'] = Variable<String>(clinicOrHospital.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (visitDate.present) {
+      map['visit_date'] = Variable<DateTime>(visitDate.value);
+    }
+    if (followUpDate.present) {
+      map['follow_up_date'] = Variable<DateTime>(followUpDate.value);
+    }
+    if (prescriptionPaths.present) {
+      map['prescription_paths'] = Variable<String>(prescriptionPaths.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DoctorVisitsCompanion(')
+          ..write('id: $id, ')
+          ..write('doctorName: $doctorName, ')
+          ..write('specialty: $specialty, ')
+          ..write('clinicOrHospital: $clinicOrHospital, ')
+          ..write('notes: $notes, ')
+          ..write('visitDate: $visitDate, ')
+          ..write('followUpDate: $followUpDate, ')
+          ..write('prescriptionPaths: $prescriptionPaths')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2575,6 +3086,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MedicinesTable medicines = $MedicinesTable(this);
   late final $MedicineDosesTable medicineDoses = $MedicineDosesTable(this);
   late final $SymptomEntriesTable symptomEntries = $SymptomEntriesTable(this);
+  late final $DoctorVisitsTable doctorVisits = $DoctorVisitsTable(this);
   late final ProfileDao profileDao = ProfileDao(this as AppDatabase);
   late final VitalsDao vitalsDao = VitalsDao(this as AppDatabase);
   late final MedicineDao medicineDao = MedicineDao(this as AppDatabase);
@@ -2582,6 +3094,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final SymptomDao symptomDao = SymptomDao(this as AppDatabase);
+  late final DoctorVisitDao doctorVisitDao = DoctorVisitDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2592,6 +3107,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     medicines,
     medicineDoses,
     symptomEntries,
+    doctorVisits,
   ];
 }
 
@@ -4094,6 +4610,265 @@ typedef $$SymptomEntriesTableProcessedTableManager =
       SymptomEntry,
       PrefetchHooks Function()
     >;
+typedef $$DoctorVisitsTableCreateCompanionBuilder =
+    DoctorVisitsCompanion Function({
+      Value<int> id,
+      required String doctorName,
+      Value<String> specialty,
+      Value<String> clinicOrHospital,
+      Value<String> notes,
+      required DateTime visitDate,
+      Value<DateTime?> followUpDate,
+      Value<String> prescriptionPaths,
+    });
+typedef $$DoctorVisitsTableUpdateCompanionBuilder =
+    DoctorVisitsCompanion Function({
+      Value<int> id,
+      Value<String> doctorName,
+      Value<String> specialty,
+      Value<String> clinicOrHospital,
+      Value<String> notes,
+      Value<DateTime> visitDate,
+      Value<DateTime?> followUpDate,
+      Value<String> prescriptionPaths,
+    });
+
+class $$DoctorVisitsTableFilterComposer
+    extends Composer<_$AppDatabase, $DoctorVisitsTable> {
+  $$DoctorVisitsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get doctorName => $composableBuilder(
+    column: $table.doctorName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get specialty => $composableBuilder(
+    column: $table.specialty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get clinicOrHospital => $composableBuilder(
+    column: $table.clinicOrHospital,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get visitDate => $composableBuilder(
+    column: $table.visitDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get followUpDate => $composableBuilder(
+    column: $table.followUpDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get prescriptionPaths => $composableBuilder(
+    column: $table.prescriptionPaths,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DoctorVisitsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DoctorVisitsTable> {
+  $$DoctorVisitsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get doctorName => $composableBuilder(
+    column: $table.doctorName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get specialty => $composableBuilder(
+    column: $table.specialty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get clinicOrHospital => $composableBuilder(
+    column: $table.clinicOrHospital,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get visitDate => $composableBuilder(
+    column: $table.visitDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get followUpDate => $composableBuilder(
+    column: $table.followUpDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get prescriptionPaths => $composableBuilder(
+    column: $table.prescriptionPaths,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DoctorVisitsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DoctorVisitsTable> {
+  $$DoctorVisitsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get doctorName => $composableBuilder(
+    column: $table.doctorName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get specialty =>
+      $composableBuilder(column: $table.specialty, builder: (column) => column);
+
+  GeneratedColumn<String> get clinicOrHospital => $composableBuilder(
+    column: $table.clinicOrHospital,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get visitDate =>
+      $composableBuilder(column: $table.visitDate, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get followUpDate => $composableBuilder(
+    column: $table.followUpDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get prescriptionPaths => $composableBuilder(
+    column: $table.prescriptionPaths,
+    builder: (column) => column,
+  );
+}
+
+class $$DoctorVisitsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DoctorVisitsTable,
+          DoctorVisit,
+          $$DoctorVisitsTableFilterComposer,
+          $$DoctorVisitsTableOrderingComposer,
+          $$DoctorVisitsTableAnnotationComposer,
+          $$DoctorVisitsTableCreateCompanionBuilder,
+          $$DoctorVisitsTableUpdateCompanionBuilder,
+          (
+            DoctorVisit,
+            BaseReferences<_$AppDatabase, $DoctorVisitsTable, DoctorVisit>,
+          ),
+          DoctorVisit,
+          PrefetchHooks Function()
+        > {
+  $$DoctorVisitsTableTableManager(_$AppDatabase db, $DoctorVisitsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DoctorVisitsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DoctorVisitsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DoctorVisitsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> doctorName = const Value.absent(),
+                Value<String> specialty = const Value.absent(),
+                Value<String> clinicOrHospital = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                Value<DateTime> visitDate = const Value.absent(),
+                Value<DateTime?> followUpDate = const Value.absent(),
+                Value<String> prescriptionPaths = const Value.absent(),
+              }) => DoctorVisitsCompanion(
+                id: id,
+                doctorName: doctorName,
+                specialty: specialty,
+                clinicOrHospital: clinicOrHospital,
+                notes: notes,
+                visitDate: visitDate,
+                followUpDate: followUpDate,
+                prescriptionPaths: prescriptionPaths,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String doctorName,
+                Value<String> specialty = const Value.absent(),
+                Value<String> clinicOrHospital = const Value.absent(),
+                Value<String> notes = const Value.absent(),
+                required DateTime visitDate,
+                Value<DateTime?> followUpDate = const Value.absent(),
+                Value<String> prescriptionPaths = const Value.absent(),
+              }) => DoctorVisitsCompanion.insert(
+                id: id,
+                doctorName: doctorName,
+                specialty: specialty,
+                clinicOrHospital: clinicOrHospital,
+                notes: notes,
+                visitDate: visitDate,
+                followUpDate: followUpDate,
+                prescriptionPaths: prescriptionPaths,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DoctorVisitsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DoctorVisitsTable,
+      DoctorVisit,
+      $$DoctorVisitsTableFilterComposer,
+      $$DoctorVisitsTableOrderingComposer,
+      $$DoctorVisitsTableAnnotationComposer,
+      $$DoctorVisitsTableCreateCompanionBuilder,
+      $$DoctorVisitsTableUpdateCompanionBuilder,
+      (
+        DoctorVisit,
+        BaseReferences<_$AppDatabase, $DoctorVisitsTable, DoctorVisit>,
+      ),
+      DoctorVisit,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4108,4 +4883,6 @@ class $AppDatabaseManager {
       $$MedicineDosesTableTableManager(_db, _db.medicineDoses);
   $$SymptomEntriesTableTableManager get symptomEntries =>
       $$SymptomEntriesTableTableManager(_db, _db.symptomEntries);
+  $$DoctorVisitsTableTableManager get doctorVisits =>
+      $$DoctorVisitsTableTableManager(_db, _db.doctorVisits);
 }
