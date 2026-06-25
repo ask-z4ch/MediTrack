@@ -106,30 +106,182 @@ class PdfReportService {
   String _fmtDate(DateTime d) => DateFormat('dd MMM yyyy').format(d);
 
   pw.Widget _buildVitalsSection(List<VitalsEntry> vitals) {
-    if (vitals.isEmpty) return pw.Text('No vitals recorded in this period.', style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey500));
-    final dateFormat = DateFormat('d MMM yyyy, HH:mm');
+    if (vitals.isEmpty) {
+      return pw.Text('No vitals logged in this period.',
+          style: const pw.TextStyle(color: PdfColors.grey600));
+    }
+
+    final systolicVals = vitals
+        .where((e) => e.bpSystolic != null)
+        .map((e) => e.bpSystolic!.toDouble())
+        .toList();
+    final diastolicVals = vitals
+        .where((e) => e.bpDiastolic != null)
+        .map((e) => e.bpDiastolic!.toDouble())
+        .toList();
+    final fastingVals = vitals
+        .where((e) => e.bloodSugarFasting != null)
+        .map((e) => e.bloodSugarFasting!)
+        .toList();
+    final postMealVals = vitals
+        .where((e) => e.bloodSugarPostMeal != null)
+        .map((e) => e.bloodSugarPostMeal!)
+        .toList();
+    final spo2Vals = vitals
+        .where((e) => e.spo2Percent != null)
+        .map((e) => e.spo2Percent!.toDouble())
+        .toList();
+    final tempVals = vitals
+        .where((e) => e.temperatureCelsius != null)
+        .map((e) => e.temperatureCelsius!)
+        .toList();
+    final weightVals = vitals
+        .where((e) => e.weightKg != null)
+        .map((e) => e.weightKg!)
+        .toList();
+
+    double avg(List<double> vals) =>
+        vals.isEmpty ? 0 : vals.reduce((a, b) => a + b) / vals.length;
+    double minV(List<double> vals) =>
+        vals.isEmpty ? 0 : vals.reduce((a, b) => a < b ? a : b);
+    double maxV(List<double> vals) =>
+        vals.isEmpty ? 0 : vals.reduce((a, b) => a > b ? a : b);
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('Vitals', style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
-        pw.SizedBox(height: 6),
-        pw.TableHelper.fromTextArray(
-          headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
-          cellStyle: const pw.TextStyle(fontSize: 9),
-          headerDecoration: const pw.BoxDecoration(color: PdfColors.blue50),
-          cellAlignments: {0: pw.Alignment.centerLeft, 1: pw.Alignment.center, 2: pw.Alignment.center, 3: pw.Alignment.center, 4: pw.Alignment.center},
-          columnWidths: {0: const pw.FixedColumnWidth(100), 1: const pw.FixedColumnWidth(45), 2: const pw.FixedColumnWidth(45), 3: const pw.FixedColumnWidth(45), 4: const pw.FixedColumnWidth(60)},
-          headers: ['Date', 'BP', 'Sugar F', 'Sugar P', 'SpO2'],
-          data: vitals.map((v) => [
-            dateFormat.format(v.loggedAt),
-            v.bpSystolic != null ? '${v.bpSystolic}/${v.bpDiastolic}' : '—',
-            v.bloodSugarFasting?.toStringAsFixed(1) ?? '—',
-            v.bloodSugarPostMeal?.toStringAsFixed(1) ?? '—',
-            v.spo2Percent?.toString() ?? '—',
-          ]).toList(),
+        pw.Text('Vitals Summary',
+            style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+        pw.SizedBox(height: 8),
+        pw.Table(
+          border: pw.TableBorder.all(color: PdfColors.grey300),
+          columnWidths: {
+            0: const pw.FlexColumnWidth(2),
+            1: const pw.FlexColumnWidth(1.5),
+            2: const pw.FlexColumnWidth(1.5),
+            3: const pw.FlexColumnWidth(1.5),
+            4: const pw.FlexColumnWidth(1.5),
+          },
+          children: [
+            _tableHeaderRow(['Vital', 'Avg', 'Min', 'Max', 'Status']),
+            if (systolicVals.isNotEmpty)
+              _tableDataRow([
+                'BP Systolic',
+                '${avg(systolicVals).toStringAsFixed(0)}',
+                '${minV(systolicVals).toStringAsFixed(0)}',
+                '${maxV(systolicVals).toStringAsFixed(0)}',
+                _bpStatus(avg(systolicVals)),
+              ]),
+            if (diastolicVals.isNotEmpty)
+              _tableDataRow([
+                'BP Diastolic',
+                '${avg(diastolicVals).toStringAsFixed(0)}',
+                '${minV(diastolicVals).toStringAsFixed(0)}',
+                '${maxV(diastolicVals).toStringAsFixed(0)}',
+                _bpDiastolicStatus(avg(diastolicVals)),
+              ]),
+            if (fastingVals.isNotEmpty)
+              _tableDataRow([
+                'Sugar Fasting',
+                '${avg(fastingVals).toStringAsFixed(1)}',
+                '${minV(fastingVals).toStringAsFixed(1)}',
+                '${maxV(fastingVals).toStringAsFixed(1)}',
+                _sugarStatus(avg(fastingVals), isFasting: true),
+              ]),
+            if (postMealVals.isNotEmpty)
+              _tableDataRow([
+                'Sugar Post-Meal',
+                '${avg(postMealVals).toStringAsFixed(1)}',
+                '${minV(postMealVals).toStringAsFixed(1)}',
+                '${maxV(postMealVals).toStringAsFixed(1)}',
+                _sugarStatus(avg(postMealVals), isFasting: false),
+              ]),
+            if (spo2Vals.isNotEmpty)
+              _tableDataRow([
+                'SpO2',
+                '${avg(spo2Vals).toStringAsFixed(0)}%',
+                '${minV(spo2Vals).toStringAsFixed(0)}%',
+                '${maxV(spo2Vals).toStringAsFixed(0)}%',
+                _spo2Status(avg(spo2Vals)),
+              ]),
+            if (tempVals.isNotEmpty)
+              _tableDataRow([
+                'Temperature',
+                '${avg(tempVals).toStringAsFixed(1)}°C',
+                '${minV(tempVals).toStringAsFixed(1)}°C',
+                '${maxV(tempVals).toStringAsFixed(1)}°C',
+                _tempStatus(avg(tempVals)),
+              ]),
+            if (weightVals.isNotEmpty)
+              _tableDataRow([
+                'Weight',
+                '${avg(weightVals).toStringAsFixed(1)} kg',
+                '${minV(weightVals).toStringAsFixed(1)}',
+                '${maxV(weightVals).toStringAsFixed(1)}',
+                '—',
+              ]),
+          ],
         ),
       ],
     );
+  }
+
+  pw.TableRow _tableHeaderRow(List<String> cells) {
+    return pw.TableRow(
+      decoration: const pw.BoxDecoration(color: PdfColors.blue50),
+      children: cells
+          .map((c) => pw.Padding(
+                padding: const pw.EdgeInsets.all(6),
+                child: pw.Text(c,
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold, fontSize: 9)),
+              ))
+          .toList(),
+    );
+  }
+
+  pw.TableRow _tableDataRow(List<String> cells) {
+    return pw.TableRow(
+      children: cells
+          .map((c) => pw.Padding(
+                padding: const pw.EdgeInsets.all(6),
+                child: pw.Text(c, style: const pw.TextStyle(fontSize: 9)),
+              ))
+          .toList(),
+    );
+  }
+
+  String _bpStatus(double avgSystolic) {
+    if (avgSystolic <= 120) return 'Normal';
+    if (avgSystolic <= 139) return 'Borderline';
+    return 'Critical';
+  }
+
+  String _bpDiastolicStatus(double avgDiastolic) {
+    if (avgDiastolic <= 80) return 'Normal';
+    if (avgDiastolic <= 89) return 'Borderline';
+    return 'Critical';
+  }
+
+  String _sugarStatus(double avg, {required bool isFasting}) {
+    final threshold = isFasting ? 100.0 : 140.0;
+    final borderline = isFasting ? 125.0 : 199.0;
+    if (avg <= threshold) return 'Normal';
+    if (avg <= borderline) return 'Borderline';
+    return 'Critical';
+  }
+
+  String _spo2Status(double avg) {
+    if (avg >= 95) return 'Normal';
+    if (avg >= 92) return 'Borderline';
+    return 'Critical';
+  }
+
+  String _tempStatus(double avg) {
+    if (avg >= 36.5 && avg <= 37.5) return 'Normal';
+    if (avg > 37.5 && avg <= 38.3) return 'Borderline';
+    if (avg < 36.5 && avg >= 35.5) return 'Borderline';
+    return 'Critical';
   }
 
   pw.Widget _buildMedicinesSection(List<Medicine> medicines, List<MedicineDose> doses) {
