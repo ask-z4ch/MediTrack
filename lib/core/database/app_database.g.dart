@@ -1307,6 +1307,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $UserProfilesTable userProfiles = $UserProfilesTable(this);
   late final $VitalsEntriesTable vitalsEntries = $VitalsEntriesTable(this);
   late final ProfileDao profileDao = ProfileDao(this as AppDatabase);
+  late final VitalsDao vitalsDao = VitalsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

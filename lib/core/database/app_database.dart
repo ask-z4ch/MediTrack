@@ -7,11 +7,12 @@ import 'package:path/path.dart' as p;
 
 import 'package:meditrack/features/profile/daos/profile_dao.dart';
 import 'package:meditrack/features/profile/models/user_profile.dart';
+import 'package:meditrack/features/vitals/daos/vitals_dao.dart';
 import 'package:meditrack/features/vitals/models/vitals_entry.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [UserProfiles, VitalsEntries], daos: [ProfileDao])
+@DriftDatabase(tables: [UserProfiles, VitalsEntries], daos: [ProfileDao, VitalsDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
