@@ -15,7 +15,6 @@ class ReportGeneratorScreen extends ConsumerStatefulWidget {
 }
 
 class _ReportGeneratorScreenState extends ConsumerState<ReportGeneratorScreen> {
-  final _service = PdfReportService();
   bool _generating = false;
 
   DateTime _from = DateTime.now().subtract(const Duration(days: 30));
@@ -87,7 +86,7 @@ class _ReportGeneratorScreenState extends ConsumerState<ReportGeneratorScreen> {
       final doses = await dao.medicineDoseDao.getDosesInRange(_from, _to);
       final symptoms = await dao.symptomDao.getSymptomsInRange(_from, _to);
 
-      final bytes = await _service.generateReport(
+      final bytes = await ref.read(pdfReportServiceProvider).generateReport(
         profile: profile,
         vitals: vitals,
         medicines: medicines,
@@ -100,7 +99,7 @@ class _ReportGeneratorScreenState extends ConsumerState<ReportGeneratorScreen> {
       await Printing.sharePdf(
         bytes: bytes,
         filename:
-            'MediTrack_Report_${DateFormat('yyyyMMdd').format(_from)}-${DateFormat('yyyyMMdd').format(_to)}.pdf',
+            'meditrack_${profile.name.replaceAll(' ', '_')}_${DateFormat('yyyyMMdd').format(DateTime.now())}.pdf',
       );
     } finally {
       if (mounted) setState(() => _generating = false);

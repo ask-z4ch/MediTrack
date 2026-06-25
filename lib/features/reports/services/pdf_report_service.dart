@@ -3,8 +3,16 @@ import 'dart:typed_data';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/database/app_database.dart';
+
+part 'pdf_report_service.g.dart';
+
+@riverpod
+PdfReportService pdfReportService(PdfReportServiceRef ref) {
+  return PdfReportService();
+}
 
 class PdfReportService {
   Future<Uint8List> generateReport({
