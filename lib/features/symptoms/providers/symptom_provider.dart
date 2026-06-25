@@ -14,5 +14,8 @@ SymptomDao symptomDao(SymptomDaoRef ref) {
 
 final symptomListProvider = FutureProvider<List<SymptomEntry>>((ref) async {
   final dao = ref.read(symptomDaoProvider);
-  return dao.getAllSymptoms();
+  return dao.getSymptomsInRange(
+    DateTime(2000),
+    DateTime(2100),
+  );
 });

@@ -12,6 +12,15 @@ class SymptomDao extends DatabaseAccessor<AppDatabase> with _$SymptomDaoMixin {
   Future<int> insertSymptom(SymptomEntriesCompanion entry) =>
       into(symptomEntries).insert(entry);
 
-  Future<List<SymptomEntry>> getAllSymptoms() =>
-      (select(symptomEntries)..orderBy([(t) => OrderingTerm.desc(t.loggedAt)])).get();
+  Future<List<SymptomEntry>> getSymptomsInRange(DateTime from, DateTime to) =>
+      (select(symptomEntries)
+            ..where((t) => t.loggedAt.isBiggerOrEqualValue(from))
+            ..where((t) => t.loggedAt.isSmallerThanValue(to))
+            ..orderBy([(t) => OrderingTerm.desc(t.loggedAt)]))
+          .get();
+
+  Stream<List<SymptomEntry>> watchAll() =>
+      (select(symptomEntries)
+            ..orderBy([(t) => OrderingTerm.desc(t.loggedAt)]))
+          .watch();
 }
