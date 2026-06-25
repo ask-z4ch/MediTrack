@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/health_thresholds.dart';
 import '../../../core/database/app_database.dart';
 import '../services/chart_service.dart';
@@ -9,6 +10,19 @@ class BloodSugarChart extends StatelessWidget {
   final List<VitalsEntry> entries;
   final int titleInterval;
   const BloodSugarChart({super.key, required this.entries, this.titleInterval = 1});
+
+  Color _sugarColor(double v, {required bool isFasting}) {
+    final threshold = isFasting
+        ? BloodSugarThreshold.fastingNormalMax
+        : BloodSugarThreshold.postMealNormalMax;
+    if (v <= threshold) return AppColors.normal;
+    if (v <= (isFasting
+        ? BloodSugarThreshold.fastingBorderlineMax
+        : BloodSugarThreshold.postMealBorderlineMax)) {
+      return AppColors.borderline;
+    }
+    return AppColors.critical;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,23 +45,17 @@ class BloodSugarChart extends StatelessWidget {
       if (fasting != null) {
         rods.add(BarChartRodData(
           toY: fasting,
-          color: const Color(0xFF009688),
-          width: 10,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(4),
-            topRight: Radius.circular(4),
-          ),
+          color: _sugarColor(fasting, isFasting: true),
+          width: 14,
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
         ));
       }
       if (postMeal != null) {
         rods.add(BarChartRodData(
           toY: postMeal,
-          color: const Color(0xFFFFC107),
-          width: 10,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(4),
-            topRight: Radius.circular(4),
-          ),
+          color: _sugarColor(postMeal, isFasting: false),
+          width: 14,
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
         ));
       }
       if (rods.isNotEmpty) {

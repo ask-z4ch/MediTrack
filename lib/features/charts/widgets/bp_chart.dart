@@ -1,6 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/health_thresholds.dart';
 import '../../../core/database/app_database.dart';
 import '../../charts/services/chart_service.dart';
 
@@ -41,6 +43,23 @@ class BpChart extends StatelessWidget {
             ),
           ],
           extraLinesData: ChartService.bpRangeBands(),
+          rangeAnnotations: RangeAnnotations(horizontalRangeAnnotations: [
+            HorizontalRangeAnnotation(
+              y1: 0,
+              y2: BPThreshold.normalSystolicMax.toDouble(),
+              color: AppColors.normal.withValues(alpha: 0.08),
+            ),
+            HorizontalRangeAnnotation(
+              y1: BPThreshold.normalSystolicMax.toDouble(),
+              y2: BPThreshold.borderlineSystolicMax.toDouble(),
+              color: AppColors.borderline.withValues(alpha: 0.08),
+            ),
+            HorizontalRangeAnnotation(
+              y1: BPThreshold.borderlineSystolicMax.toDouble(),
+              y2: 180,
+              color: AppColors.critical.withValues(alpha: 0.08),
+            ),
+          ]),
           titlesData: FlTitlesData(
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
