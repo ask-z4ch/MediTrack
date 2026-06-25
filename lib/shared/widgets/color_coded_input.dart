@@ -10,16 +10,16 @@ class ColorCodedInput extends StatefulWidget {
   final TextEditingController controller;
   final TextInputType keyboardType;
   final List<TextInputFormatter>? inputFormatters;
-  final VitalStatus Function(double?)? thresholdEvaluator;
+  final VitalStatus Function(String) statusEvaluator;
 
   const ColorCodedInput({
     super.key,
     required this.label,
     required this.suffix,
     required this.controller,
+    required this.statusEvaluator,
     this.keyboardType = TextInputType.number,
     this.inputFormatters,
-    this.thresholdEvaluator,
   });
 
   @override
@@ -27,35 +27,52 @@ class ColorCodedInput extends StatefulWidget {
 }
 
 class _ColorCodedInputState extends State<ColorCodedInput> {
+  VitalStatus _status = VitalStatus.normal;
+
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(() => setState(() {}));
+    widget.controller.addListener(_onChanged);
+    _onChanged();
+  }
+
+  void _onChanged() {
+    setState(() {
+      _status = widget.statusEvaluator(widget.controller.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onChanged);
+    super.dispose();
+  }
+
+  InputDecoration _decoration(VitalStatus status) {
+    final color = switch (status) {
+      VitalStatus.normal => AppColors.normal,
+      VitalStatus.borderline => AppColors.borderline,
+      VitalStatus.critical => AppColors.critical,
+    };
+    return InputDecoration(
+      labelText: widget.label,
+      suffixText: widget.suffix,
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: color, width: 2),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: color, width: 2),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final value = double.tryParse(widget.controller.text);
-    final status = widget.thresholdEvaluator?.call(value) ?? VitalStatus.normal;
-    final borderColor = value == null
-        ? Colors.grey
-        : status == VitalStatus.critical
-            ? AppColors.criticalRed
-            : status == VitalStatus.borderline
-                ? AppColors.borderlineAmber
-                : AppColors.normalGreen;
-
     return TextFormField(
       controller: widget.controller,
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        suffixText: widget.suffix,
-        border: const OutlineInputBorder(),
-        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: borderColor)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: borderColor, width: 2)),
-      ),
+      decoration: _decoration(_status),
     );
   }
 }

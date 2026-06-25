@@ -34,21 +34,16 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
     super.dispose();
   }
 
-  VitalStatus _bpSystolicStatus(double? v) {
-    if (v == null) return VitalStatus.normal;
-    if (v >= 140) return VitalStatus.critical;
-    if (v > BPThreshold.normalSystolicMax) return VitalStatus.borderline;
-    return VitalStatus.normal;
-  }
-
-  VitalStatus _bpDiastolicStatus(double? v) {
+  VitalStatus _bpDiastolicStatus(String val) {
+    final v = int.tryParse(val);
     if (v == null) return VitalStatus.normal;
     if (v >= 90) return VitalStatus.critical;
     if (v > BPThreshold.normalDiastolicMax) return VitalStatus.borderline;
     return VitalStatus.normal;
   }
 
-  VitalStatus _sugarStatus(double? v) {
+  VitalStatus _sugarStatus(String val) {
+    final v = double.tryParse(val);
     if (v == null) return VitalStatus.normal;
     if (v < BloodSugarThreshold.hypoMin) return VitalStatus.critical;
     if (_sugarIsFasting) {
@@ -61,17 +56,24 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
     return VitalStatus.normal;
   }
 
-  VitalStatus _tempStatus(double? v) {
+  VitalStatus _tempStatus(String val) {
+    final v = double.tryParse(val);
     if (v == null) return VitalStatus.normal;
     if (v <= TemperatureThreshold.criticalLowC || v > TemperatureThreshold.borderlineMaxC) return VitalStatus.critical;
     if (v < TemperatureThreshold.normalMinC || v > TemperatureThreshold.normalMaxC) return VitalStatus.borderline;
     return VitalStatus.normal;
   }
 
-  VitalStatus _spo2Status(double? v) {
+  VitalStatus _spo2Status(String val) {
+    final v = double.tryParse(val);
     if (v == null) return VitalStatus.normal;
     if (v < SpO2Threshold.borderlineMin) return VitalStatus.critical;
     if (v < SpO2Threshold.normalMin) return VitalStatus.borderline;
+    return VitalStatus.normal;
+  }
+
+  VitalStatus _weightStatus(String val) {
+    double.tryParse(val);
     return VitalStatus.normal;
   }
 
@@ -93,7 +95,13 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
                     label: 'Systolic',
                     suffix: 'mmHg',
                     controller: _bpSystolicCtrl,
-                    thresholdEvaluator: _bpSystolicStatus,
+                    statusEvaluator: (val) {
+                      final v = int.tryParse(val);
+                      if (v == null) return VitalStatus.normal;
+                      if (v < BPThreshold.normalSystolicMax) return VitalStatus.normal;
+                      if (v <= BPThreshold.borderlineSystolicMax) return VitalStatus.borderline;
+                      return VitalStatus.critical;
+                    },
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -102,7 +110,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
                     label: 'Diastolic',
                     suffix: 'mmHg',
                     controller: _bpDiastolicCtrl,
-                    thresholdEvaluator: _bpDiastolicStatus,
+                    statusEvaluator: _bpDiastolicStatus,
                   ),
                 ),
               ],
@@ -115,7 +123,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               suffix: _sugarIsFasting ? 'mg/dL (fasting)' : 'mg/dL (post-meal)',
               controller: _sugarCtrl,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
-              thresholdEvaluator: _sugarStatus,
+              statusEvaluator: _sugarStatus,
             ),
             const SizedBox(height: 8),
             SegmentedButton<bool>(
@@ -134,7 +142,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               suffix: '°C',
               controller: _tempCtrl,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
-              thresholdEvaluator: _tempStatus,
+              statusEvaluator: _tempStatus,
             ),
             const SizedBox(height: 24),
             _sectionLabel('Weight'),
@@ -144,6 +152,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               suffix: 'kg',
               controller: _weightCtrl,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
+              statusEvaluator: _weightStatus,
             ),
             const SizedBox(height: 24),
             _sectionLabel('SpO2'),
@@ -152,7 +161,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               label: 'SpO2',
               suffix: '%',
               controller: _spo2Ctrl,
-              thresholdEvaluator: _spo2Status,
+              statusEvaluator: _spo2Status,
             ),
             const SizedBox(height: 24),
             _sectionLabel('Notes'),
