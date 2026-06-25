@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'core/database/app_database.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
 import 'features/medicines/daos/medicine_dose_dao.dart';
@@ -15,6 +12,7 @@ class MediTrackApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    NotificationService.setContext(context);
     NotificationService.setActionHandler((medicineId, actionId) async {
       final doseDao = ref.read(medicineDoseDaoProvider);
       final medDao = ref.read(medicineDaoProvider);
@@ -31,6 +29,17 @@ class MediTrackApp extends ConsumerWidget {
       } else if (actionId == 'skip') {
         await doseDao.markSkipped(dose.id);
       }
+    });
+    NotificationService.setSnoozeHandler((medicineId, originalNotificationId, duration) async {
+      final medDao = ref.read(medicineDaoProvider);
+      final medicine = await medDao.getMedicine(medicineId);
+      if (medicine == null) return;
+
+      await NotificationService.scheduleSnooze(
+        notificationId: originalNotificationId,
+        medicineName: medicine.name,
+        duration: duration,
+      );
     });
 
     return MaterialApp.router(

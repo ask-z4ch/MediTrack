@@ -1,9 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
+  static BuildContext? _appContext;
+
+  static void setContext(BuildContext context) {
+    _appContext = context;
+  }
 
   static Future<void> initialize() async {
     initializeTimeZones();
@@ -36,13 +42,79 @@ class NotificationService {
     _actionHandler = handler;
   }
 
+  static Future<void> Function(
+      int medicineId, int originalNotificationId, Duration duration)?
+      _snoozeHandler;
+
+  static void setSnoozeHandler(
+    Future<void> Function(
+            int medicineId, int originalNotificationId, Duration duration)
+        handler,
+  ) {
+    _snoozeHandler = handler;
+  }
+
   static void _onNotificationResponse(NotificationResponse response) {
     final notificationId = int.tryParse(response.id ?? '');
     if (notificationId == null) return;
     final medicineId = notificationId ~/ 100;
     final actionId = response.actionId;
     if (actionId == null) return;
-    _actionHandler?.call(medicineId, actionId);
+
+    if (actionId == 'snooze') {
+      _showSnoozeSheet(medicineId, notificationId);
+    } else {
+      _actionHandler?.call(medicineId, actionId);
+    }
+  }
+
+  static void _showSnoozeSheet(int medicineId, int originalNotificationId) {
+    final context = _appContext;
+    if (context == null) return;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Snooze for how long?',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('10 minutes'),
+                leading: const Icon(Icons.timer_outlined),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _snoozeHandler?.call(
+                    medicineId,
+                    originalNotificationId,
+                    const Duration(minutes: 10),
+                  );
+                },
+              ),
+              ListTile(
+                title: const Text('30 minutes'),
+                leading: const Icon(Icons.timer_outlined),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _snoozeHandler?.call(
+                    medicineId,
+                    originalNotificationId,
+                    const Duration(minutes: 30),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   static Future<void> scheduleDailyReminder({
@@ -66,6 +138,7 @@ class NotificationService {
           actions: [
             AndroidNotificationAction('taken', 'Mark Taken'),
             AndroidNotificationAction('skip', 'Skip'),
+            AndroidNotificationAction('snooze', 'Snooze'),
           ],
         ),
       ),
@@ -73,6 +146,30 @@ class NotificationService {
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
+  static Future<void> scheduleSnooze({
+    required int notificationId,
+    required String medicineName,
+    required Duration duration,
+  }) async {
+    await _plugin.zonedSchedule(
+      notificationId + 500000,
+      'Reminder: $medicineName',
+      'You snoozed this reminder',
+      tz.TZDateTime.now(tz.local).add(duration),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'medicine_reminders',
+          'Medicine Reminders',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 
