@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/charts/screens/charts_screen.dart';
 import '../../features/doctor_visits/screens/add_doctor_visit_screen.dart';
 import '../../features/doctor_visits/screens/doctor_visit_list_screen.dart';
+import '../../features/doctor_visits/screens/prescription_viewer_screen.dart';
 import '../../features/medicines/screens/add_medicine_screen.dart';
 import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/profile/screens/profile_setup_screen.dart';
@@ -39,6 +40,25 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/doctor-visits',
       builder: (context, state) => const DoctorVisitListScreen(),
+    ),
+    GoRoute(
+      path: '/prescription-viewer',
+      pageBuilder: (context, state) {
+        final paths = state.extra as List<String>;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: PrescriptionViewerScreen(prescriptionPaths: paths),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        );
+      },
     ),
     ShellRoute(
       builder: (BuildContext context, GoRouterState state, Widget child) {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/database/app_database.dart';
@@ -93,7 +94,11 @@ class _VisitCard extends StatelessWidget {
             ? const BorderSide(color: Color(0xFFFFA726), width: 2)
             : BorderSide.none,
       ),
-      child: Padding(
+      child: GestureDetector(
+        onTap: paths.isNotEmpty
+            ? () => context.push('/prescription-viewer', extra: paths)
+            : null,
+        child: Padding(
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,6 +162,7 @@ class _VisitCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
       ),
     );
   }
