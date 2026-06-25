@@ -11,6 +11,7 @@ import 'package:meditrack/features/medicines/models/medicine.dart';
 import 'package:meditrack/features/medicines/models/medicine_dose.dart';
 import 'package:meditrack/features/profile/daos/profile_dao.dart';
 import 'package:meditrack/features/profile/models/user_profile.dart';
+import 'package:meditrack/features/symptoms/daos/symptom_dao.dart';
 import 'package:meditrack/features/symptoms/models/symptom_entry.dart';
 import 'package:meditrack/features/vitals/daos/vitals_dao.dart';
 import 'package:meditrack/features/vitals/models/vitals_entry.dart';
@@ -19,7 +20,7 @@ part 'app_database.g.dart';
 
 @DriftDatabase(
   tables: [UserProfiles, VitalsEntries, Medicines, MedicineDoses, SymptomEntries],
-  daos: [ProfileDao, VitalsDao, MedicineDao, MedicineDoseDao],
+  daos: [ProfileDao, VitalsDao, MedicineDao, MedicineDoseDao, SymptomDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
