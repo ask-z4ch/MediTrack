@@ -6,7 +6,8 @@ import '../../charts/services/chart_service.dart';
 
 class BpChart extends StatelessWidget {
   final List<VitalsEntry> entries;
-  const BpChart({super.key, required this.entries});
+  final int titleInterval;
+  const BpChart({super.key, required this.entries, this.titleInterval = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +58,7 @@ class BpChart extends StatelessWidget {
             bottomTitles: AxisTitles(
               sideTitles: ChartService.dateSideTitles(
                 entries.map((e) => e.loggedAt).toList(),
+                interval: titleInterval,
               ),
             ),
             topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -66,7 +68,7 @@ class BpChart extends StatelessWidget {
             show: true,
             horizontalInterval: 20,
             getDrawingHorizontalLine: (value) => FlLine(
-              color: Colors.grey.withOpacity(0.15),
+              color: Colors.grey.withValues(alpha: 0.15),
               strokeWidth: 1,
             ),
           ),

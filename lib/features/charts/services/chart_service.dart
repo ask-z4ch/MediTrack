@@ -1,4 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -9,7 +10,7 @@ class ChartService {
     return ExtraLinesData(horizontalLines: [
       HorizontalLine(
         y: BPThreshold.normalSystolicMax.toDouble(),
-        color: AppColors.normal.withOpacity(0.25),
+        color: AppColors.normal.withValues(alpha: 0.25),
         strokeWidth: 1,
         dashArray: [5, 5],
         label: HorizontalLineLabel(
@@ -20,17 +21,17 @@ class ChartService {
       ),
       HorizontalLine(
         y: BPThreshold.borderlineSystolicMax.toDouble(),
-        color: AppColors.borderline.withOpacity(0.25),
+        color: AppColors.borderline.withValues(alpha: 0.25),
         strokeWidth: 1,
         dashArray: [5, 5],
       ),
     ]);
   }
 
-  static SideTitles dateSideTitles(List<DateTime> dates) {
+  static SideTitles dateSideTitles(List<DateTime> dates, {int interval = 1}) {
     return SideTitles(
       showTitles: true,
-      interval: 1,
+      interval: interval.toDouble(),
       getTitlesWidget: (value, meta) {
         final i = value.toInt();
         if (i < 0 || i >= dates.length) return const SizedBox();

@@ -7,7 +7,8 @@ import '../services/chart_service.dart';
 
 class BloodSugarChart extends StatelessWidget {
   final List<VitalsEntry> entries;
-  const BloodSugarChart({super.key, required this.entries});
+  final int titleInterval;
+  const BloodSugarChart({super.key, required this.entries, this.titleInterval = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,7 @@ class BloodSugarChart extends StatelessWidget {
               ),
             ),
             bottomTitles: AxisTitles(
-              sideTitles: ChartService.dateSideTitles(dates),
+              sideTitles: ChartService.dateSideTitles(dates, interval: titleInterval),
             ),
             topTitles: const AxisTitles(
               sideTitles: SideTitles(showTitles: false),

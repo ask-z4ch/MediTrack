@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/charts/screens/charts_screen.dart';
 import '../../features/medicines/screens/add_medicine_screen.dart';
 import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/profile/screens/profile_setup_screen.dart';
@@ -55,7 +56,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/reports',
           builder: (BuildContext context, GoRouterState state) {
-            return const Center(child: Text('Reports - Coming soon'));
+            return const ChartsScreen();
           },
         ),
       ],
