@@ -361,25 +361,40 @@ class PdfReportService {
   }
 
   pw.Widget _buildSymptomsSection(List<SymptomEntry> symptoms) {
-    if (symptoms.isEmpty) return pw.Text('No symptoms logged.', style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey500));
-    final dateFormat = DateFormat('d MMM yyyy, HH:mm');
+    if (symptoms.isEmpty) {
+      return pw.Text('No symptoms logged.',
+          style: const pw.TextStyle(color: PdfColors.grey600));
+    }
+    final grouped = <String, List<SymptomEntry>>{};
+    for (final s in symptoms) {
+      grouped.putIfAbsent(s.symptomName, () => []).add(s);
+    }
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('Symptoms', style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
-        pw.SizedBox(height: 6),
-        pw.TableHelper.fromTextArray(
-          headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 9),
-          cellStyle: const pw.TextStyle(fontSize: 9),
-          headerDecoration: const pw.BoxDecoration(color: PdfColors.orange50),
-          cellAlignments: {0: pw.Alignment.centerLeft, 1: pw.Alignment.center, 2: pw.Alignment.centerLeft},
-          columnWidths: {0: const pw.FixedColumnWidth(100), 1: const pw.FixedColumnWidth(45), 2: const pw.FixedColumnWidth(150)},
-          headers: ['Date', 'Severity', 'Symptom'],
-          data: symptoms.map((s) => [
-            dateFormat.format(s.loggedAt),
-            s.severity.toString(),
-            s.symptomName,
-          ]).toList(),
+        pw.Text('Symptoms Summary',
+            style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+        pw.SizedBox(height: 8),
+        pw.Table(
+          border: pw.TableBorder.all(color: PdfColors.grey300),
+          columnWidths: {
+            0: const pw.FlexColumnWidth(2.5),
+            1: const pw.FlexColumnWidth(1.5),
+            2: const pw.FlexColumnWidth(1.5),
+          },
+          children: [
+            _tableHeaderRow(['Symptom', 'Times Logged', 'Avg Severity']),
+            ...grouped.entries.map((e) {
+              final avg =
+                  e.value.map((s) => s.severity).reduce((a, b) => a + b) /
+                      e.value.length;
+              return _tableDataRow([
+                e.key,
+                e.value.length.toString(),
+                avg.toStringAsFixed(1),
+              ]);
+            }),
+          ],
         ),
       ],
     );
@@ -393,8 +408,7 @@ class PdfReportService {
         borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
       ),
       child: pw.Text(
-        'This report is generated for informational purposes only and does not constitute medical advice. '
-        'Always consult your healthcare provider for medical decisions.',
+        'This report is not a medical diagnosis. Share this with your doctor for informed consultation.',
         style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600),
       ),
     );
