@@ -74,32 +74,40 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
           children: [
             _sectionLabel('Blood Pressure'),
             const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: ColorCodedInput(
-                    label: 'Systolic',
-                    suffix: 'mmHg',
-                    controller: _bpSystolicCtrl,
-                    statusEvaluator: (val) {
-                      final v = int.tryParse(val);
-                      if (v == null) return VitalStatus.normal;
-                      if (v < BPThreshold.normalSystolicMax) return VitalStatus.normal;
-                      if (v <= BPThreshold.borderlineSystolicMax) return VitalStatus.borderline;
-                      return VitalStatus.critical;
-                    },
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ColorCodedInput(
-                    label: 'Diastolic',
-                    suffix: 'mmHg',
-                    controller: _bpDiastolicCtrl,
-                    statusEvaluator: _bpDiastolicStatus,
-                  ),
-                ),
-              ],
+            LayoutBuilder(
+              builder: (ctx, constraints) {
+                final systolicField = ColorCodedInput(
+                  label: 'Systolic',
+                  suffix: 'mmHg',
+                  controller: _bpSystolicCtrl,
+                  statusEvaluator: (val) {
+                    final v = int.tryParse(val);
+                    if (v == null) return VitalStatus.normal;
+                    if (v < BPThreshold.normalSystolicMax) return VitalStatus.normal;
+                    if (v <= BPThreshold.borderlineSystolicMax) return VitalStatus.borderline;
+                    return VitalStatus.critical;
+                  },
+                );
+                final diastolicField = ColorCodedInput(
+                  label: 'Diastolic',
+                  suffix: 'mmHg',
+                  controller: _bpDiastolicCtrl,
+                  statusEvaluator: _bpDiastolicStatus,
+                );
+
+                if (constraints.maxWidth < 360) {
+                  return Column(
+                    children: [systolicField, const SizedBox(height: 12), diastolicField],
+                  );
+                }
+                return Row(
+                  children: [
+                    Expanded(child: systolicField),
+                    const SizedBox(width: 12),
+                    Expanded(child: diastolicField),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 24),
             _sectionLabel('Blood Sugar'),
