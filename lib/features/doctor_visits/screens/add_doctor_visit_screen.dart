@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
+import 'package:uuid/uuid.dart';
 
 import '../../../core/database/app_database.dart';
 import '../providers/doctor_visit_provider.dart';
@@ -61,14 +61,17 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
     if (d != null) setState(() => _followUpDate = d);
   }
 
-  Future<String> _savePrescriptionToDocuments(String sourcePath, String ext) async {
+  Future<String> _savePrescriptionToDocuments(
+    String sourcePath,
+    String ext,
+  ) async {
     final docsDir = await getApplicationDocumentsDirectory();
-    final prescDir = Directory(p.join(docsDir.path, 'prescriptions'));
+    final prescDir = Directory('${docsDir.path}/prescriptions');
     if (!await prescDir.exists()) {
       await prescDir.create(recursive: true);
     }
-    final fileName = '${DateTime.now().millisecondsSinceEpoch}$ext';
-    final destPath = p.join(prescDir.path, fileName);
+    final fileName = '${const Uuid().v4()}$ext';
+    final destPath = '${prescDir.path}/$fileName';
     await File(sourcePath).copy(destPath);
     return destPath;
   }
@@ -96,13 +99,10 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
     setState(() => _prescriptionPaths.add(savedPath));
   }
 
-  Future<void> _deletePrescription(int index) async {
-    final path = _prescriptionPaths[index];
-    final file = File(path);
-    if (await file.exists()) {
-      await file.delete();
-    }
-    setState(() => _prescriptionPaths.removeAt(index));
+  Future<void> _deletePrescription(String filePath) async {
+    final file = File(filePath);
+    if (await file.exists()) await file.delete();
+    setState(() => _prescriptionPaths.remove(filePath));
   }
 
   Future<void> _save() async {
@@ -224,7 +224,7 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final path = _prescriptionPaths[index];
-                    final isPdf = p.extension(path).toLowerCase() == '.pdf';
+                    final isPdf = path.endsWith('.pdf');
                     return Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -246,7 +246,7 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
                           right: -6,
                           top: -6,
                           child: GestureDetector(
-                            onTap: () => _deletePrescription(index),
+                            onTap: () => _deletePrescription(path),
                             child: Container(
                               decoration: const BoxDecoration(
                                 color: Colors.black54,
