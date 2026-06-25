@@ -35,9 +35,12 @@ class ChartService {
       getTitlesWidget: (value, meta) {
         final i = value.toInt();
         if (i < 0 || i >= dates.length) return const SizedBox();
-        return Text(
-          DateFormat('dd/MM').format(dates[i]),
-          style: const TextStyle(fontSize: 9),
+        return Transform.rotate(
+          angle: -0.4,
+          child: Text(
+            DateFormat('dd/MM').format(dates[i]),
+            style: const TextStyle(fontSize: 9),
+          ),
         );
       },
     );

@@ -17,7 +17,7 @@ class _ChartsScreenState extends ConsumerState<ChartsScreen> {
   @override
   Widget build(BuildContext context) {
     final days = _isWeekly ? 7 : 30;
-    final titleInterval = _isWeekly ? 1 : 5;
+    final titleInterval = _isWeekly ? 2 : 5;
     final vitalsAsync = ref.watch(recentVitalsProvider(days));
 
     return Scaffold(
