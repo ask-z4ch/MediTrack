@@ -20,7 +20,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
   final _spo2Ctrl = TextEditingController();
   final _notesCtrl = TextEditingController();
 
-  bool _sugarIsFasting = true;
+  bool _isFasting = true;
 
   @override
   void dispose() {
@@ -39,20 +39,6 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
     if (v == null) return VitalStatus.normal;
     if (v >= 90) return VitalStatus.critical;
     if (v > BPThreshold.normalDiastolicMax) return VitalStatus.borderline;
-    return VitalStatus.normal;
-  }
-
-  VitalStatus _sugarStatus(String val) {
-    final v = double.tryParse(val);
-    if (v == null) return VitalStatus.normal;
-    if (v < BloodSugarThreshold.hypoMin) return VitalStatus.critical;
-    if (_sugarIsFasting) {
-      if (v >= 126) return VitalStatus.critical;
-      if (v > BloodSugarThreshold.fastingNormalMax) return VitalStatus.borderline;
-    } else {
-      if (v >= 200) return VitalStatus.critical;
-      if (v > BloodSugarThreshold.postMealNormalMax) return VitalStatus.borderline;
-    }
     return VitalStatus.normal;
   }
 
@@ -120,10 +106,22 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
             const SizedBox(height: 8),
             ColorCodedInput(
               label: 'Blood Sugar',
-              suffix: _sugarIsFasting ? 'mg/dL (fasting)' : 'mg/dL (post-meal)',
+              suffix: _isFasting ? 'mg/dL (fasting)' : 'mg/dL (post-meal)',
               controller: _sugarCtrl,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
-              statusEvaluator: _sugarStatus,
+              statusEvaluator: (val) {
+                final v = double.tryParse(val);
+                if (v == null) return VitalStatus.normal;
+                if (v < BloodSugarThreshold.hypoMin) return VitalStatus.critical;
+                if (_isFasting) {
+                  if (v >= 126) return VitalStatus.critical;
+                  if (v > BloodSugarThreshold.fastingNormalMax) return VitalStatus.borderline;
+                } else {
+                  if (v >= 200) return VitalStatus.critical;
+                  if (v > BloodSugarThreshold.postMealNormalMax) return VitalStatus.borderline;
+                }
+                return VitalStatus.normal;
+              },
             ),
             const SizedBox(height: 8),
             SegmentedButton<bool>(
@@ -131,8 +129,8 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
                 ButtonSegment(value: true, label: Text('Fasting')),
                 ButtonSegment(value: false, label: Text('Post-Meal')),
               ],
-              selected: {_sugarIsFasting},
-              onSelectionChanged: (v) => setState(() => _sugarIsFasting = v.first),
+              selected: {_isFasting},
+              onSelectionChanged: (sel) => setState(() => _isFasting = sel.first),
             ),
             const SizedBox(height: 24),
             _sectionLabel('Temperature'),
