@@ -32,6 +32,13 @@ class MedicineDoseDao extends DatabaseAccessor<AppDatabase>
         const MedicineDosesCompanion(status: Value('skipped')),
       );
 
+  Future<List<MedicineDose>> getDosesInRange(DateTime from, DateTime to) =>
+      (select(medicineDoses)
+            ..where((t) => t.scheduledAt.isBiggerOrEqualValue(from))
+            ..where((t) => t.scheduledAt.isSmallerThanValue(to))
+            ..orderBy([(t) => OrderingTerm.asc(t.scheduledAt)]))
+          .get();
+
   Future<List<MedicineDose>> getTodaysDoses() {
     final now = DateTime.now();
     final start = DateTime(now.year, now.month, now.day);

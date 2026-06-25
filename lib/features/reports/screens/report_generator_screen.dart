@@ -1,29 +1,107 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
 
+import '../../../core/database/app_database.dart';
 import '../services/pdf_report_service.dart';
 
-class ReportGeneratorScreen extends StatefulWidget {
+class ReportGeneratorScreen extends ConsumerStatefulWidget {
   const ReportGeneratorScreen({super.key});
 
   @override
-  State<ReportGeneratorScreen> createState() => _ReportGeneratorScreenState();
+  ConsumerState<ReportGeneratorScreen> createState() =>
+      _ReportGeneratorScreenState();
 }
 
-class _ReportGeneratorScreenState extends State<ReportGeneratorScreen> {
-  final _nameCtrl = TextEditingController(text: 'Patient');
+class _ReportGeneratorScreenState extends ConsumerState<ReportGeneratorScreen> {
   final _service = PdfReportService();
   bool _generating = false;
 
-  @override
-  void dispose() {
-    _nameCtrl.dispose();
-    super.dispose();
+  DateTime _from = DateTime.now().subtract(const Duration(days: 30));
+  DateTime _to = DateTime.now();
+
+  Future<void> _pickDate({required bool isFrom}) async {
+    final initial = isFrom ? _from : _to;
+    final d = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now().add(const Duration(days: 1)),
+    );
+    if (d != null) {
+      setState(() {
+        if (isFrom) {
+          _from = d;
+        } else {
+          _to = d;
+        }
+      });
+    }
   }
 
   Future<void> _generate() async {
+    if (_from.isAfter(_to)) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('"From" date must be before "To" date.')),
+      );
+      return;
+    }
+
+    final daysDiff = _to.difference(_from).inDays;
+    if (daysDiff > 90) {
+      final proceed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Large Date Range'),
+          content: Text(
+            'You selected a $daysDiff-day range. '
+            'Report generation may be slow for large datasets. Continue?'),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Cancel')),
+            FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Continue')),
+          ],
+        ),
+      );
+      if (proceed != true) return;
+    }
+
     setState(() => _generating = true);
     try {
-      await _service.generateTestPdf(_nameCtrl.text.trim());
+      final dao = ref.read(appDatabaseProvider);
+      final profile = await dao.profileDao.getProfile();
+      if (profile == null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Complete your profile first.')),
+        );
+        return;
+      }
+      final vitals = await dao.vitalsDao.getVitalsInRange(_from, _to);
+      final medicines = await dao.medicineDao.getAllMedicines();
+      final doses = await dao.medicineDoseDao.getDosesInRange(_from, _to);
+      final symptoms = await dao.symptomDao.getSymptomsInRange(_from, _to);
+
+      final bytes = await _service.generateReport(
+        profile: profile,
+        vitals: vitals,
+        medicines: medicines,
+        doses: doses,
+        symptoms: symptoms,
+        from: _from,
+        to: _to,
+      );
+
+      await Printing.sharePdf(
+        bytes: bytes,
+        filename:
+            'MediTrack_Report_${DateFormat('yyyyMMdd').format(_from)}-${DateFormat('yyyyMMdd').format(_to)}.pdf',
+      );
     } finally {
       if (mounted) setState(() => _generating = false);
     }
@@ -36,25 +114,89 @@ class _ReportGeneratorScreenState extends State<ReportGeneratorScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextFormField(
-              controller: _nameCtrl,
-              decoration: const InputDecoration(labelText: 'Patient Name'),
+            Text('Date Range', style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: _DateTile(
+                    label: 'From',
+                    date: _from,
+                    onTap: () => _pickDate(isFrom: true),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: Icon(Icons.arrow_forward, size: 18),
+                ),
+                Expanded(
+                  child: _DateTile(
+                    label: 'To',
+                    date: _to,
+                    onTap: () => _pickDate(isFrom: false),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: _generating ? null : _generate,
-              icon: _generating
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.picture_as_pdf),
-              label: Text(_generating ? 'Generating...' : 'Generate Test PDF'),
+            const SizedBox(height: 8),
+            Text(
+              '${_to.difference(_from).inDays} days selected',
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             ),
+            const Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: _generating ? null : _generate,
+                icon: _generating
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.picture_as_pdf),
+                label: Text(_generating ? 'Generating...' : 'Generate Report'),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DateTile extends StatelessWidget {
+  final String label;
+  final DateTime date;
+  final VoidCallback onTap;
+  const _DateTile({
+    required this.label,
+    required this.date,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final dateFormat = DateFormat('dd MMM yyyy');
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: label,
+          suffixIcon: const Icon(Icons.calendar_today, size: 18),
+        ),
+        child: Text(dateFormat.format(date)),
       ),
     );
   }
