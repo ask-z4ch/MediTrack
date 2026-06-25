@@ -7,6 +7,12 @@ import '../daos/symptom_dao.dart';
 import '../models/symptom_entry.dart';
 import '../providers/symptom_provider.dart';
 
+const _commonSymptoms = [
+  'Headache', 'Fatigue', 'Dizziness', 'Nausea',
+  'Chest Pain', 'Shortness of Breath', 'Back Pain',
+  'Joint Pain', 'Fever', 'Sweating',
+];
+
 const _severityLabels = {
   1: 'Mild',
   2: 'Uncomfortable',
@@ -65,6 +71,19 @@ class _SymptomLogScreenState extends ConsumerState<SymptomLogScreen> {
               decoration: const InputDecoration(labelText: 'Symptom Name'),
               validator: (v) => (v?.trim().isEmpty ?? true) ? 'Required' : null,
               textCapitalization: TextCapitalization.sentences,
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: _commonSymptoms.map((symptom) {
+                final selected = _nameCtrl.text == symptom;
+                return FilterChip(
+                  label: Text(symptom, style: const TextStyle(fontSize: 13)),
+                  selected: selected,
+                  onSelected: (_) => setState(() => _nameCtrl.text = _nameCtrl.text == symptom ? '' : symptom),
+                );
+              }).toList(),
             ),
             const SizedBox(height: 32),
             Row(
