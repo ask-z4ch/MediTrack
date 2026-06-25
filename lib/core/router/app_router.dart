@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/charts/screens/charts_screen.dart';
+import '../../features/doctor_visits/screens/add_doctor_visit_screen.dart';
 import '../../features/medicines/screens/add_medicine_screen.dart';
 import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/profile/screens/profile_setup_screen.dart';
@@ -29,6 +30,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/add-medicine',
       builder: (context, state) => const AddMedicineScreen(),
+    ),
+    GoRoute(
+      path: '/add-doctor-visit',
+      builder: (context, state) => const AddDoctorVisitScreen(),
     ),
     ShellRoute(
       builder: (BuildContext context, GoRouterState state, Widget child) {
