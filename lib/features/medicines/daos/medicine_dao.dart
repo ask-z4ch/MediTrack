@@ -12,6 +12,9 @@ class MedicineDao extends DatabaseAccessor<AppDatabase> with _$MedicineDaoMixin 
   Future<int> insertMedicine(MedicinesCompanion entry) =>
       into(medicines).insert(entry);
 
+  Future<Medicine?> getMedicine(int id) =>
+      (select(medicines)..where((t) => t.id.equals(id))).getSingleOrNull();
+
   Future<List<Medicine>> getAllMedicines() => select(medicines).get();
 
   Stream<List<Medicine>> watchActiveMedicines() =>

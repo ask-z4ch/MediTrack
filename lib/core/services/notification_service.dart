@@ -29,9 +29,20 @@ class NotificationService {
         ?.createNotificationChannel(channel);
   }
 
+  static Future<void> Function(int medicineId, String actionId)? _actionHandler;
+
+  static void setActionHandler(
+      Future<void> Function(int medicineId, String actionId) handler) {
+    _actionHandler = handler;
+  }
+
   static void _onNotificationResponse(NotificationResponse response) {
-    // Use your global navigator key to navigate to the medicines screen
-    // e.g.: navigatorKey.currentState?.pushNamed('/medicines');
+    final notificationId = int.tryParse(response.id ?? '');
+    if (notificationId == null) return;
+    final medicineId = notificationId ~/ 100;
+    final actionId = response.actionId;
+    if (actionId == null) return;
+    _actionHandler?.call(medicineId, actionId);
   }
 
   static Future<void> scheduleDailyReminder({

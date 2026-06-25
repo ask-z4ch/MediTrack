@@ -23,6 +23,23 @@ final medicineDaoProvider = AutoDisposeProvider<MedicineDao>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef MedicineDaoRef = AutoDisposeProviderRef<MedicineDao>;
+String _$medicineDoseDaoHash() => r'd2126bd63750f2a136b7ce78911a7fcec89c368b';
+
+/// See also [medicineDoseDao].
+@ProviderFor(medicineDoseDao)
+final medicineDoseDaoProvider = AutoDisposeProvider<MedicineDoseDao>.internal(
+  medicineDoseDao,
+  name: r'medicineDoseDaoProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$medicineDoseDaoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef MedicineDoseDaoRef = AutoDisposeProviderRef<MedicineDoseDao>;
 String _$medicineListHash() => r'8b9c83db5621a21c3dbfc2708661802f3bd4768e';
 
 /// See also [medicineList].

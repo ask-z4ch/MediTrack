@@ -6,7 +6,7 @@ import '../../features/medicines/screens/add_medicine_screen.dart';
 import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/profile/screens/profile_setup_screen.dart';
 import '../../features/vitals/screens/vitals_log_screen.dart';
-import '../../features/vitals/widgets/vitals_summary_card.dart';
+import '../../home/screens/home_page.dart';
 import '../../home/screens/home_screen.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -37,16 +37,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/',
           builder: (BuildContext context, GoRouterState state) {
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    VitalsSummaryCard(),
-                  ],
-                ),
-              ),
-            );
+            return const HomePage();
           },
         ),
         GoRoute(
