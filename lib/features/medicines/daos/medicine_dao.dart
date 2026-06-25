@@ -13,4 +13,14 @@ class MedicineDao extends DatabaseAccessor<AppDatabase> with _$MedicineDaoMixin 
       into(medicines).insert(entry);
 
   Future<List<Medicine>> getAllMedicines() => select(medicines).get();
+
+  Stream<List<Medicine>> watchActiveMedicines() =>
+      (select(medicines)..where((t) => t.isActive.equals(true))).watch();
+
+  Stream<List<Medicine>> watchInactiveMedicines() =>
+      (select(medicines)..where((t) => t.isActive.equals(false))).watch();
+
+  Future<void> toggleActive(int id, bool isActive) =>
+      (update(medicines)..where((t) => t.id.equals(id)))
+          .write(MedicinesCompanion(isActive: Value(isActive)));
 }

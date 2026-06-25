@@ -16,3 +16,13 @@ Future<List<Medicine>> medicineList(MedicineListRef ref) async {
   final dao = ref.read(medicineDaoProvider);
   return dao.getAllMedicines();
 }
+
+@riverpod
+Stream<List<Medicine>> activeMedicines(ActiveMedicinesRef ref) {
+  return ref.read(medicineDaoProvider).watchActiveMedicines();
+}
+
+@riverpod
+Stream<List<Medicine>> inactiveMedicines(InactiveMedicinesRef ref) {
+  return ref.read(medicineDaoProvider).watchInactiveMedicines();
+}

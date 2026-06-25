@@ -40,5 +40,41 @@ final medicineListProvider = AutoDisposeFutureProvider<List<Medicine>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef MedicineListRef = AutoDisposeFutureProviderRef<List<Medicine>>;
+String _$activeMedicinesHash() => r'dc4fa99d2bea1ccc054b1344ceff03c2c4a374a7';
+
+/// See also [activeMedicines].
+@ProviderFor(activeMedicines)
+final activeMedicinesProvider =
+    AutoDisposeStreamProvider<List<Medicine>>.internal(
+      activeMedicines,
+      name: r'activeMedicinesProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$activeMedicinesHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ActiveMedicinesRef = AutoDisposeStreamProviderRef<List<Medicine>>;
+String _$inactiveMedicinesHash() => r'97e52914e0035531ef19814cd723bc14b177008e';
+
+/// See also [inactiveMedicines].
+@ProviderFor(inactiveMedicines)
+final inactiveMedicinesProvider =
+    AutoDisposeStreamProvider<List<Medicine>>.internal(
+      inactiveMedicines,
+      name: r'inactiveMedicinesProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$inactiveMedicinesHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef InactiveMedicinesRef = AutoDisposeStreamProviderRef<List<Medicine>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
