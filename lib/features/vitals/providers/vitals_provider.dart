@@ -16,3 +16,8 @@ Future<VitalsEntry?> todaysVitals(TodaysVitalsRef ref) async {
   final dao = ref.read(vitalsDaoProvider);
   return dao.getVitalsForDate(DateTime.now());
 }
+
+@riverpod
+Stream<List<VitalsEntry>> recentVitals(RecentVitalsRef ref, int days) {
+  return ref.read(vitalsDaoProvider).watchRecentVitals(days);
+}
