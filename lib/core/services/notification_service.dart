@@ -23,16 +23,23 @@ class NotificationService {
     );
 
     // Required for Android 8+ (Oreo and above)
-    const channel = AndroidNotificationChannel(
+    const medicineChannel = AndroidNotificationChannel(
       'medicine_reminders',
       'Medicine Reminders',
       description: 'Daily reminders to take your medicines on time',
       importance: Importance.high,
     );
-    await _plugin
+    const doctorChannel = AndroidNotificationChannel(
+      'doctor_reminders',
+      'Doctor Reminders',
+      description: 'Upcoming appointment reminders',
+      importance: Importance.high,
+    );
+    final androidPlugin = _plugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+            AndroidFlutterLocalNotificationsPlugin>();
+    await androidPlugin?.createNotificationChannel(medicineChannel);
+    await androidPlugin?.createNotificationChannel(doctorChannel);
   }
 
   static Future<bool> requestExactAlarmPermission() async {
@@ -64,7 +71,7 @@ class NotificationService {
   }
 
   static void _onNotificationResponse(NotificationResponse response) {
-    final notificationId = int.tryParse(response.id ?? '');
+    final notificationId = int.tryParse(response.id?.toString() ?? '');
     if (notificationId == null) return;
     final medicineId = notificationId ~/ 100;
     final actionId = response.actionId;
@@ -196,6 +203,31 @@ class NotificationService {
       scheduled = scheduled.add(const Duration(days: 1));
     }
     return scheduled;
+  }
+
+  static Future<void> scheduleOneTimeReminder({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledAt,
+  }) async {
+    await _plugin.zonedSchedule(
+      id,
+      title,
+      body,
+      tz.TZDateTime.from(scheduledAt, tz.local),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'doctor_reminders',
+          'Doctor Reminders',
+          channelDescription: 'Upcoming appointment reminders',
+          importance: Importance.high,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
   }
 
   static Future<void> cancelReminder(int notificationId) async {

@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/database/app_database.dart';
+import '../../../core/services/notification_service.dart';
 import '../providers/doctor_visit_provider.dart';
 
 class AddDoctorVisitScreen extends ConsumerStatefulWidget {
@@ -109,7 +110,7 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final dao = ref.read(doctorVisitDaoProvider);
-    await dao.insertVisit(
+    final visitId = await dao.insertVisit(
       DoctorVisitsCompanion(
         doctorName: Value(_nameCtrl.text.trim()),
         specialty: Value(_specialtyCtrl.text.trim()),
@@ -120,6 +121,20 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
         prescriptionPaths: Value(jsonEncode(_prescriptionPaths)),
       ),
     );
+
+    if (!_noFollowUp && _followUpDate != null) {
+      final reminderTime = _followUpDate!
+          .subtract(const Duration(days: 1))
+          .copyWith(hour: 9, minute: 0);
+      if (reminderTime.isAfter(DateTime.now())) {
+        await NotificationService.scheduleOneTimeReminder(
+          id: visitId + 10000,
+          title: 'Doctor Follow-Up Tomorrow',
+          body: 'Your appointment with Dr. ${_nameCtrl.text.trim()} is tomorrow.',
+          scheduledAt: reminderTime,
+        );
+      }
+    }
 
     if (mounted) context.pop();
   }
