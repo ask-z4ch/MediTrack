@@ -1,7 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:drift/drift.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:drift/drift.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 
 import '../../../core/database/app_database.dart';
 import '../providers/doctor_visit_provider.dart';
@@ -23,6 +30,7 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
   DateTime _visitDate = DateTime.now();
   DateTime? _followUpDate;
   bool _noFollowUp = true;
+  List<String> _prescriptionPaths = [];
 
   @override
   void dispose() {
@@ -53,6 +61,50 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
     if (d != null) setState(() => _followUpDate = d);
   }
 
+  Future<String> _savePrescriptionToDocuments(String sourcePath, String ext) async {
+    final docsDir = await getApplicationDocumentsDirectory();
+    final prescDir = Directory(p.join(docsDir.path, 'prescriptions'));
+    if (!await prescDir.exists()) {
+      await prescDir.create(recursive: true);
+    }
+    final fileName = '${DateTime.now().millisecondsSinceEpoch}$ext';
+    final destPath = p.join(prescDir.path, fileName);
+    await File(sourcePath).copy(destPath);
+    return destPath;
+  }
+
+  Future<void> _capturePhoto() async {
+    final picker = ImagePicker();
+    final XFile? photo = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 75,
+      maxWidth: 1920,
+      maxHeight: 1920,
+    );
+    if (photo == null) return;
+    final savedPath = await _savePrescriptionToDocuments(photo.path, '.jpg');
+    setState(() => _prescriptionPaths.add(savedPath));
+  }
+
+  Future<void> _importPdf() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (result == null || result.files.single.path == null) return;
+    final savedPath = await _savePrescriptionToDocuments(result.files.single.path!, '.pdf');
+    setState(() => _prescriptionPaths.add(savedPath));
+  }
+
+  Future<void> _deletePrescription(int index) async {
+    final path = _prescriptionPaths[index];
+    final file = File(path);
+    if (await file.exists()) {
+      await file.delete();
+    }
+    setState(() => _prescriptionPaths.removeAt(index));
+  }
+
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -65,6 +117,7 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
         visitDate: Value(_visitDate),
         followUpDate: _noFollowUp ? const Value(null) : Value(_followUpDate),
         notes: Value(_notesCtrl.text.trim()),
+        prescriptionPaths: Value(jsonEncode(_prescriptionPaths)),
       ),
     );
 
@@ -140,8 +193,77 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
               textCapitalization: TextCapitalization.sentences,
             ),
             const SizedBox(height: 24),
-            // Prescriptions section (coming in next commits)
-            const SizedBox(height: 16),
+            Text('Prescriptions', style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _capturePhoto,
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('Take Photo'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _importPdf,
+                    icon: const Icon(Icons.picture_as_pdf),
+                    label: const Text('Import PDF'),
+                  ),
+                ),
+              ],
+            ),
+            if (_prescriptionPaths.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 100,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _prescriptionPaths.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final path = _prescriptionPaths[index];
+                    final isPdf = p.extension(path).toLowerCase() == '.pdf';
+                    return Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: 90,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.grey.shade200,
+                          ),
+                          child: isPdf
+                              ? const Icon(Icons.picture_as_pdf, size: 40)
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(File(path), fit: BoxFit.cover),
+                                ),
+                        ),
+                        Positioned(
+                          right: -6,
+                          top: -6,
+                          child: GestureDetector(
+                            onTap: () => _deletePrescription(index),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.black54,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(Icons.close, size: 14, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+            const SizedBox(height: 24),
             FilledButton.icon(
               onPressed: _save,
               icon: const Icon(Icons.save),
