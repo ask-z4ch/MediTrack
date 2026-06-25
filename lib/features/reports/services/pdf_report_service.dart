@@ -56,20 +56,54 @@ class PdfReportService {
     );
   }
 
-  pw.Widget _buildReportHeader(UserProfile profile, DateTime from, DateTime to) {
-    final dateFormat = DateFormat('d MMMM yyyy');
+  pw.Widget _buildReportHeader(UserProfile p, DateTime from, DateTime to) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('Health Report', style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold)),
-        pw.SizedBox(height: 4),
-        pw.Text(profile.name, style: pw.TextStyle(fontSize: 14, color: PdfColors.grey700)),
-        if (profile.dateOfBirth != null)
-          pw.Text('DOB: ${dateFormat.format(profile.dateOfBirth!)}', style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600)),
-        pw.Text('${dateFormat.format(from)} — ${dateFormat.format(to)}', style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600)),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('MediTrack Health Summary',
+                    style: pw.TextStyle(
+                      fontSize: 22,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.teal700,
+                    )),
+                pw.SizedBox(height: 4),
+                pw.Text('Patient: ${p.name}',
+                    style: const pw.TextStyle(fontSize: 13)),
+                pw.Text('Blood Group: ${p.bloodGroup ?? "Not recorded"}'),
+                if (p.activeConditions.isNotEmpty)
+                  pw.Text('Conditions: ${p.activeConditions}'),
+                if (p.allergies.isNotEmpty)
+                  pw.Text('Allergies: ${p.allergies}'),
+              ],
+            ),
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.end,
+              children: [
+                pw.Text('Report Period',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text('${_fmtDate(from)} — ${_fmtDate(to)}'),
+                pw.SizedBox(height: 8),
+                pw.Text('Generated: ${_fmtDate(DateTime.now())}',
+                    style: const pw.TextStyle(
+                      fontSize: 10,
+                      color: PdfColors.grey600,
+                    )),
+              ],
+            ),
+          ],
+        ),
+        pw.Divider(thickness: 1.5, color: PdfColors.teal700),
       ],
     );
   }
+
+  String _fmtDate(DateTime d) => DateFormat('dd MMM yyyy').format(d);
 
   pw.Widget _buildVitalsSection(List<VitalsEntry> vitals) {
     if (vitals.isEmpty) return pw.Text('No vitals recorded in this period.', style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey500));
