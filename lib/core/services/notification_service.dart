@@ -1,11 +1,12 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
 
   static Future<void> initialize() async {
-    tz.initializeTimeZones();
+    initializeTimeZones();
 
     const initSettings = InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
@@ -31,5 +32,56 @@ class NotificationService {
   static void _onNotificationResponse(NotificationResponse response) {
     // Use your global navigator key to navigate to the medicines screen
     // e.g.: navigatorKey.currentState?.pushNamed('/medicines');
+  }
+
+  static Future<void> scheduleDailyReminder({
+    required int notificationId,
+    required String medicineName,
+    required String dosage,
+    required TimeOfDay time,
+  }) async {
+    await _plugin.zonedSchedule(
+      notificationId,
+      'Time for $medicineName',
+      '$dosage — tap to log',
+      _nextInstanceOfTime(time),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'medicine_reminders',
+          'Medicine Reminders',
+          channelDescription: 'Daily medicine reminders',
+          importance: Importance.high,
+          priority: Priority.high,
+          actions: [
+            AndroidNotificationAction('taken', 'Mark Taken'),
+            AndroidNotificationAction('skip', 'Skip'),
+          ],
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
+  static tz.TZDateTime _nextInstanceOfTime(TimeOfDay time) {
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+    if (scheduled.isBefore(now)) {
+      scheduled = scheduled.add(const Duration(days: 1));
+    }
+    return scheduled;
+  }
+
+  static Future<void> cancelReminder(int notificationId) async {
+    await _plugin.cancel(notificationId);
   }
 }
