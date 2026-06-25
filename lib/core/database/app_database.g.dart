@@ -2223,6 +2223,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MedicineDosesTable medicineDoses = $MedicineDosesTable(this);
   late final ProfileDao profileDao = ProfileDao(this as AppDatabase);
   late final VitalsDao vitalsDao = VitalsDao(this as AppDatabase);
+  late final MedicineDao medicineDao = MedicineDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
