@@ -285,34 +285,78 @@ class PdfReportService {
   }
 
   pw.Widget _buildMedicinesSection(List<Medicine> medicines, List<MedicineDose> doses) {
-    if (medicines.isEmpty) return pw.Text('No medicines prescribed.', style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey500));
+    if (medicines.isEmpty) {
+      return pw.Text('No medicines prescribed.',
+          style: const pw.TextStyle(color: PdfColors.grey600));
+    }
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('Medicines', style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
-        pw.SizedBox(height: 6),
-        ...medicines.map((m) {
-          final medicineDoses = doses.where((d) => d.medicineId == m.id).toList();
-          final taken = medicineDoses.where((d) => d.status == 'taken').length;
-          final total = medicineDoses.length;
-          final adherence = total > 0 ? (taken / total * 100).round() : null;
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        pw.Text('Medication Adherence',
+            style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+        pw.SizedBox(height: 8),
+        pw.Table(
+          border: pw.TableBorder.all(color: PdfColors.grey300),
+          columnWidths: {
+            0: const pw.FlexColumnWidth(2),
+            1: const pw.FlexColumnWidth(1.2),
+            2: const pw.FlexColumnWidth(1.2),
+            3: const pw.FlexColumnWidth(1.2),
+            4: const pw.FlexColumnWidth(1.2),
+            5: const pw.FlexColumnWidth(1.2),
+          },
+          children: [
+            _tableHeaderRow(
+                ['Medicine', 'Dosage', 'Freq', 'Scheduled', 'Taken', 'Adherence']),
+            ...medicines.where((m) => m.isActive).map((m) {
+              final scheduled =
+                  doses.where((d) => d.medicineId == m.id).length;
+              final taken = doses
+                  .where((d) => d.medicineId == m.id && d.status == 'taken')
+                  .length;
+              final adherence =
+                  scheduled == 0 ? 100.0 : (taken / scheduled) * 100;
+              final adherenceLabel = '${adherence.round()}%';
+              final adherenceColor = adherence >= 80
+                  ? PdfColors.green700
+                  : adherence >= 50
+                      ? PdfColors.orange700
+                      : PdfColors.red700;
+              final freqLabel = m.frequency == 'once_daily'
+                  ? '1x/day'
+                  : m.frequency == 'twice_daily'
+                      ? '2x/day'
+                      : m.frequency == 'three_times_daily'
+                          ? '3x/day'
+                          : '${m.timesPerDay}x/day';
+              return pw.TableRow(
                 children: [
-                  pw.Text('${m.name} — ${m.dosage}', style: const pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold)),
-                  if (adherence != null)
-                    pw.Text('$adherence% adherence', style: pw.TextStyle(fontSize: 9, color: adherence >= 80 ? PdfColors.green700 : PdfColors.orange700)),
+                  _cell(m.name),
+                  _cell(m.dosage),
+                  _cell(freqLabel),
+                  _cell(scheduled.toString()),
+                  _cell(taken.toString()),
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.all(6),
+                    child: pw.Text(adherenceLabel,
+                        style: pw.TextStyle(
+                            fontSize: 9,
+                            fontWeight: pw.FontWeight.bold,
+                            color: adherenceColor)),
+                  ),
                 ],
-              ),
-              pw.Text('${m.timesPerDay}x/day', style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600)),
-              pw.SizedBox(height: 4),
-            ],
-          );
-        }),
+              );
+            }),
+          ],
+        ),
       ],
+    );
+  }
+
+  pw.Widget _cell(String text) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Text(text, style: const pw.TextStyle(fontSize: 9)),
     );
   }
 
