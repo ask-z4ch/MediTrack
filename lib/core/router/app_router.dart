@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/profile/screens/profile_setup_screen.dart';
 import '../../features/vitals/screens/vitals_log_screen.dart';
+import '../../features/vitals/widgets/vitals_summary_card.dart';
 import '../../home/screens/home_screen.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -30,7 +31,16 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/',
           builder: (BuildContext context, GoRouterState state) {
-            return const Center(child: Text('Home - Coming soon'));
+            return const Padding(
+              padding: EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    VitalsSummaryCard(),
+                  ],
+                ),
+              ),
+            );
           },
         ),
         GoRoute(
