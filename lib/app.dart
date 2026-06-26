@@ -9,7 +9,7 @@ import 'features/companion/providers/chs_provider.dart';
 import 'features/medicines/daos/medicine_dose_dao.dart';
 import 'features/medicines/daos/medicine_dao.dart';
 import 'features/medicines/providers/medicine_provider.dart';
-import 'features/settings/providers/settings_provider.dart';
+import 'settings/providers/settings_provider.dart';
 import 'features/sync/providers/sync_provider.dart';
 
 class MediTrackApp extends ConsumerStatefulWidget {
@@ -86,7 +86,7 @@ class _MediTrackAppState extends ConsumerState<MediTrackApp> {
           onSurface: AppColors.textPrimary,
         ),
         cardColor: AppColors.cardSurface,
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: AppColors.cardSurface,
           elevation: 0,
           shape: RoundedRectangleBorder(

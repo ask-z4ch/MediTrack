@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/database/app_database.dart';
 import '../../core/services/notification_service.dart';
 import '../../features/companion/providers/chs_provider.dart';
 import '../../features/doctor_visits/providers/doctor_visit_provider.dart';
@@ -113,7 +114,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         'profile': profile != null
             ? {
                 'name': profile.name,
-                'date_of_birth': profile.dateOfBirth.toIso8601String(),
+                'date_of_birth': profile.dateOfBirth?.toIso8601String(),
                 'blood_group': profile.bloodGroup,
                 'conditions': profile.activeConditions,
                 'allergies': profile.allergies,
@@ -149,11 +150,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 })
             .toList(),
         'doses': doses
-            .map((d) => {
-                  'scheduled_at': d.dose.scheduledAt.toIso8601String(),
-                  'status': d.dose.status,
-                  'medicine': d.medicine.name,
-                })
+            .map((d) {
+              final medName = medicines
+                  .firstWhere((m) => m.id == d.medicineId,
+                      orElse: () => medicines.first)
+                  .name;
+              return {
+                'scheduled_at': d.scheduledAt.toIso8601String(),
+                'status': d.status,
+                'medicine': medName,
+              };
+            })
             .toList(),
         'symptoms': symptoms
             .map((s) => {
