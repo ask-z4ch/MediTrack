@@ -115,8 +115,13 @@ class PdfReportService {
 
   pw.Widget _buildVitalsSection(List<VitalsEntry> vitals) {
     if (vitals.isEmpty) {
-      return pw.Text('No vitals logged in this period.',
-          style: const pw.TextStyle(color: PdfColors.grey600));
+      return pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(vertical: 8),
+        child: pw.Text(
+          'No vitals were logged in this date range.',
+          style: const pw.TextStyle(color: PdfColors.grey600),
+        ),
+      );
     }
 
     final systolicVals = vitals
@@ -297,8 +302,13 @@ class PdfReportService {
 
   pw.Widget _buildMedicinesSection(List<Medicine> medicines, List<MedicineDose> doses) {
     if (medicines.isEmpty) {
-      return pw.Text('No medicines prescribed.',
-          style: const pw.TextStyle(color: PdfColors.grey600));
+      return pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(vertical: 8),
+        child: pw.Text(
+          'No medicines were prescribed in this date range.',
+          style: const pw.TextStyle(color: PdfColors.grey600),
+        ),
+      );
     }
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -365,8 +375,13 @@ class PdfReportService {
 
   pw.Widget _buildSymptomsSection(List<SymptomEntry> symptoms) {
     if (symptoms.isEmpty) {
-      return pw.Text('No symptoms logged.',
-          style: const pw.TextStyle(color: PdfColors.grey600));
+      return pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(vertical: 8),
+        child: pw.Text(
+          'No symptoms were logged in this date range.',
+          style: const pw.TextStyle(color: PdfColors.grey600),
+        ),
+      );
     }
     final grouped = <String, List<SymptomEntry>>{};
     for (final s in symptoms) {
