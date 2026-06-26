@@ -39,6 +39,25 @@ class MedicineDoseDao extends DatabaseAccessor<AppDatabase>
             ..orderBy([(t) => OrderingTerm.asc(t.scheduledAt)]))
           .get();
 
+  Future<int> countScheduledInRange(DateTime from, DateTime to) async {
+    final count = await (selectOnly(medicineDoses)
+          ..addColumns([medicineDoses.id.count()])
+          ..where(medicineDoses.scheduledAt.isBiggerOrEqualValue(from))
+          ..where(medicineDoses.scheduledAt.isSmallerThanValue(to)))
+        .getSingle();
+    return count.read(medicineDoses.id.count()) ?? 0;
+  }
+
+  Future<int> countTakenInRange(DateTime from, DateTime to) async {
+    final count = await (selectOnly(medicineDoses)
+          ..addColumns([medicineDoses.id.count()])
+          ..where(medicineDoses.scheduledAt.isBiggerOrEqualValue(from))
+          ..where(medicineDoses.scheduledAt.isSmallerThanValue(to))
+          ..where(medicineDoses.status.equals('taken')))
+        .getSingle();
+    return count.read(medicineDoses.id.count()) ?? 0;
+  }
+
   Future<List<MedicineDose>> getTodaysDoses() {
     final now = DateTime.now();
     final start = DateTime(now.year, now.month, now.day);

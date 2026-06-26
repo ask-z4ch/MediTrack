@@ -106,15 +106,10 @@ class CHSCalculatorService {
   }
 
   Future<double> _adherenceFactor() async {
-    final now = DateTime.now();
-    final sevenDaysAgo = now.subtract(const Duration(days: 7));
-    final doses = await _doseDao.getDosesInRange(sevenDaysAgo, now);
-    if (doses.isEmpty) return 1.0;
-
-    int taken = 0;
-    for (final d in doses) {
-      if (d.status == 'taken') taken++;
-    }
-    return (taken / doses.length).clamp(0.0, 1.0);
+    final from = DateTime.now().subtract(const Duration(days: 7));
+    final scheduled = await _doseDao.countScheduledInRange(from, DateTime.now());
+    if (scheduled == 0) return 1.0;
+    final taken = await _doseDao.countTakenInRange(from, DateTime.now());
+    return (taken / scheduled).clamp(0.0, 1.0);
   }
 }
