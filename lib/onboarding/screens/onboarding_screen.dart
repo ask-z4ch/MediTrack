@@ -33,86 +33,89 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _controller,
-                onPageChanged: (i) => setState(() => _page = i),
-                children: [
-                  _Page(
-                    illustration: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryTeal.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView(
+                  controller: _controller,
+                  onPageChanged: (i) => setState(() => _page = i),
+                  children: [
+                    _Page(
+                      illustration: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryTeal.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.monitor_heart_outlined, size: 56, color: AppColors.primaryTeal),
                       ),
-                      child: Icon(Icons.monitor_heart_outlined, size: 56, color: AppColors.primaryTeal),
+                      headline: 'Your health diary, always with you.',
+                      body: 'Log your blood pressure, blood sugar, temperature, and more — with reminders that work even offline.',
                     ),
-                    headline: 'Your health diary, always with you.',
-                    body: 'Log your blood pressure, blood sugar, temperature, and more — with reminders that work even offline.',
-                  ),
-                  _Page(
-                    illustration: Lottie.asset(
-                      'assets/lottie/vita_thriving.json',
-                      width: 120,
-                      height: 120,
-                    ),
-                    headline: 'VITA grows with your health.',
-                    body: 'Your companion reflects your real health data — not just your mood. Log consistently, and watch VITA thrive.',
-                  ),
-                  _Page(
-                    illustration: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryTeal.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
+                    _Page(
+                      illustration: Lottie.asset(
+                        'assets/lottie/vita_thriving.json',
+                        width: 120,
+                        height: 120,
                       ),
-                      child: Icon(Icons.lock_outline, size: 56, color: AppColors.primaryTeal),
+                      headline: 'VITA grows with your health.',
+                      body: 'Your companion reflects your real health data — not just your mood. Log consistently, and watch VITA thrive.',
                     ),
-                    headline: 'Your data stays yours.',
-                    body: 'Everything is stored on your device first. Cloud sync is optional and end-to-end authenticated.',
-                  ),
-                ],
+                    _Page(
+                      illustration: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryTeal.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.lock_outline, size: 56, color: AppColors.primaryTeal),
+                      ),
+                      headline: 'Your data stays yours.',
+                      body: 'Everything is stored on your device first. Cloud sync is optional and end-to-end authenticated.',
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-              child: Row(
-                children: [
-                  if (_page < 2)
-                    TextButton(
-                      onPressed: _finish,
-                      child: const Text('Skip'),
-                    )
-                  else
-                    const SizedBox(width: 0),
-                  const Spacer(),
-                  Row(
-                    children: List.generate(3, (i) => _dot(i)),
-                  ),
-                  const Spacer(),
-                  if (_page < 2)
-                    FilledButton(
-                      onPressed: () => _controller.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      ),
-                      child: const Text('Next'),
-                    )
-                  else
-                    FilledButton(
-                      onPressed: _finish,
-                      child: const Text('Get Started'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                child: Row(
+                  children: [
+                    if (_page < 2)
+                      TextButton(
+                        onPressed: _finish,
+                        child: const Text('Skip'),
+                      )
+                    else
+                      const SizedBox(width: 0),
+                    const Spacer(),
+                    Row(
+                      children: List.generate(3, (i) => _dot(i)),
                     ),
-                ],
+                    const Spacer(),
+                    if (_page < 2)
+                      FilledButton(
+                        onPressed: () => _controller.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        ),
+                        child: const Text('Next'),
+                      )
+                    else
+                      FilledButton(
+                        onPressed: _finish,
+                        child: const Text('Get Started'),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
