@@ -45,72 +45,64 @@ class CHSCalculatorService {
       DateTime(dt.year, dt.month, dt.day);
 
   Future<double> _vitalsFactor() async {
-    final now = DateTime.now();
-    final sevenDaysAgo = now.subtract(const Duration(days: 7));
-    final entries = await _vitalsDao.getVitalsInRange(sevenDaysAgo, now);
-    if (entries.isEmpty) return 0.0;
+    final from = DateTime.now().subtract(const Duration(days: 7));
+    final entries = await _vitalsDao.getVitalsInRange(from, DateTime.now());
 
-    final latest = entries.last;
+    if (entries.isEmpty) return 0.5;
+
     final scores = <double>[];
 
-    if (latest.bpSystolic != null && latest.bpDiastolic != null) {
-      if (latest.bpSystolic! <= BPThreshold.normalSystolicMax &&
-          latest.bpDiastolic! <= BPThreshold.normalDiastolicMax) {
-        scores.add(1.0);
-      } else if (latest.bpSystolic! <= BPThreshold.borderlineSystolicMax &&
-          latest.bpDiastolic! <= BPThreshold.borderlineDiastolicMax) {
-        scores.add(0.5);
-      } else {
-        scores.add(0.0);
+    for (final e in entries) {
+      if (e.bpSystolic != null && e.bpDiastolic != null) {
+        scores.add(_bpScore(e.bpSystolic!, e.bpDiastolic!));
+      }
+      if (e.bloodSugarFasting != null) {
+        scores.add(_sugarScore(e.bloodSugarFasting!, fasting: true));
+      }
+      if (e.bloodSugarPostMeal != null) {
+        scores.add(_sugarScore(e.bloodSugarPostMeal!, fasting: false));
+      }
+      if (e.spo2Percent != null) scores.add(_spo2Score(e.spo2Percent!));
+      if (e.temperatureCelsius != null) {
+        scores.add(_tempScore(e.temperatureCelsius!));
       }
     }
 
-    if (latest.bloodSugarFasting != null) {
-      if (latest.bloodSugarFasting! <= BloodSugarThreshold.fastingNormalMax) {
-        scores.add(1.0);
-      } else if (latest.bloodSugarFasting! <=
-          BloodSugarThreshold.fastingBorderlineMax) {
-        scores.add(0.5);
-      } else {
-        scores.add(0.0);
-      }
-    } else if (latest.bloodSugarPostMeal != null) {
-      if (latest.bloodSugarPostMeal! <=
-          BloodSugarThreshold.postMealNormalMax) {
-        scores.add(1.0);
-      } else if (latest.bloodSugarPostMeal! <=
-          BloodSugarThreshold.postMealBorderlineMax) {
-        scores.add(0.5);
-      } else {
-        scores.add(0.0);
-      }
-    }
-
-    if (latest.spo2Percent != null) {
-      if (latest.spo2Percent! >= SpO2Threshold.normalMin) {
-        scores.add(1.0);
-      } else if (latest.spo2Percent! >= SpO2Threshold.borderlineMin) {
-        scores.add(0.5);
-      } else {
-        scores.add(0.0);
-      }
-    }
-
-    if (latest.temperatureCelsius != null) {
-      final t = latest.temperatureCelsius!;
-      if (t >= TemperatureThreshold.normalMinC &&
-          t <= TemperatureThreshold.normalMaxC) {
-        scores.add(1.0);
-      } else if (t >= TemperatureThreshold.criticalLowC &&
-          t <= TemperatureThreshold.borderlineMaxC) {
-        scores.add(0.5);
-      } else {
-        scores.add(0.0);
-      }
-    }
-
-    if (scores.isEmpty) return 0.0;
+    if (scores.isEmpty) return 0.5;
     return scores.reduce((a, b) => a + b) / scores.length;
+  }
+
+  double _bpScore(int sys, int dia) {
+    if (sys < 120 && dia < 80) return 1.0;
+    if (sys < 140 && dia < 90) return 0.5;
+    return 0.0;
+  }
+
+  double _sugarScore(double val, {required bool fasting}) {
+    if (val < BloodSugarThreshold.hypoMin) return 0.0;
+    final normalMax = fasting
+        ? BloodSugarThreshold.fastingNormalMax
+        : BloodSugarThreshold.postMealNormalMax;
+    final borderMax = fasting
+        ? BloodSugarThreshold.fastingBorderlineMax
+        : BloodSugarThreshold.postMealBorderlineMax;
+    if (val <= normalMax) return 1.0;
+    if (val <= borderMax) return 0.5;
+    return 0.0;
+  }
+
+  double _spo2Score(int val) {
+    if (val >= SpO2Threshold.normalMin) return 1.0;
+    if (val >= SpO2Threshold.borderlineMin) return 0.5;
+    return 0.0;
+  }
+
+  double _tempScore(double val) {
+    if (val >= TemperatureThreshold.normalMinC &&
+        val <= TemperatureThreshold.normalMaxC) return 1.0;
+    if (val > TemperatureThreshold.criticalLowC &&
+        val <= TemperatureThreshold.borderlineMaxC) return 0.5;
+    return 0.0;
   }
 
   Future<double> _adherenceFactor() async {
