@@ -198,6 +198,7 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'medicine_reminders',
           'Medicine Reminders',
+          channelDescription: 'Snoozed medicine reminders',
           importance: Importance.high,
           priority: Priority.high,
         ),
