@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 
@@ -7,7 +8,8 @@ import '../../../core/database/app_database.dart';
 import '../services/pdf_report_service.dart';
 
 class ReportGeneratorScreen extends ConsumerStatefulWidget {
-  const ReportGeneratorScreen({super.key});
+  final DateTime? fromDate;
+  const ReportGeneratorScreen({super.key, this.fromDate});
 
   @override
   ConsumerState<ReportGeneratorScreen> createState() =>
@@ -17,8 +19,17 @@ class ReportGeneratorScreen extends ConsumerStatefulWidget {
 class _ReportGeneratorScreenState extends ConsumerState<ReportGeneratorScreen> {
   bool _generating = false;
 
-  DateTime _from = DateTime.now().subtract(const Duration(days: 30));
-  DateTime _to = DateTime.now();
+  late DateTime _from;
+  late DateTime _to;
+
+  @override
+  void initState() {
+    super.initState();
+    final extra = GoRouterState.of(context).extra;
+    final fromDate = widget.fromDate ?? (extra is DateTime ? extra : null);
+    _from = fromDate ?? DateTime.now().subtract(const Duration(days: 30));
+    _to = DateTime.now();
+  }
 
   Future<void> _pickDate({required bool isFrom}) async {
     final initial = isFrom ? _from : _to;

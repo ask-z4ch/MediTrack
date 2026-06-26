@@ -8,6 +8,7 @@ import '../../features/companion/widgets/vita_message_banner.dart';
 import '../../features/vitals/providers/vitals_provider.dart';
 import '../widgets/pending_actions_card.dart';
 import '../widgets/todays_doses_card.dart';
+import '../widgets/upcoming_visit_card.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -38,7 +39,7 @@ class HomePage extends ConsumerWidget {
         ),
         const SliverToBoxAdapter(child: TodaysDosesCard()),
         const SliverToBoxAdapter(child: PendingActionsCard()),
-        SliverToBoxAdapter(child: _stubCard('Upcoming Visit')),
+        const SliverToBoxAdapter(child: UpcomingVisitCard()),
         SliverToBoxAdapter(child: _stubCard('Streak Counter')),
         const SliverToBoxAdapter(child: SizedBox(height: 80)),
       ],
