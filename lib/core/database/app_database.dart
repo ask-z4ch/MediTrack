@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
+import 'package:meditrack/features/companion/daos/chs_dao.dart';
 import 'package:meditrack/features/companion/models/companion_health_score.dart';
 import 'package:meditrack/features/doctor_visits/daos/doctor_visit_dao.dart';
 import 'package:meditrack/features/doctor_visits/models/doctor_visit.dart';
@@ -23,7 +24,7 @@ part 'app_database.g.dart';
 
 @DriftDatabase(
   tables: [UserProfiles, VitalsEntries, Medicines, MedicineDoses, SymptomEntries, DoctorVisits, CompanionHealthScores],
-  daos: [ProfileDao, VitalsDao, MedicineDao, MedicineDoseDao, SymptomDao, DoctorVisitDao],
+  daos: [ProfileDao, VitalsDao, MedicineDao, MedicineDoseDao, SymptomDao, DoctorVisitDao, CHSDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
