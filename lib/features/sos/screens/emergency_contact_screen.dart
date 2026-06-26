@@ -17,6 +17,7 @@ class _EmergencyContactScreenState
     extends ConsumerState<EmergencyContactScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _myPhoneController = TextEditingController();
   String _relation = '';
 
   bool _saving = false;
@@ -37,6 +38,7 @@ class _EmergencyContactScreenState
     if (profile != null) {
       _nameController.text = profile.emergencyContactName ?? '';
       _phoneController.text = profile.emergencyContactPhone ?? '';
+      _myPhoneController.text = profile.phoneNumber ?? '';
       _relation = profile.emergencyContactRelation ?? '';
     }
   }
@@ -45,12 +47,14 @@ class _EmergencyContactScreenState
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
+    _myPhoneController.dispose();
     super.dispose();
   }
 
   Future<void> _save() async {
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
+    final myPhone = _myPhoneController.text.trim();
 
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -69,7 +73,12 @@ class _EmergencyContactScreenState
     try {
       await ref
           .read(profileNotifierProvider.notifier)
-          .saveEmergencyContact(name: name, phone: phone, relation: _relation);
+          .saveEmergencyContact(
+            name: name,
+            phone: phone,
+            relation: _relation,
+            myPhone: myPhone.isNotEmpty ? myPhone : null,
+          );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Emergency contact saved.')),
@@ -81,11 +90,13 @@ class _EmergencyContactScreenState
 
   Future<void> _testSos() async {
     final profile = ref.read(profileNotifierProvider).valueOrNull;
-    final phone = profile?.emergencyContactPhone ?? _phoneController.text.trim();
+    final myPhone = profile?.phoneNumber ?? _myPhoneController.text.trim();
 
-    if (phone.isEmpty) {
+    if (myPhone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Save an emergency contact first.')),
+        const SnackBar(
+          content: Text('Enter your phone number above to send a test.'),
+        ),
       );
       return;
     }
@@ -93,7 +104,7 @@ class _EmergencyContactScreenState
     if (profile == null) return;
     await SOSService().sendSOS(
       profile: profile,
-      contactPhone: phone,
+      contactPhone: myPhone,
       isTest: true,
     );
   }
@@ -131,7 +142,7 @@ class _EmergencyContactScreenState
             TextField(
               controller: _phoneController,
               decoration: const InputDecoration(
-                labelText: 'Phone Number',
+                labelText: 'Emergency Contact Phone',
                 hintText: 'e.g. +1 555 123 4567',
                 prefixIcon: Icon(Icons.phone),
               ),
@@ -148,6 +159,20 @@ class _EmergencyContactScreenState
                   .map((r) => DropdownMenuItem(value: r, child: Text(r)))
                   .toList(),
               onChanged: (v) => setState(() => _relation = v ?? ''),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Your Phone Number (for test SOS)',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _myPhoneController,
+              decoration: const InputDecoration(
+                hintText: 'e.g. +1 555 987 6543',
+                prefixIcon: Icon(Icons.person_outline),
+              ),
+              keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 28),
             SizedBox(
@@ -177,7 +202,7 @@ class _EmergencyContactScreenState
               child: OutlinedButton.icon(
                 onPressed: _testSos,
                 icon: const Icon(Icons.warning_amber, color: Colors.orange),
-                label: const Text('Test SOS'),
+                label: const Text('Send Test SOS to Yourself'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.orange,
                   side: const BorderSide(color: Colors.orange),

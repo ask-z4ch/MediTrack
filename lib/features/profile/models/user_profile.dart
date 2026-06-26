@@ -10,4 +10,5 @@ class UserProfiles extends Table {
   TextColumn get emergencyContactName => text().nullable()();
   TextColumn get emergencyContactPhone => text().nullable()();
   TextColumn get emergencyContactRelation => text().nullable()();
+  TextColumn get phoneNumber => text().nullable()();
 }

@@ -114,6 +114,17 @@ class $UserProfilesTable extends UserProfiles
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _phoneNumberMeta = const VerificationMeta(
+    'phoneNumber',
+  );
+  @override
+  late final GeneratedColumn<String> phoneNumber = GeneratedColumn<String>(
+    'phone_number',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -125,6 +136,7 @@ class $UserProfilesTable extends UserProfiles
     emergencyContactName,
     emergencyContactPhone,
     emergencyContactRelation,
+    phoneNumber,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -206,6 +218,15 @@ class $UserProfilesTable extends UserProfiles
         ),
       );
     }
+    if (data.containsKey('phone_number')) {
+      context.handle(
+        _phoneNumberMeta,
+        phoneNumber.isAcceptableOrUnknown(
+          data['phone_number']!,
+          _phoneNumberMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -251,6 +272,10 @@ class $UserProfilesTable extends UserProfiles
         DriftSqlType.string,
         data['${effectivePrefix}emergency_contact_relation'],
       ),
+      phoneNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone_number'],
+      ),
     );
   }
 
@@ -270,6 +295,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
   final String? emergencyContactName;
   final String? emergencyContactPhone;
   final String? emergencyContactRelation;
+  final String? phoneNumber;
   const UserProfile({
     required this.id,
     required this.name,
@@ -280,6 +306,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
     this.emergencyContactName,
     this.emergencyContactPhone,
     this.emergencyContactRelation,
+    this.phoneNumber,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -305,6 +332,9 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
         emergencyContactRelation,
       );
     }
+    if (!nullToAbsent || phoneNumber != null) {
+      map['phone_number'] = Variable<String>(phoneNumber);
+    }
     return map;
   }
 
@@ -329,6 +359,9 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
       emergencyContactRelation: emergencyContactRelation == null && nullToAbsent
           ? const Value.absent()
           : Value(emergencyContactRelation),
+      phoneNumber: phoneNumber == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phoneNumber),
     );
   }
 
@@ -353,6 +386,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
       emergencyContactRelation: serializer.fromJson<String?>(
         json['emergencyContactRelation'],
       ),
+      phoneNumber: serializer.fromJson<String?>(json['phoneNumber']),
     );
   }
   @override
@@ -372,6 +406,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
       'emergencyContactRelation': serializer.toJson<String?>(
         emergencyContactRelation,
       ),
+      'phoneNumber': serializer.toJson<String?>(phoneNumber),
     };
   }
 
@@ -385,6 +420,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
     Value<String?> emergencyContactName = const Value.absent(),
     Value<String?> emergencyContactPhone = const Value.absent(),
     Value<String?> emergencyContactRelation = const Value.absent(),
+    Value<String?> phoneNumber = const Value.absent(),
   }) => UserProfile(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -401,6 +437,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
     emergencyContactRelation: emergencyContactRelation.present
         ? emergencyContactRelation.value
         : this.emergencyContactRelation,
+    phoneNumber: phoneNumber.present ? phoneNumber.value : this.phoneNumber,
   );
   UserProfile copyWithCompanion(UserProfilesCompanion data) {
     return UserProfile(
@@ -425,6 +462,9 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
       emergencyContactRelation: data.emergencyContactRelation.present
           ? data.emergencyContactRelation.value
           : this.emergencyContactRelation,
+      phoneNumber: data.phoneNumber.present
+          ? data.phoneNumber.value
+          : this.phoneNumber,
     );
   }
 
@@ -439,7 +479,8 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
           ..write('allergies: $allergies, ')
           ..write('emergencyContactName: $emergencyContactName, ')
           ..write('emergencyContactPhone: $emergencyContactPhone, ')
-          ..write('emergencyContactRelation: $emergencyContactRelation')
+          ..write('emergencyContactRelation: $emergencyContactRelation, ')
+          ..write('phoneNumber: $phoneNumber')
           ..write(')'))
         .toString();
   }
@@ -455,6 +496,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
     emergencyContactName,
     emergencyContactPhone,
     emergencyContactRelation,
+    phoneNumber,
   );
   @override
   bool operator ==(Object other) =>
@@ -468,7 +510,8 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
           other.allergies == this.allergies &&
           other.emergencyContactName == this.emergencyContactName &&
           other.emergencyContactPhone == this.emergencyContactPhone &&
-          other.emergencyContactRelation == this.emergencyContactRelation);
+          other.emergencyContactRelation == this.emergencyContactRelation &&
+          other.phoneNumber == this.phoneNumber);
 }
 
 class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
@@ -481,6 +524,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
   final Value<String?> emergencyContactName;
   final Value<String?> emergencyContactPhone;
   final Value<String?> emergencyContactRelation;
+  final Value<String?> phoneNumber;
   const UserProfilesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -491,6 +535,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
     this.emergencyContactName = const Value.absent(),
     this.emergencyContactPhone = const Value.absent(),
     this.emergencyContactRelation = const Value.absent(),
+    this.phoneNumber = const Value.absent(),
   });
   UserProfilesCompanion.insert({
     this.id = const Value.absent(),
@@ -502,6 +547,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
     this.emergencyContactName = const Value.absent(),
     this.emergencyContactPhone = const Value.absent(),
     this.emergencyContactRelation = const Value.absent(),
+    this.phoneNumber = const Value.absent(),
   }) : name = Value(name);
   static Insertable<UserProfile> custom({
     Expression<int>? id,
@@ -513,6 +559,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
     Expression<String>? emergencyContactName,
     Expression<String>? emergencyContactPhone,
     Expression<String>? emergencyContactRelation,
+    Expression<String>? phoneNumber,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -527,6 +574,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
         'emergency_contact_phone': emergencyContactPhone,
       if (emergencyContactRelation != null)
         'emergency_contact_relation': emergencyContactRelation,
+      if (phoneNumber != null) 'phone_number': phoneNumber,
     });
   }
 
@@ -540,6 +588,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
     Value<String?>? emergencyContactName,
     Value<String?>? emergencyContactPhone,
     Value<String?>? emergencyContactRelation,
+    Value<String?>? phoneNumber,
   }) {
     return UserProfilesCompanion(
       id: id ?? this.id,
@@ -553,6 +602,7 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
           emergencyContactPhone ?? this.emergencyContactPhone,
       emergencyContactRelation:
           emergencyContactRelation ?? this.emergencyContactRelation,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
     );
   }
 
@@ -592,6 +642,9 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
         emergencyContactRelation.value,
       );
     }
+    if (phoneNumber.present) {
+      map['phone_number'] = Variable<String>(phoneNumber.value);
+    }
     return map;
   }
 
@@ -606,7 +659,8 @@ class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
           ..write('allergies: $allergies, ')
           ..write('emergencyContactName: $emergencyContactName, ')
           ..write('emergencyContactPhone: $emergencyContactPhone, ')
-          ..write('emergencyContactRelation: $emergencyContactRelation')
+          ..write('emergencyContactRelation: $emergencyContactRelation, ')
+          ..write('phoneNumber: $phoneNumber')
           ..write(')'))
         .toString();
   }
@@ -3122,6 +3176,7 @@ typedef $$UserProfilesTableCreateCompanionBuilder =
       Value<String?> emergencyContactName,
       Value<String?> emergencyContactPhone,
       Value<String?> emergencyContactRelation,
+      Value<String?> phoneNumber,
     });
 typedef $$UserProfilesTableUpdateCompanionBuilder =
     UserProfilesCompanion Function({
@@ -3134,6 +3189,7 @@ typedef $$UserProfilesTableUpdateCompanionBuilder =
       Value<String?> emergencyContactName,
       Value<String?> emergencyContactPhone,
       Value<String?> emergencyContactRelation,
+      Value<String?> phoneNumber,
     });
 
 class $$UserProfilesTableFilterComposer
@@ -3187,6 +3243,11 @@ class $$UserProfilesTableFilterComposer
 
   ColumnFilters<String> get emergencyContactRelation => $composableBuilder(
     column: $table.emergencyContactRelation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phoneNumber => $composableBuilder(
+    column: $table.phoneNumber,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -3244,6 +3305,11 @@ class $$UserProfilesTableOrderingComposer
     column: $table.emergencyContactRelation,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get phoneNumber => $composableBuilder(
+    column: $table.phoneNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$UserProfilesTableAnnotationComposer
@@ -3293,6 +3359,11 @@ class $$UserProfilesTableAnnotationComposer
     column: $table.emergencyContactRelation,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get phoneNumber => $composableBuilder(
+    column: $table.phoneNumber,
+    builder: (column) => column,
+  );
 }
 
 class $$UserProfilesTableTableManager
@@ -3335,6 +3406,7 @@ class $$UserProfilesTableTableManager
                 Value<String?> emergencyContactName = const Value.absent(),
                 Value<String?> emergencyContactPhone = const Value.absent(),
                 Value<String?> emergencyContactRelation = const Value.absent(),
+                Value<String?> phoneNumber = const Value.absent(),
               }) => UserProfilesCompanion(
                 id: id,
                 name: name,
@@ -3345,6 +3417,7 @@ class $$UserProfilesTableTableManager
                 emergencyContactName: emergencyContactName,
                 emergencyContactPhone: emergencyContactPhone,
                 emergencyContactRelation: emergencyContactRelation,
+                phoneNumber: phoneNumber,
               ),
           createCompanionCallback:
               ({
@@ -3357,6 +3430,7 @@ class $$UserProfilesTableTableManager
                 Value<String?> emergencyContactName = const Value.absent(),
                 Value<String?> emergencyContactPhone = const Value.absent(),
                 Value<String?> emergencyContactRelation = const Value.absent(),
+                Value<String?> phoneNumber = const Value.absent(),
               }) => UserProfilesCompanion.insert(
                 id: id,
                 name: name,
@@ -3367,6 +3441,7 @@ class $$UserProfilesTableTableManager
                 emergencyContactName: emergencyContactName,
                 emergencyContactPhone: emergencyContactPhone,
                 emergencyContactRelation: emergencyContactRelation,
+                phoneNumber: phoneNumber,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

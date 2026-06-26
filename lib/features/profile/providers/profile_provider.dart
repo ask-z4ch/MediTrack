@@ -36,6 +36,7 @@ class ProfileNotifier extends _$ProfileNotifier {
     required String name,
     required String phone,
     required String relation,
+    String? myPhone,
   }) async {
     final dao = ref.read(profileDaoProvider);
     final existing = await dao.getProfile();
@@ -46,6 +47,7 @@ class ProfileNotifier extends _$ProfileNotifier {
         emergencyContactName: Value(name),
         emergencyContactPhone: Value(phone),
         emergencyContactRelation: Value(relation),
+        phoneNumber: Value(myPhone),
       ),
     );
     ref.invalidateSelf();
