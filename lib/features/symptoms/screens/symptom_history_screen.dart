@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../shared/widgets/empty_state_widget.dart';
 import '../models/symptom_entry.dart';
 import '../providers/symptom_provider.dart';
@@ -104,7 +105,7 @@ class _DateSeparator extends StatelessWidget {
           const Expanded(child: Divider()),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Text(label, style: TextStyle(color: Colors.grey[500], fontSize: 13)),
+            child: Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
           ),
           const Expanded(child: Divider()),
         ],
@@ -147,14 +148,14 @@ class _SymptomCard extends StatelessWidget {
                   ),
                   if (entry.notes.isNotEmpty) ...[
                     const SizedBox(height: 2),
-                    Text(entry.notes, style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+                    Text(entry.notes, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
                   ],
                 ],
               ),
             ),
             Text(
               '${entry.loggedAt.hour.toString().padLeft(2, '0')}:${entry.loggedAt.minute.toString().padLeft(2, '0')}',
-              style: TextStyle(color: Colors.grey[500], fontSize: 12),
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
             ),
           ],
         ),

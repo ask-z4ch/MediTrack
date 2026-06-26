@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../../core/database/app_database.dart';
 import '../../../shared/widgets/empty_state_widget.dart';
 import '../providers/doctor_visit_provider.dart';
@@ -125,8 +126,8 @@ class _VisitCard extends StatelessWidget {
                       if (visit.specialty.isNotEmpty)
                         Text(
                           visit.specialty,
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),

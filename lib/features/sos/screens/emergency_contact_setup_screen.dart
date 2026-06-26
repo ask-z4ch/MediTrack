@@ -88,7 +88,7 @@ class _EmergencyContactSetupScreenState
             Text(
               'Who should we contact in case of an emergency?',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade600,
+                    color: AppColors.textSecondary,
                   ),
             ),
             const SizedBox(height: 20),

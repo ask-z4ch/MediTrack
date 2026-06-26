@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 
+import '../../../core/constants/app_colors.dart';
+
 class PrescriptionViewerScreen extends StatefulWidget {
   final List<String> prescriptionPaths;
   const PrescriptionViewerScreen({super.key, required this.prescriptionPaths});
@@ -73,7 +75,7 @@ class _PrescriptionViewerScreenState extends State<PrescriptionViewerScreen> {
                       shape: BoxShape.circle,
                       color: _currentPage == i
                           ? Theme.of(context).colorScheme.primary
-                          : Colors.grey.shade300,
+                          : AppColors.textSecondary,
                     ),
                   );
                 }),

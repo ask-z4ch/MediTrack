@@ -116,11 +116,11 @@ class _ChsRingWidgetState extends ConsumerState<ChsRingWidget>
                     ),
                     const Text(
                       '/ 100',
-                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                      style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
                     ),
                     const Text(
                       'Companion Health',
-                      style: TextStyle(fontSize: 9, color: Colors.grey),
+                      style: TextStyle(fontSize: 9, color: AppColors.textSecondary),
                     ),
                   ],
                 ),

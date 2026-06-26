@@ -153,7 +153,7 @@ class _ReportGeneratorScreenState extends ConsumerState<ReportGeneratorScreen> {
             const SizedBox(height: 8),
             Text(
               '${_to.difference(_from).inDays} days selected',
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
             ),
             const Spacer(),
             SizedBox(

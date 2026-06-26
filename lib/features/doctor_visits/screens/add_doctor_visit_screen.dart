@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/services/notification_service.dart';
 import '../providers/doctor_visit_provider.dart';
@@ -248,7 +249,7 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
                           height: 100,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
-                            color: Colors.grey.shade200,
+                            color: AppColors.cardSurface,
                           ),
                           child: isPdf
                               ? const Icon(Icons.picture_as_pdf, size: 40)
@@ -269,7 +270,7 @@ class _AddDoctorVisitScreenState extends ConsumerState<AddDoctorVisitScreen> {
                             onTap: () => _deletePrescription(path),
                             child: Container(
                               decoration: const BoxDecoration(
-                                color: Colors.black54,
+                                color: AppColors.cardElevated,
                                 shape: BoxShape.circle,
                               ),
                               padding: const EdgeInsets.all(4),

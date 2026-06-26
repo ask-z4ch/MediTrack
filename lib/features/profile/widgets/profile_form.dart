@@ -136,7 +136,7 @@ class _ProfileFormState extends ConsumerState<ProfileForm> {
                 'Set up your profile to get started',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey,
+                  color: AppColors.textSecondary,
                 ),
               ),
               const SizedBox(height: 32),

@@ -54,7 +54,7 @@ class UpcomingVisitCard extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: isUrgent
                           ? AppColors.borderline.withValues(alpha: 0.15)
-                          : Colors.grey.withValues(alpha: 0.1),
+                          : AppColors.cardSurface,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -62,7 +62,7 @@ class UpcomingVisitCard extends ConsumerWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        color: isUrgent ? AppColors.borderline : Colors.grey,
+                          color: isUrgent ? AppColors.borderline : AppColors.textSecondary,
                       ),
                     ),
                   ),

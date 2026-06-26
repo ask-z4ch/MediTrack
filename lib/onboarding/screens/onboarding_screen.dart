@@ -128,7 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.primary : Colors.grey.shade300,
+        color: isActive ? AppColors.primary : AppColors.textSecondary,
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -164,7 +164,7 @@ class _Page extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             body,
-            style: theme.textTheme.bodyLarge?.copyWith(color: Colors.grey.shade600),
+            style: theme.textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],

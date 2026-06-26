@@ -125,7 +125,7 @@ class _EmergencyContactScreenState
             Text(
               'Set a contact to notify in case of an emergency.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey.shade600,
+                    color: AppColors.textSecondary,
                   ),
             ),
             const SizedBox(height: 20),

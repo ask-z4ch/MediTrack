@@ -133,7 +133,7 @@ class _DoseTile extends ConsumerWidget {
                 isTaken ? 'Taken' : 'Skipped',
                 style: const TextStyle(fontSize: 12),
               ),
-              backgroundColor: isTaken ? Colors.green[50] : Colors.grey[100],
+              backgroundColor: isTaken ? const Color(0xFF1B3D2B) : AppColors.cardSurface,
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
             ),

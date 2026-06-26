@@ -66,7 +66,7 @@ class StreakCounterWidget extends ConsumerWidget {
                 ),
                 child: Icon(
                   streak > 0 ? Icons.local_fire_department : Icons.local_fire_department_outlined,
-                  color: streak > 0 ? AppColors.borderline : Colors.grey,
+                  color: streak > 0 ? AppColors.borderline : AppColors.textSecondary,
                   size: 18,
                 ),
               ),

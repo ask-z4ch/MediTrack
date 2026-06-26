@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../providers/chs_provider.dart';
@@ -147,10 +147,10 @@ class ChsHistoryScreen extends ConsumerWidget {
       label: HorizontalLineLabel(
         show: true,
         labelResolver: (_) => label,
-        style: TextStyle(
-          color: Colors.grey.shade500,
-          fontSize: 9,
-        ),
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 9,
+          ),
       ),
     );
   }
@@ -192,7 +192,7 @@ class ChsHistoryScreen extends ConsumerWidget {
         child: Column(
           children: [
             Text(label,
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
             const SizedBox(height: 2),
             Text(pct,
                 style: TextStyle(

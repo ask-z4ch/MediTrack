@@ -158,7 +158,7 @@ class _SymptomLogScreenState extends ConsumerState<SymptomLogScreen> {
                   '$currentLength / $maxLength',
                   style: TextStyle(
                     fontSize: 12,
-                    color: currentLength > (maxLength ?? 500) - 50 ? Colors.orange : Colors.grey,
+                    color: currentLength > (maxLength ?? 500) - 50 ? Colors.orange : AppColors.textSecondary,
                   ),
                 );
               },
