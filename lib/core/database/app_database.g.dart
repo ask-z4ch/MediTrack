@@ -3132,6 +3132,432 @@ class DoctorVisitsCompanion extends UpdateCompanion<DoctorVisit> {
   }
 }
 
+class $CompanionHealthScoresTable extends CompanionHealthScores
+    with TableInfo<$CompanionHealthScoresTable, CompanionHealthScore> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CompanionHealthScoresTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _calculatedAtMeta = const VerificationMeta(
+    'calculatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> calculatedAt = GeneratedColumn<DateTime>(
+    'calculated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _scoreMeta = const VerificationMeta('score');
+  @override
+  late final GeneratedColumn<double> score = GeneratedColumn<double>(
+    'score',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _loggingFactorMeta = const VerificationMeta(
+    'loggingFactor',
+  );
+  @override
+  late final GeneratedColumn<double> loggingFactor = GeneratedColumn<double>(
+    'logging_factor',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _vitalsFactorMeta = const VerificationMeta(
+    'vitalsFactor',
+  );
+  @override
+  late final GeneratedColumn<double> vitalsFactor = GeneratedColumn<double>(
+    'vitals_factor',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _adherenceFactorMeta = const VerificationMeta(
+    'adherenceFactor',
+  );
+  @override
+  late final GeneratedColumn<double> adherenceFactor = GeneratedColumn<double>(
+    'adherence_factor',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    calculatedAt,
+    score,
+    loggingFactor,
+    vitalsFactor,
+    adherenceFactor,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'companion_health_scores';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CompanionHealthScore> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('calculated_at')) {
+      context.handle(
+        _calculatedAtMeta,
+        calculatedAt.isAcceptableOrUnknown(
+          data['calculated_at']!,
+          _calculatedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_calculatedAtMeta);
+    }
+    if (data.containsKey('score')) {
+      context.handle(
+        _scoreMeta,
+        score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_scoreMeta);
+    }
+    if (data.containsKey('logging_factor')) {
+      context.handle(
+        _loggingFactorMeta,
+        loggingFactor.isAcceptableOrUnknown(
+          data['logging_factor']!,
+          _loggingFactorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_loggingFactorMeta);
+    }
+    if (data.containsKey('vitals_factor')) {
+      context.handle(
+        _vitalsFactorMeta,
+        vitalsFactor.isAcceptableOrUnknown(
+          data['vitals_factor']!,
+          _vitalsFactorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_vitalsFactorMeta);
+    }
+    if (data.containsKey('adherence_factor')) {
+      context.handle(
+        _adherenceFactorMeta,
+        adherenceFactor.isAcceptableOrUnknown(
+          data['adherence_factor']!,
+          _adherenceFactorMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_adherenceFactorMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CompanionHealthScore map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CompanionHealthScore(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      calculatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}calculated_at'],
+      )!,
+      score: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}score'],
+      )!,
+      loggingFactor: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}logging_factor'],
+      )!,
+      vitalsFactor: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}vitals_factor'],
+      )!,
+      adherenceFactor: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}adherence_factor'],
+      )!,
+    );
+  }
+
+  @override
+  $CompanionHealthScoresTable createAlias(String alias) {
+    return $CompanionHealthScoresTable(attachedDatabase, alias);
+  }
+}
+
+class CompanionHealthScore extends DataClass
+    implements Insertable<CompanionHealthScore> {
+  final int id;
+  final DateTime calculatedAt;
+  final double score;
+  final double loggingFactor;
+  final double vitalsFactor;
+  final double adherenceFactor;
+  const CompanionHealthScore({
+    required this.id,
+    required this.calculatedAt,
+    required this.score,
+    required this.loggingFactor,
+    required this.vitalsFactor,
+    required this.adherenceFactor,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['calculated_at'] = Variable<DateTime>(calculatedAt);
+    map['score'] = Variable<double>(score);
+    map['logging_factor'] = Variable<double>(loggingFactor);
+    map['vitals_factor'] = Variable<double>(vitalsFactor);
+    map['adherence_factor'] = Variable<double>(adherenceFactor);
+    return map;
+  }
+
+  CompanionHealthScoresCompanion toCompanion(bool nullToAbsent) {
+    return CompanionHealthScoresCompanion(
+      id: Value(id),
+      calculatedAt: Value(calculatedAt),
+      score: Value(score),
+      loggingFactor: Value(loggingFactor),
+      vitalsFactor: Value(vitalsFactor),
+      adherenceFactor: Value(adherenceFactor),
+    );
+  }
+
+  factory CompanionHealthScore.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CompanionHealthScore(
+      id: serializer.fromJson<int>(json['id']),
+      calculatedAt: serializer.fromJson<DateTime>(json['calculatedAt']),
+      score: serializer.fromJson<double>(json['score']),
+      loggingFactor: serializer.fromJson<double>(json['loggingFactor']),
+      vitalsFactor: serializer.fromJson<double>(json['vitalsFactor']),
+      adherenceFactor: serializer.fromJson<double>(json['adherenceFactor']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'calculatedAt': serializer.toJson<DateTime>(calculatedAt),
+      'score': serializer.toJson<double>(score),
+      'loggingFactor': serializer.toJson<double>(loggingFactor),
+      'vitalsFactor': serializer.toJson<double>(vitalsFactor),
+      'adherenceFactor': serializer.toJson<double>(adherenceFactor),
+    };
+  }
+
+  CompanionHealthScore copyWith({
+    int? id,
+    DateTime? calculatedAt,
+    double? score,
+    double? loggingFactor,
+    double? vitalsFactor,
+    double? adherenceFactor,
+  }) => CompanionHealthScore(
+    id: id ?? this.id,
+    calculatedAt: calculatedAt ?? this.calculatedAt,
+    score: score ?? this.score,
+    loggingFactor: loggingFactor ?? this.loggingFactor,
+    vitalsFactor: vitalsFactor ?? this.vitalsFactor,
+    adherenceFactor: adherenceFactor ?? this.adherenceFactor,
+  );
+  CompanionHealthScore copyWithCompanion(CompanionHealthScoresCompanion data) {
+    return CompanionHealthScore(
+      id: data.id.present ? data.id.value : this.id,
+      calculatedAt: data.calculatedAt.present
+          ? data.calculatedAt.value
+          : this.calculatedAt,
+      score: data.score.present ? data.score.value : this.score,
+      loggingFactor: data.loggingFactor.present
+          ? data.loggingFactor.value
+          : this.loggingFactor,
+      vitalsFactor: data.vitalsFactor.present
+          ? data.vitalsFactor.value
+          : this.vitalsFactor,
+      adherenceFactor: data.adherenceFactor.present
+          ? data.adherenceFactor.value
+          : this.adherenceFactor,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CompanionHealthScore(')
+          ..write('id: $id, ')
+          ..write('calculatedAt: $calculatedAt, ')
+          ..write('score: $score, ')
+          ..write('loggingFactor: $loggingFactor, ')
+          ..write('vitalsFactor: $vitalsFactor, ')
+          ..write('adherenceFactor: $adherenceFactor')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    calculatedAt,
+    score,
+    loggingFactor,
+    vitalsFactor,
+    adherenceFactor,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CompanionHealthScore &&
+          other.id == this.id &&
+          other.calculatedAt == this.calculatedAt &&
+          other.score == this.score &&
+          other.loggingFactor == this.loggingFactor &&
+          other.vitalsFactor == this.vitalsFactor &&
+          other.adherenceFactor == this.adherenceFactor);
+}
+
+class CompanionHealthScoresCompanion
+    extends UpdateCompanion<CompanionHealthScore> {
+  final Value<int> id;
+  final Value<DateTime> calculatedAt;
+  final Value<double> score;
+  final Value<double> loggingFactor;
+  final Value<double> vitalsFactor;
+  final Value<double> adherenceFactor;
+  const CompanionHealthScoresCompanion({
+    this.id = const Value.absent(),
+    this.calculatedAt = const Value.absent(),
+    this.score = const Value.absent(),
+    this.loggingFactor = const Value.absent(),
+    this.vitalsFactor = const Value.absent(),
+    this.adherenceFactor = const Value.absent(),
+  });
+  CompanionHealthScoresCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime calculatedAt,
+    required double score,
+    required double loggingFactor,
+    required double vitalsFactor,
+    required double adherenceFactor,
+  }) : calculatedAt = Value(calculatedAt),
+       score = Value(score),
+       loggingFactor = Value(loggingFactor),
+       vitalsFactor = Value(vitalsFactor),
+       adherenceFactor = Value(adherenceFactor);
+  static Insertable<CompanionHealthScore> custom({
+    Expression<int>? id,
+    Expression<DateTime>? calculatedAt,
+    Expression<double>? score,
+    Expression<double>? loggingFactor,
+    Expression<double>? vitalsFactor,
+    Expression<double>? adherenceFactor,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (calculatedAt != null) 'calculated_at': calculatedAt,
+      if (score != null) 'score': score,
+      if (loggingFactor != null) 'logging_factor': loggingFactor,
+      if (vitalsFactor != null) 'vitals_factor': vitalsFactor,
+      if (adherenceFactor != null) 'adherence_factor': adherenceFactor,
+    });
+  }
+
+  CompanionHealthScoresCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? calculatedAt,
+    Value<double>? score,
+    Value<double>? loggingFactor,
+    Value<double>? vitalsFactor,
+    Value<double>? adherenceFactor,
+  }) {
+    return CompanionHealthScoresCompanion(
+      id: id ?? this.id,
+      calculatedAt: calculatedAt ?? this.calculatedAt,
+      score: score ?? this.score,
+      loggingFactor: loggingFactor ?? this.loggingFactor,
+      vitalsFactor: vitalsFactor ?? this.vitalsFactor,
+      adherenceFactor: adherenceFactor ?? this.adherenceFactor,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (calculatedAt.present) {
+      map['calculated_at'] = Variable<DateTime>(calculatedAt.value);
+    }
+    if (score.present) {
+      map['score'] = Variable<double>(score.value);
+    }
+    if (loggingFactor.present) {
+      map['logging_factor'] = Variable<double>(loggingFactor.value);
+    }
+    if (vitalsFactor.present) {
+      map['vitals_factor'] = Variable<double>(vitalsFactor.value);
+    }
+    if (adherenceFactor.present) {
+      map['adherence_factor'] = Variable<double>(adherenceFactor.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CompanionHealthScoresCompanion(')
+          ..write('id: $id, ')
+          ..write('calculatedAt: $calculatedAt, ')
+          ..write('score: $score, ')
+          ..write('loggingFactor: $loggingFactor, ')
+          ..write('vitalsFactor: $vitalsFactor, ')
+          ..write('adherenceFactor: $adherenceFactor')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3141,6 +3567,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MedicineDosesTable medicineDoses = $MedicineDosesTable(this);
   late final $SymptomEntriesTable symptomEntries = $SymptomEntriesTable(this);
   late final $DoctorVisitsTable doctorVisits = $DoctorVisitsTable(this);
+  late final $CompanionHealthScoresTable companionHealthScores =
+      $CompanionHealthScoresTable(this);
   late final ProfileDao profileDao = ProfileDao(this as AppDatabase);
   late final VitalsDao vitalsDao = VitalsDao(this as AppDatabase);
   late final MedicineDao medicineDao = MedicineDao(this as AppDatabase);
@@ -3162,6 +3590,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     medicineDoses,
     symptomEntries,
     doctorVisits,
+    companionHealthScores,
   ];
 }
 
@@ -4944,6 +5373,246 @@ typedef $$DoctorVisitsTableProcessedTableManager =
       DoctorVisit,
       PrefetchHooks Function()
     >;
+typedef $$CompanionHealthScoresTableCreateCompanionBuilder =
+    CompanionHealthScoresCompanion Function({
+      Value<int> id,
+      required DateTime calculatedAt,
+      required double score,
+      required double loggingFactor,
+      required double vitalsFactor,
+      required double adherenceFactor,
+    });
+typedef $$CompanionHealthScoresTableUpdateCompanionBuilder =
+    CompanionHealthScoresCompanion Function({
+      Value<int> id,
+      Value<DateTime> calculatedAt,
+      Value<double> score,
+      Value<double> loggingFactor,
+      Value<double> vitalsFactor,
+      Value<double> adherenceFactor,
+    });
+
+class $$CompanionHealthScoresTableFilterComposer
+    extends Composer<_$AppDatabase, $CompanionHealthScoresTable> {
+  $$CompanionHealthScoresTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get calculatedAt => $composableBuilder(
+    column: $table.calculatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get loggingFactor => $composableBuilder(
+    column: $table.loggingFactor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get vitalsFactor => $composableBuilder(
+    column: $table.vitalsFactor,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get adherenceFactor => $composableBuilder(
+    column: $table.adherenceFactor,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CompanionHealthScoresTableOrderingComposer
+    extends Composer<_$AppDatabase, $CompanionHealthScoresTable> {
+  $$CompanionHealthScoresTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get calculatedAt => $composableBuilder(
+    column: $table.calculatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get loggingFactor => $composableBuilder(
+    column: $table.loggingFactor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get vitalsFactor => $composableBuilder(
+    column: $table.vitalsFactor,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get adherenceFactor => $composableBuilder(
+    column: $table.adherenceFactor,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CompanionHealthScoresTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CompanionHealthScoresTable> {
+  $$CompanionHealthScoresTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get calculatedAt => $composableBuilder(
+    column: $table.calculatedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get score =>
+      $composableBuilder(column: $table.score, builder: (column) => column);
+
+  GeneratedColumn<double> get loggingFactor => $composableBuilder(
+    column: $table.loggingFactor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get vitalsFactor => $composableBuilder(
+    column: $table.vitalsFactor,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get adherenceFactor => $composableBuilder(
+    column: $table.adherenceFactor,
+    builder: (column) => column,
+  );
+}
+
+class $$CompanionHealthScoresTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CompanionHealthScoresTable,
+          CompanionHealthScore,
+          $$CompanionHealthScoresTableFilterComposer,
+          $$CompanionHealthScoresTableOrderingComposer,
+          $$CompanionHealthScoresTableAnnotationComposer,
+          $$CompanionHealthScoresTableCreateCompanionBuilder,
+          $$CompanionHealthScoresTableUpdateCompanionBuilder,
+          (
+            CompanionHealthScore,
+            BaseReferences<
+              _$AppDatabase,
+              $CompanionHealthScoresTable,
+              CompanionHealthScore
+            >,
+          ),
+          CompanionHealthScore,
+          PrefetchHooks Function()
+        > {
+  $$CompanionHealthScoresTableTableManager(
+    _$AppDatabase db,
+    $CompanionHealthScoresTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CompanionHealthScoresTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CompanionHealthScoresTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CompanionHealthScoresTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> calculatedAt = const Value.absent(),
+                Value<double> score = const Value.absent(),
+                Value<double> loggingFactor = const Value.absent(),
+                Value<double> vitalsFactor = const Value.absent(),
+                Value<double> adherenceFactor = const Value.absent(),
+              }) => CompanionHealthScoresCompanion(
+                id: id,
+                calculatedAt: calculatedAt,
+                score: score,
+                loggingFactor: loggingFactor,
+                vitalsFactor: vitalsFactor,
+                adherenceFactor: adherenceFactor,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DateTime calculatedAt,
+                required double score,
+                required double loggingFactor,
+                required double vitalsFactor,
+                required double adherenceFactor,
+              }) => CompanionHealthScoresCompanion.insert(
+                id: id,
+                calculatedAt: calculatedAt,
+                score: score,
+                loggingFactor: loggingFactor,
+                vitalsFactor: vitalsFactor,
+                adherenceFactor: adherenceFactor,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CompanionHealthScoresTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CompanionHealthScoresTable,
+      CompanionHealthScore,
+      $$CompanionHealthScoresTableFilterComposer,
+      $$CompanionHealthScoresTableOrderingComposer,
+      $$CompanionHealthScoresTableAnnotationComposer,
+      $$CompanionHealthScoresTableCreateCompanionBuilder,
+      $$CompanionHealthScoresTableUpdateCompanionBuilder,
+      (
+        CompanionHealthScore,
+        BaseReferences<
+          _$AppDatabase,
+          $CompanionHealthScoresTable,
+          CompanionHealthScore
+        >,
+      ),
+      CompanionHealthScore,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4960,4 +5629,6 @@ class $AppDatabaseManager {
       $$SymptomEntriesTableTableManager(_db, _db.symptomEntries);
   $$DoctorVisitsTableTableManager get doctorVisits =>
       $$DoctorVisitsTableTableManager(_db, _db.doctorVisits);
+  $$CompanionHealthScoresTableTableManager get companionHealthScores =>
+      $$CompanionHealthScoresTableTableManager(_db, _db.companionHealthScores);
 }
