@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/health_thresholds.dart';
 import '../../../core/database/app_database.dart';
+import '../../../settings/providers/settings_provider.dart';
 import '../../../shared/widgets/color_coded_input.dart';
 import '../../companion/providers/chs_provider.dart';
 
@@ -141,25 +142,29 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
             const SizedBox(height: 24),
             _sectionLabel('Blood Sugar'),
             const SizedBox(height: 8),
-            ColorCodedInput(
-              label: 'Blood Sugar',
-              suffix: _isFasting ? 'mg/dL (fasting)' : 'mg/dL (post-meal)',
-              controller: _sugarCtrl,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              statusEvaluator: (val) {
-                final v = double.tryParse(val);
-                if (v == null) return VitalStatus.normal;
-                if (v < BloodSugarThreshold.hypoMin) return VitalStatus.critical;
-                if (_isFasting) {
-                  if (v >= 126) return VitalStatus.critical;
-                  if (v > BloodSugarThreshold.fastingNormalMax) return VitalStatus.borderline;
-                } else {
-                  if (v >= 200) return VitalStatus.critical;
-                  if (v > BloodSugarThreshold.postMealNormalMax) return VitalStatus.borderline;
-                }
-                return VitalStatus.normal;
-              },
-            ),
+            Consumer(builder: (context, ref, _) {
+              final unit = ref.watch(settingsNotifierProvider).valueOrNull?.sugarUnit ?? 'mgdl';
+              final unitLabel = unit == 'mmol' ? 'mmol/L' : 'mg/dL';
+              return ColorCodedInput(
+                label: 'Blood Sugar',
+                suffix: _isFasting ? '$unitLabel (fasting)' : '$unitLabel (post-meal)',
+                controller: _sugarCtrl,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                statusEvaluator: (val) {
+                  final v = double.tryParse(val);
+                  if (v == null) return VitalStatus.normal;
+                  if (v < BloodSugarThreshold.hypoMinFor(unit)) return VitalStatus.critical;
+                  if (_isFasting) {
+                    if (v >= BloodSugarThreshold.fastingCriticalFor(unit)) return VitalStatus.critical;
+                    if (v > BloodSugarThreshold.fastingNormalMaxFor(unit)) return VitalStatus.borderline;
+                  } else {
+                    if (v >= BloodSugarThreshold.postMealCriticalFor(unit)) return VitalStatus.critical;
+                    if (v > BloodSugarThreshold.postMealNormalMaxFor(unit)) return VitalStatus.borderline;
+                  }
+                  return VitalStatus.normal;
+                },
+              );
+            }),
             const SizedBox(height: 8),
             SegmentedButton<bool>(
               segments: const [

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/constants/health_thresholds.dart';
 import '../../features/vitals/providers/vitals_provider.dart';
+import '../../settings/providers/settings_provider.dart';
 
 class VitalsSummaryRow extends ConsumerWidget {
   const VitalsSummaryRow({super.key});
@@ -9,6 +11,7 @@ class VitalsSummaryRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final entry = ref.watch(todaysVitalsProvider).valueOrNull;
+    final unit = ref.watch(settingsNotifierProvider).valueOrNull?.sugarUnit ?? 'mgdl';
 
     if (entry == null) return const SizedBox.shrink();
 
@@ -26,7 +29,7 @@ class VitalsSummaryRow extends ConsumerWidget {
       final status = _sugarFastingStatus(entry.bloodSugarFasting!);
       chips.add(_chip(
         label: 'Sugar',
-        value: '${entry.bloodSugarFasting!.toStringAsFixed(0)}',
+        value: formatSugar(entry.bloodSugarFasting!, unit).split(' ')[0],
         statusColor: status,
       ));
     }

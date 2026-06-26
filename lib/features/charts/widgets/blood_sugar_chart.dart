@@ -1,12 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/health_thresholds.dart';
 import '../../../core/database/app_database.dart';
+import '../../../settings/providers/settings_provider.dart';
 import '../services/chart_service.dart';
 
-class BloodSugarChart extends StatelessWidget {
+class BloodSugarChart extends ConsumerWidget {
   final List<VitalsEntry> entries;
   final int titleInterval;
   const BloodSugarChart({super.key, required this.entries, this.titleInterval = 1});
@@ -25,7 +27,9 @@ class BloodSugarChart extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unit = ref.watch(settingsNotifierProvider).valueOrNull?.sugarUnit ?? 'mgdl';
+
     final grouped = <DateTime, List<VitalsEntry>>{};
     for (final e in entries) {
       final day = DateTime(e.loggedAt.year, e.loggedAt.month, e.loggedAt.day);
@@ -44,7 +48,7 @@ class BloodSugarChart extends StatelessWidget {
       final rods = <BarChartRodData>[];
       if (fasting != null) {
         rods.add(BarChartRodData(
-          toY: fasting,
+          toY: unit == 'mmol' ? fasting / 18.0 : fasting,
           color: _sugarColor(fasting, isFasting: true),
           width: 14,
           borderRadius: const BorderRadius.all(Radius.circular(4)),
@@ -52,7 +56,7 @@ class BloodSugarChart extends StatelessWidget {
       }
       if (postMeal != null) {
         rods.add(BarChartRodData(
-          toY: postMeal,
+          toY: unit == 'mmol' ? postMeal / 18.0 : postMeal,
           color: _sugarColor(postMeal, isFasting: false),
           width: 14,
           borderRadius: const BorderRadius.all(Radius.circular(4)),
@@ -63,6 +67,8 @@ class BloodSugarChart extends StatelessWidget {
       }
     }
 
+    final maxY = BloodSugarThreshold.chartMaxYFor(unit);
+
     return SizedBox(
       height: 220,
       child: BarChart(
@@ -70,10 +76,10 @@ class BloodSugarChart extends StatelessWidget {
           barGroups: barGroups,
           groupsSpace: 12,
           alignment: BarChartAlignment.center,
-          maxY: 250,
+          maxY: maxY,
           extraLinesData: ExtraLinesData(horizontalLines: [
             HorizontalLine(
-              y: BloodSugarThreshold.fastingNormalMax,
+              y: BloodSugarThreshold.fastingNormalMaxFor(unit),
               color: const Color(0xFF009688).withValues(alpha: 0.25),
               strokeWidth: 1,
               dashArray: [5, 5],
@@ -87,7 +93,7 @@ class BloodSugarChart extends StatelessWidget {
               ),
             ),
             HorizontalLine(
-              y: BloodSugarThreshold.postMealNormalMax,
+              y: BloodSugarThreshold.postMealNormalMaxFor(unit),
               color: const Color(0xFFFFC107).withValues(alpha: 0.25),
               strokeWidth: 1,
               dashArray: [5, 5],
@@ -105,11 +111,11 @@ class BloodSugarChart extends StatelessWidget {
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 36,
+                reservedSize: 42,
                 getTitlesWidget: (value, meta) {
                   if (value == meta.min) return const SizedBox();
                   return Text(
-                    value.toInt().toString(),
+                    unit == 'mmol' ? value.toStringAsFixed(1) : value.toInt().toString(),
                     style: const TextStyle(fontSize: 10),
                   );
                 },
@@ -127,7 +133,7 @@ class BloodSugarChart extends StatelessWidget {
           ),
           gridData: FlGridData(
             show: true,
-            horizontalInterval: 50,
+            horizontalInterval: maxY / 5,
             getDrawingHorizontalLine: (value) => FlLine(
               color: Colors.grey.withValues(alpha: 0.15),
               strokeWidth: 1,

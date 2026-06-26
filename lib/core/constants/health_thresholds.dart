@@ -11,6 +11,27 @@ class BloodSugarThreshold {
   static const double postMealNormalMax = 140.0;
   static const double postMealBorderlineMax = 199.0;
   static const double hypoMin = 70.0;
+
+  static const double _mmolFactor = 18.0;
+
+  static double _inUnit(double mgdl, String unit) =>
+      unit == 'mmol' ? mgdl / _mmolFactor : mgdl;
+
+  static double fastingNormalMaxFor(String unit) => _inUnit(fastingNormalMax, unit);
+  static double fastingBorderlineMaxFor(String unit) => _inUnit(fastingBorderlineMax, unit);
+  static double fastingCriticalFor(String unit) => _inUnit(126.0, unit);
+  static double postMealNormalMaxFor(String unit) => _inUnit(postMealNormalMax, unit);
+  static double postMealBorderlineMaxFor(String unit) => _inUnit(postMealBorderlineMax, unit);
+  static double postMealCriticalFor(String unit) => _inUnit(200.0, unit);
+  static double hypoMinFor(String unit) => _inUnit(hypoMin, unit);
+  static double chartMaxYFor(String unit) => _inUnit(250.0, unit);
+}
+
+String formatSugar(double mgdl, String unit) {
+  if (unit == 'mmol') {
+    return '${(mgdl / 18.0).toStringAsFixed(1)} mmol/L';
+  }
+  return '${mgdl.toStringAsFixed(0)} mg/dL';
 }
 
 class SpO2Threshold {

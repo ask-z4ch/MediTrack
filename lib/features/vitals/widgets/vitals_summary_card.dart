@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/health_thresholds.dart';
 import '../../../core/database/app_database.dart';
+import '../../../settings/providers/settings_provider.dart';
 import '../providers/vitals_provider.dart';
 
 class VitalsSummaryCard extends ConsumerStatefulWidget {
@@ -157,6 +158,7 @@ class _VitalsSummaryCardState extends ConsumerState<VitalsSummaryCard>
   }
 
   Widget _buildVitalsCard(VitalsEntry entry) {
+    final unit = ref.watch(settingsNotifierProvider).valueOrNull?.sugarUnit ?? 'mgdl';
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -175,13 +177,13 @@ class _VitalsSummaryCardState extends ConsumerState<VitalsSummaryCard>
             if (entry.bloodSugarFasting != null)
               _vitalRow(
                 'Blood Sugar (fasting)',
-                '${entry.bloodSugarFasting!.toStringAsFixed(1)} mg/dL',
+                formatSugar(entry.bloodSugarFasting!, unit),
                 _dotColor(_sugarFastingStatus(entry.bloodSugarFasting!)),
               ),
             if (entry.bloodSugarPostMeal != null)
               _vitalRow(
                 'Blood Sugar (post-meal)',
-                '${entry.bloodSugarPostMeal!.toStringAsFixed(1)} mg/dL',
+                formatSugar(entry.bloodSugarPostMeal!, unit),
                 _dotColor(_sugarPostMealStatus(entry.bloodSugarPostMeal!)),
               ),
             if (entry.temperatureCelsius != null)
