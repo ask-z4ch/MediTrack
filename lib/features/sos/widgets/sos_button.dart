@@ -113,7 +113,12 @@ class _SosButtonState extends ConsumerState<SosButton>
 
   Future<void> _sendSos(UserProfile profile) async {
     if (!mounted) return;
-    await SosService().sendSos(profile: profile);
+    final phone = profile.emergencyContactPhone;
+    if (phone == null || phone.isEmpty) return;
+    await SOSService().sendSOS(
+      profile: profile,
+      contactPhone: phone,
+    );
   }
 
   @override

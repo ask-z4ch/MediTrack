@@ -1,44 +1,62 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/database/app_database.dart';
 
-class SosService {
-  Future<void> sendSos({
+class SOSService {
+  Future<void> sendSOS({
     required UserProfile profile,
+    required String contactPhone,
+    bool isTest = false,
   }) async {
-    final phone = profile.emergencyContactPhone;
-    if (phone == null || phone.isEmpty) return;
-
-    final name = profile.emergencyContactName ?? 'Emergency Contact';
-    final relation = profile.emergencyContactRelation ?? '';
-
-    final buffer = StringBuffer();
-    buffer.writeln('SOS ALERT from MediTrack — $name ($relation) needs help!');
-    buffer.writeln();
-
+    Position? position;
     try {
-      final pos = await Geolocator.getCurrentPosition(
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        await Geolocator.requestPermission();
+      }
+      position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
           timeLimit: Duration(seconds: 10),
         ),
       );
-      buffer.writeln('Location: https://maps.google.com/maps?q=${pos.latitude},${pos.longitude}');
-      buffer.writeln('Accuracy: ${pos.accuracy?.round()}m');
     } catch (_) {
-      buffer.writeln('(Location unavailable)');
+      // GPS unavailable — send SOS without coordinates
     }
 
-    buffer.writeln('This is an automated SOS from MediTrack.');
+    final message = _buildSOSMessage(profile, position, isTest: isTest);
+    final encoded = Uri.encodeComponent(message);
+    final uri = Uri.parse('sms:$contactPhone?body=$encoded');
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
 
-    final uri = Uri(
-      scheme: 'sms',
-      path: phone,
-      queryParameters: {'body': buffer.toString()},
-    );
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+  String _buildSOSMessage(
+    UserProfile profile,
+    Position? position, {
+    bool isTest = false,
+  }) {
+    final buf = StringBuffer();
+    if (isTest) buf.writeln('[TEST MESSAGE — IGNORE IF UNEXPECTED]');
+    buf.writeln('🆘 EMERGENCY — ${profile.name} needs immediate help');
+    buf.writeln('Blood Group: ${profile.bloodGroup ?? "Unknown"}');
+    if (profile.activeConditions.isNotEmpty) {
+      buf.writeln('Medical Conditions: ${profile.activeConditions}');
     }
+    if (profile.allergies.isNotEmpty) {
+      buf.writeln('Allergies: ${profile.allergies}');
+    }
+    if (position != null) {
+      buf.writeln(
+        'Location: https://maps.google.com/?q=${position.latitude},${position.longitude}',
+      );
+    } else {
+      buf.writeln('Location: Could not be determined');
+    }
+    buf.writeln(
+        'Time: ${DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.now())}');
+    buf.writeln('— Sent via MediTrack');
+    return buf.toString();
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../profile/providers/profile_provider.dart';
+import '../services/sos_service.dart';
 
 class EmergencyContactScreen extends ConsumerStatefulWidget {
   const EmergencyContactScreen({super.key});
@@ -90,19 +90,12 @@ class _EmergencyContactScreenState
       return;
     }
 
-    final uri = Uri(
-      scheme: 'sms',
-      path: phone,
-      queryParameters: {'body': '[TEST] This is a test SOS from MediTrack.'},
+    if (profile == null) return;
+    await SOSService().sendSOS(
+      profile: profile,
+      contactPhone: phone,
+      isTest: true,
     );
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open SMS app.')),
-      );
-    }
   }
 
   @override
