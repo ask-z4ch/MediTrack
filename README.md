@@ -28,7 +28,7 @@ instincts rather than hollow gamification.
 [Download MediTrack v1.0.apk](https://drive.google.com/drive/folders/1Yf5-1nCXRNXiY9Ol_kyhR4PlLDCzg9Zc?usp=drive_link)
 
 ## Test Account
-Email: `test@meditrack.app` | Password: `Demo@1234`
+Email: `test@meditrack.com` | Password: `Demo@1234`
 
 ## Features
 - [x] User profile with blood group, conditions, allergies

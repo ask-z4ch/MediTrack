@@ -47,15 +47,28 @@ final GoRouter appRouter = GoRouter(
     final hasSeenOnboarding = prefs.getBool('has_seen_onboarding') ?? false;
     final isOnOnboarding = location == '/onboarding';
 
-    if (!hasSeenOnboarding && !isOnOnboarding) return '/onboarding';
-    if (hasSeenOnboarding && isOnOnboarding) return '/login';
+    // Onboarding guard — highest priority, independent of auth
+    if (!hasSeenOnboarding) {
+      if (!isOnOnboarding) return '/onboarding';
+      return null; // stay on onboarding
+    }
+    if (hasSeenOnboarding && isOnOnboarding) {
+      final authenticated = AuthService.currentUser != null;
+      if (authenticated) {
+        final hasProfile = prefs.getBool('has_completed_profile') ?? false;
+        return hasProfile ? '/' : '/profile-setup';
+      }
+      return '/login';
+    }
 
+    // Auth guard — onboarding is done
     final authenticated = AuthService.currentUser != null;
     final isOnLogin = location == '/login';
 
     if (!authenticated && !isOnLogin) return '/login';
     if (authenticated && isOnLogin) return '/';
 
+    // Profile guard
     if (authenticated) {
       final hasProfile = prefs.getBool('has_completed_profile') ?? false;
       final isOnProfileSetup = location == '/profile-setup';
