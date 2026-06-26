@@ -16,6 +16,7 @@ import '../../features/sos/screens/emergency_contact_screen.dart';
 import '../../features/vitals/screens/vitals_log_screen.dart';
 import '../../home/screens/home_page.dart';
 import '../../home/screens/home_screen.dart';
+import '../../onboarding/screens/onboarding_screen.dart';
 import '../../settings/screens/settings_screen.dart';
 
 final topLevelNavigatorKey = GlobalKey<NavigatorState>();
@@ -40,15 +41,21 @@ final GoRouter appRouter = GoRouter(
   refreshListenable: authNotifier,
   initialLocation: '/',
   redirect: (context, state) async {
-    final authenticated = AuthService.currentUser != null;
     final location = state.matchedLocation;
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeenOnboarding = prefs.getBool('has_seen_onboarding') ?? false;
+    final isOnOnboarding = location == '/onboarding';
+
+    if (!hasSeenOnboarding && !isOnOnboarding) return '/onboarding';
+    if (hasSeenOnboarding && isOnOnboarding) return '/login';
+
+    final authenticated = AuthService.currentUser != null;
     final isOnLogin = location == '/login';
 
     if (!authenticated && !isOnLogin) return '/login';
     if (authenticated && isOnLogin) return '/';
 
     if (authenticated) {
-      final prefs = await SharedPreferences.getInstance();
       final hasProfile = prefs.getBool('has_completed_profile') ?? false;
       final isOnProfileSetup = location == '/profile-setup';
 
@@ -62,6 +69,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => const OnboardingScreen(),
     ),
     GoRoute(
       path: '/profile-setup',
