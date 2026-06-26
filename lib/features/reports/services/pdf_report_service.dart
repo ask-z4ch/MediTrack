@@ -234,28 +234,31 @@ class PdfReportService {
     );
   }
 
+  pw.Widget _cellText(String text, {pw.TextStyle? style}) {
+    return pw.Container(
+      width: double.infinity,
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Text(text,
+          style: style ?? const pw.TextStyle(fontSize: 9),
+          overflow: pw.TextOverflow.ellipsis),
+    );
+  }
+
   pw.TableRow _tableHeaderRow(List<String> cells) {
     return pw.TableRow(
       decoration: const pw.BoxDecoration(color: PdfColors.blue50),
       children: cells
-          .map((c) => pw.Padding(
-                padding: const pw.EdgeInsets.all(6),
-                child: pw.Text(c,
-                    style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold, fontSize: 9)),
-              ))
+          .map((c) => _cellText(c,
+              style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold, fontSize: 9)))
           .toList(),
     );
   }
 
   pw.TableRow _tableDataRow(List<String> cells) {
     return pw.TableRow(
-      children: cells
-          .map((c) => pw.Padding(
-                padding: const pw.EdgeInsets.all(6),
-                child: pw.Text(c, style: const pw.TextStyle(fontSize: 9)),
-              ))
-          .toList(),
+      children:
+          cells.map((c) => _cellText(c)).toList(),
     );
   }
 
@@ -344,14 +347,11 @@ class PdfReportService {
                   _cell(freqLabel),
                   _cell(scheduled.toString()),
                   _cell(taken.toString()),
-                  pw.Padding(
-                    padding: const pw.EdgeInsets.all(6),
-                    child: pw.Text(adherenceLabel,
-                        style: pw.TextStyle(
-                            fontSize: 9,
-                            fontWeight: pw.FontWeight.bold,
-                            color: adherenceColor)),
-                  ),
+                  _cellText(adherenceLabel,
+                      style: pw.TextStyle(
+                          fontSize: 9,
+                          fontWeight: pw.FontWeight.bold,
+                          color: adherenceColor)),
                 ],
               );
             }),
@@ -361,12 +361,7 @@ class PdfReportService {
     );
   }
 
-  pw.Widget _cell(String text) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.all(6),
-      child: pw.Text(text, style: const pw.TextStyle(fontSize: 9)),
-    );
-  }
+  pw.Widget _cell(String text) => _cellText(text);
 
   pw.Widget _buildSymptomsSection(List<SymptomEntry> symptoms) {
     if (symptoms.isEmpty) {
