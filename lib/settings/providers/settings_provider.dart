@@ -21,4 +21,10 @@ class SettingsNotifier extends _$SettingsNotifier {
     await prefs.setString('sugar_unit', unit);
     ref.invalidateSelf();
   }
+
+  Future<void> setTheme(String theme) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('theme', theme);
+    ref.invalidateSelf();
+  }
 }

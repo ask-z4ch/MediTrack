@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'core/providers/theme_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
 import 'features/companion/providers/chs_provider.dart';
 import 'features/medicines/daos/medicine_dose_dao.dart';
 import 'features/medicines/daos/medicine_dao.dart';
 import 'features/medicines/providers/medicine_provider.dart';
+import 'features/settings/providers/settings_provider.dart';
 import 'features/sync/providers/sync_provider.dart';
 
 class MediTrackApp extends ConsumerStatefulWidget {
@@ -39,7 +39,7 @@ class _MediTrackAppState extends ConsumerState<MediTrackApp> {
 
   @override
   Widget build(BuildContext context) {
-    final themeMode = ref.watch(themeModeNotifierProvider);
+    final settings = ref.watch(settingsNotifierProvider).valueOrNull;
 
     NotificationService.setContext(context);
     NotificationService.setActionHandler((medicineId, actionId) async {
@@ -73,15 +73,22 @@ class _MediTrackAppState extends ConsumerState<MediTrackApp> {
 
     return MaterialApp.router(
       title: 'MediTrack',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.light),
-        useMaterial3: true,
+      theme: ThemeData.light(useMaterial3: true).copyWith(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF00897B),
+        ),
       ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.dark),
-        useMaterial3: true,
+      darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF00897B),
+          brightness: Brightness.dark,
+        ),
       ),
-      themeMode: themeMode.mode,
+      themeMode: switch (settings?.theme) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      },
       routerConfig: appRouter,
     );
   }

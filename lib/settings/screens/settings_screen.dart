@@ -8,7 +8,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../core/providers/theme_provider.dart';
 import '../../core/services/notification_service.dart';
 import '../../features/companion/providers/chs_provider.dart';
 import '../../features/doctor_visits/providers/doctor_visit_provider.dart';
@@ -17,6 +16,7 @@ import '../../features/profile/providers/profile_provider.dart';
 import '../../features/symptoms/providers/symptom_provider.dart';
 import '../../features/sync/providers/sync_provider.dart';
 import '../../features/vitals/providers/vitals_provider.dart';
+import '../providers/settings_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -28,7 +28,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _medicinesEnabled = true;
   bool _followUpsEnabled = true;
-  String _bloodSugarUnit = 'mg/dL';
   String _lastSynced = '';
   bool _syncing = false;
   bool _exporting = false;
@@ -44,7 +43,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() {
       _medicinesEnabled = prefs.getBool('notif_medicines') ?? true;
       _followUpsEnabled = prefs.getBool('notif_followups') ?? true;
-      _bloodSugarUnit = prefs.getString('blood_sugar_unit') ?? 'mg/dL';
     });
     _loadSyncTimestamp();
   }
@@ -79,12 +77,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (key == 'notif_medicines') _medicinesEnabled = value;
       if (key == 'notif_followups') _followUpsEnabled = value;
     });
-  }
-
-  Future<void> _setBloodSugarUnit(String unit) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('blood_sugar_unit', unit);
-    setState(() => _bloodSugarUnit = unit);
   }
 
   Future<void> _syncNow() async {
@@ -213,7 +205,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final profileAsync = ref.watch(profileNotifierProvider);
-    final themeMode = ref.watch(themeModeNotifierProvider);
+    final settingsAsync = ref.watch(settingsNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -299,34 +291,42 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const Divider(),
           _SectionHeader(title: 'Units'),
-          ListTile(
-            leading: const Icon(Icons.science),
-            title: const Text('Blood Sugar Unit'),
-            subtitle: Text(_bloodSugarUnit),
-            trailing: SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: 'mg/dL', label: Text('mg/dL')),
-                ButtonSegment(value: 'mmol/L', label: Text('mmol/L')),
-              ],
-              selected: {_bloodSugarUnit},
-              onSelectionChanged: (v) => _setBloodSugarUnit(v.first),
+          settingsAsync.when(
+            data: (settings) => ListTile(
+              leading: const Icon(Icons.science),
+              title: const Text('Blood Sugar Unit'),
+              subtitle: Text(settings.sugarUnit == 'mmol' ? 'mmol/L' : 'mg/dL'),
+              trailing: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'mgdl', label: Text('mg/dL')),
+                  ButtonSegment(value: 'mmol', label: Text('mmol/L')),
+                ],
+                selected: {settings.sugarUnit},
+                onSelectionChanged: (v) => ref.read(settingsNotifierProvider.notifier).setSugarUnit(v.first),
+              ),
             ),
+            loading: () => const ListTile(title: Text('Loading...')),
+            error: (_, __) => const ListTile(title: Text('Error')),
           ),
           const Divider(),
           _SectionHeader(title: 'Appearance'),
-          ListTile(
-            leading: const Icon(Icons.palette),
-            title: const Text('Theme'),
-            subtitle: Text(_themeModeLabel(themeMode.mode)),
-            trailing: SegmentedButton<ThemeMode>(
-              segments: const [
-                ButtonSegment(value: ThemeMode.light, label: Text('Light')),
-                ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
-                ButtonSegment(value: ThemeMode.system, label: Text('System')),
-              ],
-              selected: {themeMode.mode},
-              onSelectionChanged: (v) => themeMode.setMode(v.first),
+          settingsAsync.when(
+            data: (settings) => ListTile(
+              leading: const Icon(Icons.palette),
+              title: const Text('Theme'),
+              subtitle: Text(settings.theme == 'light' ? 'Light' : settings.theme == 'dark' ? 'Dark' : 'System'),
+              trailing: SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'light', label: Text('Light')),
+                  ButtonSegment(value: 'dark', label: Text('Dark')),
+                  ButtonSegment(value: 'system', label: Text('System')),
+                ],
+                selected: {settings.theme},
+                onSelectionChanged: (v) => ref.read(settingsNotifierProvider.notifier).setTheme(v.first),
+              ),
             ),
+            loading: () => const ListTile(title: Text('Loading...')),
+            error: (_, __) => const ListTile(title: Text('Error')),
           ),
           const Divider(),
           _SectionHeader(title: 'Emergency'),
@@ -355,16 +355,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  String _themeModeLabel(ThemeMode mode) {
-    switch (mode) {
-      case ThemeMode.light:
-        return 'Light';
-      case ThemeMode.dark:
-        return 'Dark';
-      default:
-        return 'System';
-    }
-  }
 }
 
 class _SectionHeader extends StatelessWidget {
