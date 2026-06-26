@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../vitals/daos/vitals_dao.dart';
@@ -39,6 +40,15 @@ class SyncService {
       return;
     }
     await _syncVitals();
+    await _saveSyncTimestamp();
+  }
+
+  Future<void> _saveSyncTimestamp() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      'last_sync_at',
+      DateTime.now().toIso8601String(),
+    );
   }
 
   Future<void> _syncVitals() async {
