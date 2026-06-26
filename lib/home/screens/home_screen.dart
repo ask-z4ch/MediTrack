@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_colors.dart';
 import '../../features/charts/screens/charts_screen.dart';
 import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/sos/widgets/sos_button.dart';
@@ -44,18 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final currentIndex = _currentIndex(context);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        title: const Text('MediTrack'),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => context.push('/settings'),
-          ),
-        ],
-      ),
+      extendBodyBehindAppBar: true,
       body: IndexedStack(
         index: currentIndex,
         children: const [
