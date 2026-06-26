@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/auth/screens/login_screen.dart';
+import '../../features/auth/services/auth_service.dart';
 import '../../features/charts/screens/charts_screen.dart';
 import '../../features/doctor_visits/screens/add_doctor_visit_screen.dart';
 import '../../features/doctor_visits/screens/doctor_visit_list_screen.dart';
 import '../../features/doctor_visits/screens/prescription_viewer_screen.dart';
 import '../../features/medicines/screens/add_medicine_screen.dart';
-import '../../features/reports/screens/report_generator_screen.dart';
 import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/profile/screens/profile_setup_screen.dart';
+import '../../features/reports/screens/report_generator_screen.dart';
 import '../../features/sos/screens/emergency_contact_screen.dart';
 import '../../features/vitals/screens/vitals_log_screen.dart';
 import '../../home/screens/home_page.dart';
@@ -18,19 +20,49 @@ import '../../settings/screens/settings_screen.dart';
 
 final topLevelNavigatorKey = GlobalKey<NavigatorState>();
 
+class AuthNotifier extends ChangeNotifier {
+  bool _authenticated = AuthService.currentUser != null;
+  bool get authenticated => _authenticated;
+
+  void check() {
+    final newVal = AuthService.currentUser != null;
+    if (newVal != _authenticated) {
+      _authenticated = newVal;
+      notifyListeners();
+    }
+  }
+}
+
+final authNotifier = AuthNotifier();
+
 final GoRouter appRouter = GoRouter(
   navigatorKey: topLevelNavigatorKey,
+  refreshListenable: authNotifier,
   initialLocation: '/',
   redirect: (context, state) async {
-    final prefs = await SharedPreferences.getInstance();
-    final hasProfile = prefs.getBool('has_completed_profile') ?? false;
-    final isOnProfileSetup = state.matchedLocation == '/profile-setup';
+    final authenticated = AuthService.currentUser != null;
+    final location = state.matchedLocation;
+    final isOnLogin = location == '/login';
 
-    if (!hasProfile && !isOnProfileSetup) return '/profile-setup';
-    if (hasProfile && isOnProfileSetup) return '/';
+    if (!authenticated && !isOnLogin) return '/login';
+    if (authenticated && isOnLogin) return '/';
+
+    if (authenticated) {
+      final prefs = await SharedPreferences.getInstance();
+      final hasProfile = prefs.getBool('has_completed_profile') ?? false;
+      final isOnProfileSetup = location == '/profile-setup';
+
+      if (!hasProfile && !isOnProfileSetup) return '/profile-setup';
+      if (hasProfile && isOnProfileSetup) return '/';
+    }
+
     return null;
   },
   routes: [
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
     GoRoute(
       path: '/profile-setup',
       builder: (context, state) => const ProfileSetupScreen(),
