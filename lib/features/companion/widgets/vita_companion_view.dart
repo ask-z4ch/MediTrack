@@ -43,6 +43,14 @@ class _VitaCompanionViewState extends ConsumerState<VitaCompanionView>
     return 'assets/lottie/vita_critical.json';
   }
 
+  List<Color> _backgroundGradient(double score) {
+    if (score >= 90) return [const Color(0xFF1B5E20), const Color(0xFF121212)];
+    if (score >= 70) return [const Color(0xFF0D47A1), const Color(0xFF121212)];
+    if (score >= 50) return [const Color(0xFFE65100), const Color(0xFF121212)];
+    if (score >= 30) return [const Color(0xFF4A148C), const Color(0xFF121212)];
+    return [const Color(0xFFB71C1C), const Color(0xFF121212)];
+  }
+
   Future<void> _onTap() async {
     await _scaleController.reverse();
     await _scaleController.forward();
@@ -55,6 +63,7 @@ class _VitaCompanionViewState extends ConsumerState<VitaCompanionView>
   Widget build(BuildContext context) {
     final chs = ref.watch(chsNotifierProvider).value;
     final score = chs?.score ?? 75.0;
+    final gradientColors = _backgroundGradient(score);
 
     return Column(
       children: [
@@ -63,15 +72,27 @@ class _VitaCompanionViewState extends ConsumerState<VitaCompanionView>
           onTap: _onTap,
           child: ScaleTransition(
             scale: _scaleController,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 600),
-              child: Lottie.asset(
-                _lottieAsset(score),
-                key: ValueKey(_lottieAsset(score)),
-                width: double.infinity,
-                height: 260,
-                fit: BoxFit.contain,
-                repeat: true,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 800),
+              height: 260,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: gradientColors,
+                ),
+              ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 600),
+                child: Lottie.asset(
+                  _lottieAsset(score),
+                  key: ValueKey(_lottieAsset(score)),
+                  width: double.infinity,
+                  height: 260,
+                  fit: BoxFit.contain,
+                  repeat: true,
+                ),
               ),
             ),
           ),
