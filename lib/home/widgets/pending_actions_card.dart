@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_colors.dart';
 import '../../features/medicines/providers/medicine_provider.dart';
 import '../../features/vitals/providers/vitals_provider.dart';
+import '../../shared/widgets/app_card.dart';
 
 class PendingActionsCard extends ConsumerWidget {
   const PendingActionsCard({super.key});
@@ -42,43 +43,38 @@ class PendingActionsCard extends ConsumerWidget {
     }
 
     if (actions.isEmpty) {
-      return Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        color: AppColors.normal.withValues(alpha: 0.08),
-        child: const Padding(
-          padding: EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(Icons.check_circle, color: AppColors.normal, size: 20),
-              SizedBox(width: 10),
-              Text(
-                'All done for today \u2713',
-                style: TextStyle(
-                  color: AppColors.normal,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
+      return AppCard(
+        accentColor: AppColors.primary,
+        padding: const EdgeInsets.all(16),
+        child: const Row(
+          children: [
+            Icon(Icons.check_circle, color: AppColors.normal, size: 20),
+            SizedBox(width: 10),
+            Text(
+              'All done for today \u2713',
+              style: TextStyle(
+                color: AppColors.normal,
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     }
 
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    return AppCard(
+      accentColor: AppColors.primary,
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              'Pending Actions',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+          const Text(
+            'Pending Actions',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
           ),
+          const SizedBox(height: 4),
           ...actions,
-          const SizedBox(height: 8),
         ],
       ),
     );
@@ -100,8 +96,8 @@ class _ActionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(icon, color: AppColors.primary),
-      title: Text(label, style: const TextStyle(fontSize: 14)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+      title: Text(label, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: AppColors.textSecondary),
       onTap: onTap,
       dense: true,
     );
@@ -140,41 +136,39 @@ class _ShimmerCardState extends State<_ShimmerCard>
       animation: _controller,
       builder: (context, child) {
         final opacity = Tween<double>(begin: 0.3, end: 0.6).evaluate(_controller);
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 140,
-                  height: 14,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: opacity),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+        return AppCard(
+          accentColor: AppColors.primary,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 140,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: opacity),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                const SizedBox(height: 12),
-                Container(
-                  width: double.infinity,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: opacity),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: opacity),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  width: 200,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: opacity),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: 200,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: opacity),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

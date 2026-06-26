@@ -6,11 +6,11 @@ part of 'streak_counter_widget.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$vitalsStreakHash() => r'058ea933cfb992f85d83102073963c35d5f29f7f';
+String _$vitalsStreakHash() => r'dafad0ad4baf040683605d7dbd6096dae771cdac';
 
 /// See also [vitalsStreak].
 @ProviderFor(vitalsStreak)
-final vitalsStreakProvider = AutoDisposeFutureProvider<int>.internal(
+final vitalsStreakProvider = AutoDisposeFutureProvider<StreakData>.internal(
   vitalsStreak,
   name: r'vitalsStreakProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final vitalsStreakProvider = AutoDisposeFutureProvider<int>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef VitalsStreakRef = AutoDisposeFutureProviderRef<int>;
+typedef VitalsStreakRef = AutoDisposeFutureProviderRef<StreakData>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

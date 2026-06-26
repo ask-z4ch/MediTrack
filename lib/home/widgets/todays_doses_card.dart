@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/constants/app_colors.dart';
+import '../../core/constants/app_colors.dart';
 import '../../features/companion/providers/chs_provider.dart';
 import '../../features/medicines/providers/medicine_provider.dart';
+import '../../shared/widgets/app_card.dart';
 
 class TodaysDosesCard extends ConsumerWidget {
   const TodaysDosesCard({super.key});
@@ -13,37 +14,52 @@ class TodaysDosesCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dosesAsync = ref.watch(todaysDosesProvider);
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("Today's Doses", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-            const Divider(),
-            dosesAsync.when(
-              data: (doses) {
-                if (doses.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Text('No doses scheduled for today'),
-                  );
-                }
-                return Column(
-                  children: doses.map((d) => _DoseTile(doseWithMedicine: d)).toList(),
+    return AppCard(
+      accentColor: AppColors.critical,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.medication_outlined, size: 16, color: AppColors.primary),
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                "Today's Doses",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+              ),
+            ],
+          ),
+          const Divider(color: AppColors.textSecondary, height: 20),
+          dosesAsync.when(
+            data: (doses) {
+              if (doses.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Text('No doses scheduled for today', style: TextStyle(color: AppColors.textSecondary)),
                 );
-              },
-              loading: () => const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (_, __) => const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text('Could not load doses'),
-              ),
+              }
+              return Column(
+                children: doses.map((d) => _DoseTile(doseWithMedicine: d)).toList(),
+              );
+            },
+            loading: () => const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Center(child: CircularProgressIndicator()),
             ),
-          ],
-        ),
+            error: (_, __) => const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Text('Could not load doses', style: TextStyle(color: AppColors.textSecondary)),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -71,11 +87,11 @@ class _DoseTile extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(medicine.name, style: const TextStyle(fontWeight: FontWeight.w500)),
+                Text(medicine.name, style: const TextStyle(fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
                 const SizedBox(height: 2),
                 Text(
                   '${medicine.dosage} at ${time.format(context)}',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
               ],
             ),
@@ -87,6 +103,9 @@ class _DoseTile extends ConsumerWidget {
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 textStyle: const TextStyle(fontSize: 13),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
               ),
               onPressed: () async {
                 await ref.read(medicineDoseDaoProvider).markTaken(dose.id);
