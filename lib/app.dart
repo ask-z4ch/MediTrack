@@ -7,6 +7,7 @@ import 'features/companion/providers/chs_provider.dart';
 import 'features/medicines/daos/medicine_dose_dao.dart';
 import 'features/medicines/daos/medicine_dao.dart';
 import 'features/medicines/providers/medicine_provider.dart';
+import 'features/sync/providers/sync_provider.dart';
 
 class MediTrackApp extends ConsumerStatefulWidget {
   const MediTrackApp({super.key});
@@ -24,6 +25,7 @@ class _MediTrackAppState extends ConsumerState<MediTrackApp> {
     _listener = AppLifecycleListener(
       onResume: () {
         ref.read(cHSNotifierProvider.notifier).recalculate();
+        ref.read(syncServiceProvider).syncAll();
       },
     );
   }
