@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../providers/medicine_provider.dart';
+import '../../features/medicines/providers/medicine_provider.dart';
 
 class TodaysDosesCard extends ConsumerWidget {
   const TodaysDosesCard({super.key});

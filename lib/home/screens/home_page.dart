@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../features/vitals/widgets/vitals_summary_card.dart';
-import 'widgets/todays_doses_card.dart';
+import '../widgets/todays_doses_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

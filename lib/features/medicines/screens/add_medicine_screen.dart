@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:drift/drift.dart';
 
+import '../../../core/database/app_database.dart';
 import '../../../core/services/notification_service.dart';
 import '../daos/medicine_dao.dart';
 import '../models/medicine.dart';
@@ -127,7 +128,7 @@ class _AddMedicineScreenState extends ConsumerState<AddMedicineScreen> {
           ],
         ),
       );
-      if (!granted || !await NotificationService.requestExactAlarmPermission()) return;
+      if (granted != true || !await NotificationService.requestExactAlarmPermission()) return;
     }
 
     final timesStr = jsonEncode(_times.map((t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}').toList());

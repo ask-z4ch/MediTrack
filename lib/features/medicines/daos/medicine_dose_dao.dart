@@ -21,7 +21,7 @@ class MedicineDoseDao extends DatabaseAccessor<AppDatabase>
 
   Future<void> markTaken(int doseId) =>
       (update(medicineDoses)..where((t) => t.id.equals(doseId))).write(
-        const MedicineDosesCompanion(
+        MedicineDosesCompanion(
           takenAt: Value(DateTime.now()),
           status: Value('taken'),
         ),

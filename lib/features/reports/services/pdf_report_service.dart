@@ -244,8 +244,7 @@ class PdfReportService {
       width: double.infinity,
       padding: const pw.EdgeInsets.all(6),
       child: pw.Text(text,
-          style: style ?? const pw.TextStyle(fontSize: 9),
-          overflow: pw.TextOverflow.ellipsis),
+          style: style ?? const pw.TextStyle(fontSize: 9)),
     );
   }
 

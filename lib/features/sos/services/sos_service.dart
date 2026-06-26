@@ -17,10 +17,7 @@ class SOSService {
         await Geolocator.requestPermission();
       }
       position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 10),
-        ),
+        desiredAccuracy: LocationAccuracy.high,
       );
     } catch (_) {
       // GPS unavailable — send SOS without coordinates

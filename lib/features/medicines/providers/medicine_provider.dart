@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -47,7 +48,8 @@ final todaysDosesProvider = FutureProvider<List<DoseWithMedicine>>((ref) async {
   final doseDao = ref.read(medicineDoseDaoProvider);
   final medDao = ref.read(medicineDaoProvider);
 
-  final medicines = await medDao.getActiveMedicines();
+  final all = await medDao.getAllMedicines();
+  final medicines = all.where((m) => m.isActive).toList();
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
 
