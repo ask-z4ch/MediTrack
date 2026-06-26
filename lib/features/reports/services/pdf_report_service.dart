@@ -78,7 +78,7 @@ class PdfReportService {
                     style: pw.TextStyle(
                       fontSize: 22,
                       fontWeight: pw.FontWeight.bold,
-                      color: PdfColors.teal700,
+                      color: PdfColor.fromInt(0xFF00897B),
                     )),
                 pw.SizedBox(height: 4),
                 pw.Text('Patient: ${p.name}',
@@ -106,7 +106,7 @@ class PdfReportService {
             ),
           ],
         ),
-        pw.Divider(thickness: 1.5, color: PdfColors.teal700),
+        pw.Divider(thickness: 1.5, color: PdfColor.fromInt(0xFF00897B)),
       ],
     );
   }

@@ -80,14 +80,14 @@ class BloodSugarChart extends ConsumerWidget {
           extraLinesData: ExtraLinesData(horizontalLines: [
             HorizontalLine(
               y: BloodSugarThreshold.fastingNormalMaxFor(unit),
-              color: const Color(0xFF009688).withValues(alpha: 0.25),
+              color: AppColors.primary.withValues(alpha: 0.25),
               strokeWidth: 1,
               dashArray: [5, 5],
               label: HorizontalLineLabel(
                 show: true,
                 labelResolver: (_) => 'Fasting',
                 style: const TextStyle(
-                  color: Color(0xFF009688),
+                  color: AppColors.primary,
                   fontSize: 9,
                 ),
               ),

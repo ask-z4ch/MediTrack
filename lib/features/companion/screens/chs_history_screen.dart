@@ -16,7 +16,7 @@ class ChsHistoryScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('CHS History'),
-        backgroundColor: AppColors.primaryTeal,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
       body: historyAsync.when(
@@ -64,7 +64,7 @@ class ChsHistoryScreen extends ConsumerWidget {
         lineBarsData: [
           LineChartBarData(
             spots: spots,
-            color: AppColors.primaryTeal,
+            color: AppColors.primary,
             barWidth: 2.5,
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
@@ -161,7 +161,7 @@ class ChsHistoryScreen extends ConsumerWidget {
         _factorChip(
           'Logging',
           latest.loggingFactor,
-          AppColors.primaryTeal,
+          AppColors.primary,
         ),
         const SizedBox(width: 8),
         _factorChip(

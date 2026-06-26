@@ -130,7 +130,7 @@ class _VitalsSummaryCardState extends ConsumerState<VitalsSummaryCard>
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(
-              color: AppColors.primaryTeal.withValues(alpha: _pulseAnim.value),
+              color: AppColors.primary.withValues(alpha: _pulseAnim.value),
               width: 2,
             ),
           ),
@@ -141,7 +141,7 @@ class _VitalsSummaryCardState extends ConsumerState<VitalsSummaryCard>
               padding: EdgeInsets.all(24),
               child: Column(
                 children: [
-                  Icon(Icons.monitor_heart_outlined, size: 48, color: AppColors.primaryTeal),
+                  Icon(Icons.monitor_heart_outlined, size: 48, color: AppColors.primary),
                   SizedBox(height: 12),
                   Text(
                     "Tap to log today's vitals",

@@ -77,7 +77,7 @@ class _EmergencyContactSetupScreenState
     return Scaffold(
       appBar: AppBar(
         title: const Text('Emergency Contact'),
-        backgroundColor: AppColors.primaryTeal,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(

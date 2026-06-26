@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import 'core/constants/app_colors.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
 import 'features/companion/providers/chs_provider.dart';
@@ -73,21 +75,44 @@ class _MediTrackAppState extends ConsumerState<MediTrackApp> {
 
     return MaterialApp.router(
       title: 'MediTrack',
-      theme: ThemeData.light(useMaterial3: true).copyWith(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00897B),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: AppColors.background,
+        colorScheme: ColorScheme.dark(
+          primary: AppColors.primary,
+          surface: AppColors.cardSurface,
+          onSurface: AppColors.textPrimary,
         ),
-      ),
-      darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00897B),
-          brightness: Brightness.dark,
+        cardColor: AppColors.cardSurface,
+        cardTheme: CardTheme(
+          color: AppColors.cardSurface,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: AppColors.background,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          titleTextStyle: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+          iconTheme: IconThemeData(color: AppColors.textPrimary),
+        ),
+        textTheme: GoogleFonts.nunitoTextTheme(
+          ThemeData.dark().textTheme,
         ),
       ),
       themeMode: switch (settings?.theme) {
         'light' => ThemeMode.light,
         'dark' => ThemeMode.dark,
-        _ => ThemeMode.system,
+        _ => ThemeMode.dark,
       },
       routerConfig: appRouter,
     );

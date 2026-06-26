@@ -49,10 +49,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         width: 120,
                         height: 120,
                         decoration: BoxDecoration(
-                          color: AppColors.primaryTeal.withValues(alpha: 0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.monitor_heart_outlined, size: 56, color: AppColors.primaryTeal),
+                        child: Icon(Icons.monitor_heart_outlined, size: 56, color: AppColors.primary),
                       ),
                       headline: 'Your health diary, always with you.',
                       body: 'Log your blood pressure, blood sugar, temperature, and more — with reminders that work even offline.',
@@ -71,10 +71,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         width: 120,
                         height: 120,
                         decoration: BoxDecoration(
-                          color: AppColors.primaryTeal.withValues(alpha: 0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.lock_outline, size: 56, color: AppColors.primaryTeal),
+                        child: Icon(Icons.lock_outline, size: 56, color: AppColors.primary),
                       ),
                       headline: 'Your data stays yours.',
                       body: 'Everything is stored on your device first. Cloud sync is optional and end-to-end authenticated.',
@@ -128,7 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive ? AppColors.primaryTeal : Colors.grey.shade300,
+        color: isActive ? AppColors.primary : Colors.grey.shade300,
         borderRadius: BorderRadius.circular(4),
       ),
     );

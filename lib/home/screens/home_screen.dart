@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primaryTeal,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         title: const Text('MediTrack'),
         automaticallyImplyLeading: false,

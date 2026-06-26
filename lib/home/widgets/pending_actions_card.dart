@@ -99,7 +99,7 @@ class _ActionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primaryTeal),
+      leading: Icon(icon, color: AppColors.primary),
       title: Text(label, style: const TextStyle(fontSize: 14)),
       trailing: const Icon(Icons.arrow_forward_ios, size: 14),
       onTap: onTap,

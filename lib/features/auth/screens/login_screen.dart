@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primaryTeal,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         title: const Text('MediTrack'),
         automaticallyImplyLeading: false,
@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.health_and_safety, size: 64, color: AppColors.primaryTeal),
+              const Icon(Icons.health_and_safety, size: 64, color: AppColors.primary),
               const SizedBox(height: 8),
               Text(
                 _isLogin ? 'Welcome back' : 'Create account',

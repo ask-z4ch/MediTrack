@@ -122,7 +122,7 @@ class _ProfileFormState extends ConsumerState<ProfileForm> {
           children: [
             if (!_isEditMode) ...[
               const SizedBox(height: 32),
-              Icon(Icons.favorite, size: 64, color: AppColors.primaryTeal),
+              Icon(Icons.favorite, size: 64, color: AppColors.primary),
               const SizedBox(height: 16),
               Text(
                 'Welcome to MediTrack',
@@ -208,7 +208,7 @@ class _ProfileFormState extends ConsumerState<ProfileForm> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.add_circle),
-                  color: AppColors.primaryTeal,
+                  color: AppColors.primary,
                   onPressed: _addCondition,
                 ),
               ],
@@ -239,7 +239,7 @@ class _ProfileFormState extends ConsumerState<ProfileForm> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.add_circle),
-                  color: AppColors.primaryTeal,
+                  color: AppColors.primary,
                   onPressed: _addAllergy,
                 ),
               ],

@@ -56,7 +56,7 @@ class StreakCounterWidget extends ConsumerWidget {
         return _buildRow(
           icon: Icons.local_fire_department,
           text: '$streak-day streak$suffix',
-          color: streak >= 7 ? AppColors.borderline : AppColors.primaryTeal,
+          color: streak >= 7 ? AppColors.borderline : AppColors.primary,
         );
       },
       loading: () => const SizedBox.shrink(),

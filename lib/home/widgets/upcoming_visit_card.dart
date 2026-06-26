@@ -42,7 +42,7 @@ class UpcomingVisitCard extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.calendar_today, size: 18, color: AppColors.primaryTeal),
+                    const Icon(Icons.calendar_today, size: 18, color: AppColors.primary),
                     const SizedBox(width: 8),
                     const Expanded(
                       child: Text(

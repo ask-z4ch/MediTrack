@@ -210,7 +210,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        backgroundColor: AppColors.primaryTeal,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
       ),
       body: ListView(
@@ -218,7 +218,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           _SectionHeader(title: 'Profile'),
           ListTile(
             leading: CircleAvatar(
-              backgroundColor: AppColors.primaryTeal,
+              backgroundColor: AppColors.primary,
               child: const Icon(Icons.person, color: Colors.white),
             ),
             title: const Text('Edit Profile'),
@@ -368,7 +368,7 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: AppColors.primaryTeal,
+              color: AppColors.primary,
               fontWeight: FontWeight.w600,
             ),
       ),

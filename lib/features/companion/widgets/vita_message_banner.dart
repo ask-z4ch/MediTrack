@@ -10,7 +10,7 @@ class VitaMessageBanner extends ConsumerWidget {
 
   Color _messageColor(double score) {
     if (score >= 90) return AppColors.normal;
-    if (score >= 70) return AppColors.primaryTeal;
+    if (score >= 70) return AppColors.primary;
     if (score >= 50) return AppColors.borderline;
     if (score >= 30) return Colors.deepOrange;
     return AppColors.critical;
