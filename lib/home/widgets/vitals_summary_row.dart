@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/constants/health_thresholds.dart';
 import '../../features/vitals/providers/vitals_provider.dart';
 import '../../settings/providers/settings_provider.dart';
@@ -13,9 +15,40 @@ class VitalsSummaryRow extends ConsumerWidget {
     final entry = ref.watch(todaysVitalsProvider).valueOrNull;
     final unit = ref.watch(settingsNotifierProvider).valueOrNull?.sugarUnit ?? 'mgdl';
 
-    if (entry == null) return const SizedBox.shrink();
-
     final chips = <Widget>[];
+
+    if (entry == null) {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.only(left: 16),
+        child: GestureDetector(
+          onTap: () => context.go('/vitals'),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.cardSurface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppColors.textSecondary.withValues(alpha: 0.3),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Tap to log vitals \u2192',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     if (entry.bpSystolic != null && entry.bpDiastolic != null) {
       final status = _bpStatus(entry.bpSystolic!, entry.bpDiastolic!);
@@ -27,9 +60,10 @@ class VitalsSummaryRow extends ConsumerWidget {
     }
     if (entry.bloodSugarFasting != null) {
       final status = _sugarFastingStatus(entry.bloodSugarFasting!);
+      final sugarValue = formatSugar(entry.bloodSugarFasting!, unit);
       chips.add(_chip(
         label: 'Sugar',
-        value: formatSugar(entry.bloodSugarFasting!, unit).split(' ')[0],
+        value: sugarValue,
         statusColor: status,
       ));
     }
@@ -46,6 +80,7 @@ class VitalsSummaryRow extends ConsumerWidget {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.only(left: 16),
       child: Row(
         spacing: 10,
         children: chips,
@@ -57,9 +92,12 @@ class VitalsSummaryRow extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: statusColor.withValues(alpha: 0.1),
+        color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: statusColor.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: statusColor.withValues(alpha: 0.4),
+          width: 1,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -67,17 +105,28 @@ class VitalsSummaryRow extends ConsumerWidget {
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: statusColor),
+            decoration: BoxDecoration(
+              color: statusColor,
+              shape: BoxShape.circle,
+            ),
           ),
           const SizedBox(width: 8),
-          Text(
-            label,
-            style: TextStyle(fontSize: 12, color: statusColor, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            value,
-            style: TextStyle(fontSize: 12, color: statusColor, fontWeight: FontWeight.w700),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textSecondary,
+                  )),
+              Text(value,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  )),
+            ],
           ),
         ],
       ),
@@ -85,20 +134,20 @@ class VitalsSummaryRow extends ConsumerWidget {
   }
 
   Color _bpStatus(int systolic, int diastolic) {
-    if (systolic >= 140 || diastolic >= 90) return const Color(0xFFEA4335);
-    if (systolic > 120 || diastolic > 80) return const Color(0xFFFBBC04);
-    return const Color(0xFF34A853);
+    if (systolic >= 140 || diastolic >= 90) return AppColors.critical;
+    if (systolic > 120 || diastolic > 80) return AppColors.borderline;
+    return AppColors.normal;
   }
 
   Color _sugarFastingStatus(double value) {
-    if (value >= 126 || value < 70) return const Color(0xFFEA4335);
-    if (value > 100) return const Color(0xFFFBBC04);
-    return const Color(0xFF34A853);
+    if (value >= 126 || value < 70) return AppColors.critical;
+    if (value > 100) return AppColors.borderline;
+    return AppColors.normal;
   }
 
   Color _spo2Status(int value) {
-    if (value < 90) return const Color(0xFFEA4335);
-    if (value < 95) return const Color(0xFFFBBC04);
-    return const Color(0xFF34A853);
+    if (value < 90) return AppColors.critical;
+    if (value < 95) return AppColors.borderline;
+    return AppColors.normal;
   }
 }
