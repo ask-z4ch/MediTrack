@@ -10,6 +10,7 @@ import '../../features/medicines/screens/add_medicine_screen.dart';
 import '../../features/reports/screens/report_generator_screen.dart';
 import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/profile/screens/profile_setup_screen.dart';
+import '../../features/sos/screens/emergency_contact_setup_screen.dart';
 import '../../features/vitals/screens/vitals_log_screen.dart';
 import '../../home/screens/home_page.dart';
 import '../../home/screens/home_screen.dart';
@@ -33,6 +34,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/add-medicine',
       builder: (context, state) => const AddMedicineScreen(),
+    ),
+    GoRoute(
+      path: '/emergency-contact',
+      builder: (context, state) => const EmergencyContactSetupScreen(),
     ),
     GoRoute(
       path: '/add-doctor-visit',

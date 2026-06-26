@@ -23,7 +23,7 @@ final profileDaoProvider = AutoDisposeProvider<ProfileDao>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ProfileDaoRef = AutoDisposeProviderRef<ProfileDao>;
-String _$profileNotifierHash() => r'227d369a256d91df2fd2002948a74eb67580fbcb';
+String _$profileNotifierHash() => r'70e4063df7c0177b0d57c6cb04de196a5e817c63';
 
 /// See also [ProfileNotifier].
 @ProviderFor(ProfileNotifier)

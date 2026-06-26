@@ -31,4 +31,23 @@ class ProfileNotifier extends _$ProfileNotifier {
     }
     ref.invalidateSelf();
   }
+
+  Future<void> saveEmergencyContact({
+    required String name,
+    required String phone,
+    required String relation,
+  }) async {
+    final dao = ref.read(profileDaoProvider);
+    final existing = await dao.getProfile();
+    if (existing == null) return;
+    await dao.updateProfile(
+      UserProfilesCompanion(
+        id: Value(existing.id),
+        emergencyContactName: Value(name),
+        emergencyContactPhone: Value(phone),
+        emergencyContactRelation: Value(relation),
+      ),
+    );
+    ref.invalidateSelf();
+  }
 }
