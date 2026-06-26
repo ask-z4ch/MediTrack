@@ -20,6 +20,11 @@ CHSCalculatorService chsCalculatorService(ChsCalculatorServiceRef ref) {
 }
 
 @riverpod
+Future<List<CompanionHealthScore>> chsHistory(ChsHistoryRef ref) async {
+  return ref.read(chsDaoProvider).getLast30Days();
+}
+
+@riverpod
 class CHSNotifier extends _$CHSNotifier {
   @override
   Future<CompanionHealthScore?> build() async {

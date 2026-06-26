@@ -6,7 +6,7 @@ part of 'chs_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chsDaoHash() => r'abeb8e3d8c1893e8021e684b0cf3289ec098490b';
+String _$chsDaoHash() => r'5afa478e53451d86db25fcdf2a5cf8787c7c5a22';
 
 /// See also [chsDao].
 @ProviderFor(chsDao)
@@ -42,6 +42,25 @@ final chsCalculatorServiceProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef ChsCalculatorServiceRef = AutoDisposeProviderRef<CHSCalculatorService>;
+String _$chsHistoryHash() => r'2cfb2e4dc857e199d36b2118960b4363b3e02e25';
+
+/// See also [chsHistory].
+@ProviderFor(chsHistory)
+final chsHistoryProvider =
+    AutoDisposeFutureProvider<List<CompanionHealthScore>>.internal(
+      chsHistory,
+      name: r'chsHistoryProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$chsHistoryHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ChsHistoryRef =
+    AutoDisposeFutureProviderRef<List<CompanionHealthScore>>;
 String _$cHSNotifierHash() => r'da6919e4ceced53e5ec2834640c4612f9432b661';
 
 /// See also [CHSNotifier].
