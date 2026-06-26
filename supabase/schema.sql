@@ -122,27 +122,43 @@ ALTER TABLE symptom_entries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE doctor_visits ENABLE ROW LEVEL SECURITY;
 ALTER TABLE companion_health_scores ENABLE ROW LEVEL SECURITY;
 
--- RLS policies: users can only see their own data
-CREATE POLICY "Users can manage their own profile"
-  ON user_profiles FOR ALL USING (auth.uid() = user_id);
+-- RLS policies: users can only see and modify their own data
+-- USING clause controls visibility of existing rows (SELECT, UPDATE, DELETE)
+-- WITH CHECK clause controls modification of new/changed rows (INSERT, UPDATE)
+CREATE POLICY "users_own_profiles"
+  ON user_profiles FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Users can manage their own vitals"
-  ON vitals_entries FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "users_own_vitals"
+  ON vitals_entries FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Users can manage their own medicines"
-  ON medicines FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "users_own_medicines"
+  ON medicines FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Users can manage their own doses"
-  ON medicine_doses FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "users_own_doses"
+  ON medicine_doses FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Users can manage their own symptoms"
-  ON symptom_entries FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "users_own_symptoms"
+  ON symptom_entries FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Users can manage their own doctor visits"
-  ON doctor_visits FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "users_own_doctor_visits"
+  ON doctor_visits FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
-CREATE POLICY "Users can manage their own health scores"
-  ON companion_health_scores FOR ALL USING (auth.uid() = user_id);
+CREATE POLICY "users_own_health_scores"
+  ON companion_health_scores FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
 -- Auto-set user_id on insert for all tables
 CREATE OR REPLACE FUNCTION set_user_id()
