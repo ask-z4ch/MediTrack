@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as p;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../vitals/daos/vitals_dao.dart';
@@ -9,6 +12,25 @@ class SyncService {
   final VitalsDao _vitalsDao;
 
   SyncService(this._vitalsDao);
+
+  Future<String?> uploadPrescription(String localPath, String userId) async {
+    final file = File(localPath);
+    if (!await file.exists()) return null;
+
+    final filename = p.basename(localPath);
+    final storagePath = '$userId/$filename';
+
+    try {
+      await _supabase.storage
+          .from('prescriptions')
+          .upload(storagePath, file,
+              fileOptions: const FileOptions(upsert: true));
+      return storagePath;
+    } catch (e) {
+      debugPrint('Prescription upload failed: $e');
+      return null;
+    }
+  }
 
   Future<void> syncAll() async {
     final connectivity = await Connectivity().checkConnectivity();
