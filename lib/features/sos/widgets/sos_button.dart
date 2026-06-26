@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/database/app_database.dart';
 import '../../profile/providers/profile_provider.dart';
 import '../services/sos_service.dart';
 
@@ -67,37 +68,52 @@ class _SosButtonState extends ConsumerState<SosButton>
       return;
     }
 
-    final confirmed = await showDialog<bool>(
+    int countdown = 5;
+    Timer? countdownTimer;
+    bool cancelled = false;
+
+    await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.warning_amber, color: Colors.red, size: 28),
-            SizedBox(width: 8),
-            Text('SOS Alert'),
-          ],
-        ),
-        content: Text(
-          'Send an SOS alert to ${profile.emergencyContactName ?? "your emergency contact"}?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Send SOS'),
-          ),
-        ],
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) {
+          countdownTimer ??= Timer.periodic(
+            const Duration(seconds: 1),
+            (t) {
+              if (countdown <= 1) {
+                t.cancel();
+                Navigator.of(ctx).pop();
+                if (!cancelled) _sendSos(profile);
+              } else {
+                setDialogState(() => countdown--);
+              }
+            },
+          );
+          return AlertDialog(
+            title: const Text('Sending SOS'),
+            content: Text(
+              'Emergency contact will be notified in $countdown seconds.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  cancelled = true;
+                  countdownTimer?.cancel();
+                  Navigator.of(ctx).pop();
+                },
+                child: const Text('CANCEL',
+                    style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          );
+        },
       ),
     );
+  }
 
-    if (confirmed == true && mounted) {
-      await SosService().sendSos(profile: profile);
-    }
+  Future<void> _sendSos(UserProfile profile) async {
+    if (!mounted) return;
+    await SosService().sendSos(profile: profile);
   }
 
   @override
