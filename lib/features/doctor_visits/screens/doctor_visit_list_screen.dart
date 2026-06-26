@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/database/app_database.dart';
+import '../../../shared/widgets/empty_state_widget.dart';
 import '../providers/doctor_visit_provider.dart';
 
 class DoctorVisitListScreen extends ConsumerWidget {
@@ -20,7 +21,11 @@ class DoctorVisitListScreen extends ConsumerWidget {
       body: visitsAsync.when(
         data: (visits) {
           if (visits.isEmpty) {
-            return const Center(child: Text('No doctor visits logged yet'));
+            return const EmptyStateWidget(
+              emoji: '🏥',
+              title: 'No visits recorded',
+              subtitle: 'Add your first doctor visit to keep track of appointments',
+            );
           }
           final now = DateTime.now();
           final today = DateTime(now.year, now.month, now.day);

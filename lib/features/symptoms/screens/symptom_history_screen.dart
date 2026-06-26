@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../shared/widgets/empty_state_widget.dart';
 import '../models/symptom_entry.dart';
 import '../providers/symptom_provider.dart';
 
@@ -40,7 +41,11 @@ class SymptomHistoryScreen extends ConsumerWidget {
       body: async.when(
         data: (entries) {
           if (entries.isEmpty) {
-            return const Center(child: Text('No symptoms logged yet'));
+            return const EmptyStateWidget(
+              emoji: '📝',
+              title: 'No symptoms logged',
+              subtitle: 'Your symptom entries will appear here',
+            );
           }
           final grouped = _groupByDate(entries);
           final dates = grouped.keys.toList()..sort((a, b) => b.compareTo(a));

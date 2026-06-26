@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/services/notification_service.dart';
+import '../../../shared/widgets/empty_state_widget.dart';
 import '../models/medicine.dart';
 import '../providers/medicine_provider.dart';
 
@@ -55,8 +56,12 @@ class _MedicineTab extends ConsumerWidget {
     return stream.when(
       data: (medicines) {
         if (medicines.isEmpty) {
-          return Center(
-            child: Text(isActive ? 'No active medicines' : 'No inactive medicines'),
+          return EmptyStateWidget(
+            emoji: '💊',
+            title: 'No medicines added',
+            subtitle: isActive
+                ? 'Tap + to add your first medicine'
+                : 'No inactive medicines — toggle a medicine off to see it here',
           );
         }
         return ListView.builder(
