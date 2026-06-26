@@ -63,10 +63,19 @@ class _ColorCodedInputState extends State<ColorCodedInput> {
     return InputDecoration(
       labelText: widget.label,
       suffixText: widget.suffix,
+      filled: true,
+      fillColor: AppColors.cardSurface,
+      labelStyle: const TextStyle(color: AppColors.textSecondary),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: color, width: 2),
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: color, width: 1.5),
       ),
       focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: color, width: 2),
       ),
     );

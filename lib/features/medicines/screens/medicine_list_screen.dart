@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/services/notification_service.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/empty_state_widget.dart';
 import '../models/medicine.dart';
 import '../providers/medicine_provider.dart';
@@ -18,6 +20,7 @@ class MedicineListScreen extends ConsumerWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           title: const Text('Medicines'),
           bottom: const TabBar(
@@ -140,43 +143,41 @@ class _MedicineTile extends ConsumerWidget {
     final nextDose = _nextDoseTime(times);
     final daysLeft = _daysRemaining(medicine.endDate);
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    medicine.name,
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(medicine.dosage, style: TextStyle(color: Colors.grey[600])),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, size: 14, color: Colors.grey[500]),
-                      const SizedBox(width: 4),
-                      Text('Next: $nextDose', style: TextStyle(fontSize: 12, color: Colors.grey[500])),
-                      if (daysLeft.isNotEmpty) ...[
-                        const SizedBox(width: 12),
-                        Text(daysLeft, style: TextStyle(fontSize: 12, color: Colors.grey[500])),
-                      ],
+    return AppCard(
+      accentColor: medicine.isActive ? AppColors.primary : null,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  medicine.name,
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: AppColors.textPrimary),
+                ),
+                const SizedBox(height: 2),
+                Text(medicine.dosage, style: const TextStyle(color: AppColors.textSecondary)),
+                const SizedBox(height: 2),
+                Row(
+                  children: [
+                    const Icon(Icons.access_time, size: 14, color: AppColors.textSecondary),
+                    const SizedBox(width: 4),
+                    Text('Next: $nextDose', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    if (daysLeft.isNotEmpty) ...[
+                      const SizedBox(width: 12),
+                      Text(daysLeft, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                     ],
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
-            Switch(
-              value: medicine.isActive,
-              onChanged: (v) => _toggle(ref, v),
-            ),
-          ],
-        ),
+          ),
+          Switch(
+            value: medicine.isActive,
+            onChanged: (v) => _toggle(ref, v),
+          ),
+        ],
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:drift/drift.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../daos/symptom_dao.dart';
 import '../models/symptom_entry.dart';
 import '../providers/symptom_provider.dart';
@@ -60,6 +61,7 @@ class _SymptomLogScreenState extends ConsumerState<SymptomLogScreen> {
     final severityLabel = _severityLabels[_severity.round()] ?? '';
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(title: const Text('Log Symptom')),
       body: Form(
         key: _formKey,
@@ -68,7 +70,24 @@ class _SymptomLogScreenState extends ConsumerState<SymptomLogScreen> {
           children: [
             TextFormField(
               controller: _nameCtrl,
-              decoration: const InputDecoration(labelText: 'Symptom Name'),
+              decoration: InputDecoration(
+                labelText: 'Symptom Name',
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
+                filled: true,
+                fillColor: AppColors.cardSurface,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.cardElevated),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                ),
+              ),
               validator: (v) => (v?.trim().isEmpty ?? true) ? 'Required' : null,
               textCapitalization: TextCapitalization.sentences,
             ),
@@ -79,8 +98,12 @@ class _SymptomLogScreenState extends ConsumerState<SymptomLogScreen> {
               children: _commonSymptoms.map((symptom) {
                 final selected = _nameCtrl.text == symptom;
                 return FilterChip(
-                  label: Text(symptom, style: const TextStyle(fontSize: 13)),
+                  label: Text(symptom, style: const TextStyle(fontSize: 13, color: AppColors.textPrimary)),
                   selected: selected,
+                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                  checkmarkColor: AppColors.primary,
+                  backgroundColor: AppColors.cardSurface,
+                  side: BorderSide.none,
                   onSelected: (_) => setState(() => _nameCtrl.text = _nameCtrl.text == symptom ? '' : symptom),
                 );
               }).toList(),
@@ -88,11 +111,11 @@ class _SymptomLogScreenState extends ConsumerState<SymptomLogScreen> {
             const SizedBox(height: 32),
             Row(
               children: [
-                const Text('Severity', style: TextStyle(fontSize: 16)),
+                const Text('Severity', style: TextStyle(fontSize: 16, color: AppColors.textPrimary)),
                 const Spacer(),
                 Text(
                   severityLabel,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
                 ),
               ],
             ),
@@ -101,6 +124,7 @@ class _SymptomLogScreenState extends ConsumerState<SymptomLogScreen> {
               min: 1,
               max: 5,
               divisions: 4,
+              activeColor: AppColors.primary,
               label: severityLabel,
               onChanged: (v) => setState(() => _severity = v),
             ),
@@ -109,10 +133,25 @@ class _SymptomLogScreenState extends ConsumerState<SymptomLogScreen> {
               controller: _notesCtrl,
               maxLines: 4,
               maxLength: 500,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Notes',
                 hintText: 'Describe your symptoms...',
-                border: OutlineInputBorder(),
+                labelStyle: const TextStyle(color: AppColors.textSecondary),
+                hintStyle: const TextStyle(color: AppColors.textSecondary),
+                filled: true,
+                fillColor: AppColors.cardSurface,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.cardElevated),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                ),
               ),
               buildCounter: (context, {required int currentLength, required bool isFocused, required int? maxLength}) {
                 return Text(

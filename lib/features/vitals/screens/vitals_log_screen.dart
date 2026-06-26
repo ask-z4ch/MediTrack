@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/health_thresholds.dart';
 import '../../../core/database/app_database.dart';
 import '../../../settings/providers/settings_provider.dart';
@@ -96,6 +97,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(title: const Text('Log Vitals')),
       body: SingleChildScrollView(
@@ -231,9 +233,23 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               textInputAction: TextInputAction.done,
               onFieldSubmitted: (_) => _save(),
               scrollPadding: const EdgeInsets.only(bottom: 100),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Optional notes...',
-                border: OutlineInputBorder(),
+                hintStyle: const TextStyle(color: AppColors.textSecondary),
+                filled: true,
+                fillColor: AppColors.cardSurface,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.cardElevated),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -256,7 +272,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
   Widget _sectionLabel(String text) {
     return Text(
       text,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
     );
   }
 }
