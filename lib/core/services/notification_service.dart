@@ -253,4 +253,20 @@ class NotificationService {
   static Future<void> cancelReminder(int notificationId) async {
     await _plugin.cancel(notificationId);
   }
+
+  static Future<void> showTestNotification() async {
+    const androidDetails = AndroidNotificationDetails(
+      'medicine_reminders',
+      'Medicine Reminders',
+      channelDescription: 'Test notification',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+    await _plugin.show(
+      999999,
+      'MediTrack Test Notification',
+      'Your notifications are working correctly!',
+      const NotificationDetails(android: androidDetails),
+    );
+  }
 }

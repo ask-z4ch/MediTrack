@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/providers/theme_provider.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
 import 'features/companion/providers/chs_provider.dart';
@@ -38,6 +39,8 @@ class _MediTrackAppState extends ConsumerState<MediTrackApp> {
 
   @override
   Widget build(BuildContext context) {
+    final themeMode = ref.watch(themeModeNotifierProvider);
+
     NotificationService.setContext(context);
     NotificationService.setActionHandler((medicineId, actionId) async {
       final doseDao = ref.read(medicineDoseDaoProvider);
@@ -71,9 +74,14 @@ class _MediTrackAppState extends ConsumerState<MediTrackApp> {
     return MaterialApp.router(
       title: 'MediTrack',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.light),
         useMaterial3: true,
       ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.dark),
+        useMaterial3: true,
+      ),
+      themeMode: themeMode.mode,
       routerConfig: appRouter,
     );
   }
