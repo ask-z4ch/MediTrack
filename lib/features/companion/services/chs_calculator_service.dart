@@ -28,17 +28,21 @@ class CHSCalculatorService {
 
   Future<double> _loggingFactor() async {
     final now = DateTime.now();
-    final sevenDaysAgo = now.subtract(const Duration(days: 7));
-    final entries = await _vitalsDao.getVitalsInRange(sevenDaysAgo, now);
-    if (entries.isEmpty) return 0.0;
+    final today = _dayStart(now);
 
-    final loggedDays = <int>{};
-    for (final e in entries) {
-      loggedDays.add(DateTime(e.loggedAt.year, e.loggedAt.month, e.loggedAt.day)
-          .millisecondsSinceEpoch);
-    }
-    return (loggedDays.length / 7).clamp(0.0, 1.0);
+    if (await _vitalsDao.getVitalsForDate(today) != null) return 1.0;
+
+    final yesterday = today.subtract(const Duration(days: 1));
+    if (await _vitalsDao.getVitalsForDate(yesterday) != null) return 0.7;
+
+    final twoDaysAgo = today.subtract(const Duration(days: 2));
+    if (await _vitalsDao.getVitalsForDate(twoDaysAgo) != null) return 0.4;
+
+    return 0.0;
   }
+
+  DateTime _dayStart(DateTime dt) =>
+      DateTime(dt.year, dt.month, dt.day);
 
   Future<double> _vitalsFactor() async {
     final now = DateTime.now();
