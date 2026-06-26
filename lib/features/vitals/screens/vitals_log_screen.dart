@@ -17,6 +17,7 @@ class VitalsLogScreen extends ConsumerStatefulWidget {
 }
 
 class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _bpSystolicCtrl = TextEditingController();
   final _bpDiastolicCtrl = TextEditingController();
   final _sugarCtrl = TextEditingController();
@@ -69,6 +70,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
   }
 
   Future<void> _save() async {
+    if (!_formKey.currentState!.validate()) return;
     final dao = ref.read(appDatabaseProvider).vitalsDao;
     await dao.insertVitals(
       VitalsEntriesCompanion(
@@ -100,7 +102,10 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
       backgroundColor: AppColors.background,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(title: const Text('Log Vitals')),
-      body: SingleChildScrollView(
+      body: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -223,6 +228,14 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
               statusEvaluator: _spo2Status,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (v) {
+                if (v == null || v.trim().isEmpty) return null;
+                final parsed = int.tryParse(v.trim());
+                if (parsed == null) return 'Enter a valid number';
+                if (parsed < 1 || parsed > 100) return 'SpO2 must be 1–100%';
+                return null;
+              },
             ),
             const SizedBox(height: 24),
             _sectionLabel('Notes'),
@@ -265,6 +278,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
             const SizedBox(height: 24),
           ],
         ),
+      ),
       ),
     );
   }

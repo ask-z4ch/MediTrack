@@ -14,6 +14,8 @@ class ColorCodedInput extends StatefulWidget {
   final TextInputAction? textInputAction;
   final void Function(String)? onFieldSubmitted;
   final EdgeInsets scrollPadding;
+  final String? Function(String?)? validator;
+  final AutovalidateMode? autovalidateMode;
 
   const ColorCodedInput({
     super.key,
@@ -26,6 +28,8 @@ class ColorCodedInput extends StatefulWidget {
     this.textInputAction,
     this.onFieldSubmitted,
     this.scrollPadding = const EdgeInsets.all(20),
+    this.validator,
+    this.autovalidateMode,
   });
 
   @override
@@ -87,10 +91,14 @@ class _ColorCodedInputState extends State<ColorCodedInput> {
       controller: widget.controller,
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
-      decoration: _decoration(_status),
+      decoration: _decoration(_status).copyWith(
+        errorStyle: const TextStyle(color: AppColors.critical, fontSize: 12),
+      ),
       textInputAction: widget.textInputAction,
       onFieldSubmitted: widget.onFieldSubmitted,
       scrollPadding: widget.scrollPadding,
+      validator: widget.validator,
+      autovalidateMode: widget.autovalidateMode,
     );
   }
 }
