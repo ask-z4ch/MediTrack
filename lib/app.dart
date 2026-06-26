@@ -3,15 +3,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
+import 'features/companion/providers/chs_provider.dart';
 import 'features/medicines/daos/medicine_dose_dao.dart';
 import 'features/medicines/daos/medicine_dao.dart';
 import 'features/medicines/providers/medicine_provider.dart';
 
-class MediTrackApp extends ConsumerWidget {
+class MediTrackApp extends ConsumerStatefulWidget {
   const MediTrackApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MediTrackApp> createState() => _MediTrackAppState();
+}
+
+class _MediTrackAppState extends ConsumerState<MediTrackApp> {
+  AppLifecycleListener? _listener;
+
+  @override
+  void initState() {
+    super.initState();
+    _listener = AppLifecycleListener(
+      onResume: () {
+        ref.read(cHSNotifierProvider.notifier).recalculate();
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _listener?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     NotificationService.setContext(context);
     NotificationService.setActionHandler((medicineId, actionId) async {
       final doseDao = ref.read(medicineDoseDaoProvider);

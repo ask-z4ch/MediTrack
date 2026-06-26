@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../features/companion/providers/chs_provider.dart';
 import '../../features/medicines/providers/medicine_provider.dart';
 
 class TodaysDosesCard extends ConsumerWidget {
@@ -90,6 +91,7 @@ class _DoseTile extends ConsumerWidget {
               onPressed: () async {
                 await ref.read(medicineDoseDaoProvider).markTaken(dose.id);
                 ref.invalidate(todaysDosesProvider);
+                ref.read(cHSNotifierProvider.notifier).recalculate();
               },
               child: const Text('Taken'),
             ),
@@ -102,6 +104,7 @@ class _DoseTile extends ConsumerWidget {
               onPressed: () async {
                 await ref.read(medicineDoseDaoProvider).markSkipped(dose.id);
                 ref.invalidate(todaysDosesProvider);
+                ref.read(cHSNotifierProvider.notifier).recalculate();
               },
               child: const Text('Skip'),
             ),

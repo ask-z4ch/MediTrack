@@ -1,8 +1,11 @@
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/constants/health_thresholds.dart';
+import '../../../core/database/app_database.dart';
 import '../../../shared/widgets/color_coded_input.dart';
+import '../../companion/providers/chs_provider.dart';
 
 class VitalsLogScreen extends ConsumerStatefulWidget {
   const VitalsLogScreen({super.key});
@@ -61,6 +64,32 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
   VitalStatus _weightStatus(String val) {
     double.tryParse(val);
     return VitalStatus.normal;
+  }
+
+  Future<void> _save() async {
+    final dao = ref.read(appDatabaseProvider).vitalsDao;
+    await dao.insertVitals(
+      VitalsEntriesCompanion(
+        loggedAt: Value(DateTime.now()),
+        bpSystolic: Value(int.tryParse(_bpSystolicCtrl.text)),
+        bpDiastolic: Value(int.tryParse(_bpDiastolicCtrl.text)),
+        bloodSugarFasting: _isFasting
+            ? Value(double.tryParse(_sugarCtrl.text))
+            : const Value(null),
+        bloodSugarPostMeal: !_isFasting
+            ? Value(double.tryParse(_sugarCtrl.text))
+            : const Value(null),
+        temperatureCelsius: Value(double.tryParse(_tempCtrl.text)),
+        weightKg: Value(double.tryParse(_weightCtrl.text)),
+        spo2Percent: Value(int.tryParse(_spo2Ctrl.text)),
+        notes: Value(_notesCtrl.text),
+      ),
+    );
+    ref.read(cHSNotifierProvider.notifier).recalculate();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Vitals saved.')),
+    );
   }
 
   @override
@@ -182,7 +211,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
             ),
             const SizedBox(height: 32),
             FilledButton.icon(
-              onPressed: () {},
+              onPressed: _save,
               icon: const Icon(Icons.save),
               label: const Text('Log Vitals'),
               style: FilledButton.styleFrom(
