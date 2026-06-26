@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -71,6 +72,16 @@ class NotificationService {
   }
 
   static void _onNotificationResponse(NotificationResponse response) {
+    final payload = response.payload;
+    if (payload == 'medicine') {
+      _navigate('/medicines');
+      return;
+    }
+    if (payload == 'followup') {
+      _navigate('/doctor-visits');
+      return;
+    }
+
     final notificationId = int.tryParse(response.id?.toString() ?? '');
     if (notificationId == null) return;
     final medicineId = notificationId ~/ 100;
@@ -81,6 +92,13 @@ class NotificationService {
       _showSnoozeSheet(medicineId, notificationId);
     } else {
       _actionHandler?.call(medicineId, actionId);
+    }
+  }
+
+  static void _navigate(String path) {
+    final context = _appContext;
+    if (context != null) {
+      context.go(path);
     }
   }
 
@@ -158,6 +176,7 @@ class NotificationService {
           ],
         ),
       ),
+      payload: 'medicine',
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
@@ -224,6 +243,7 @@ class NotificationService {
           importance: Importance.high,
         ),
       ),
+      payload: 'followup',
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,

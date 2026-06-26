@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../features/charts/screens/charts_screen.dart';
+import '../../features/medicines/screens/medicine_list_screen.dart';
 import '../../features/sos/widgets/sos_button.dart';
+import '../../features/vitals/screens/vitals_log_screen.dart';
+import 'home_page.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final Widget child;
 
   const HomeScreen({super.key, required this.child});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
     if (location.startsWith('/vitals')) return 1;
@@ -32,6 +41,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = _currentIndex(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primaryTeal,
@@ -45,11 +56,19 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: child,
+      body: IndexedStack(
+        index: currentIndex,
+        children: const [
+          HomePage(),
+          VitalsLogScreen(),
+          MedicineListScreen(),
+          ChartsScreen(),
+        ],
+      ),
       floatingActionButton: const SosButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex(context),
+        currentIndex: currentIndex,
         onTap: (int index) => _onTap(index, context),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),

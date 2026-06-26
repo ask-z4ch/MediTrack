@@ -16,7 +16,10 @@ import '../../home/screens/home_page.dart';
 import '../../home/screens/home_screen.dart';
 import '../../settings/screens/settings_screen.dart';
 
+final topLevelNavigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter appRouter = GoRouter(
+  navigatorKey: topLevelNavigatorKey,
   initialLocation: '/',
   redirect: (context, state) async {
     final prefs = await SharedPreferences.getInstance();
