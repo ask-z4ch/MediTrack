@@ -14,27 +14,50 @@ class ChsRingWidget extends ConsumerStatefulWidget {
 }
 
 class _ChsRingWidgetState extends ConsumerState<ChsRingWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+    with TickerProviderStateMixin {
+  late AnimationController _scoreController;
+  late Animation<double> _scoreAnimation;
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
   double _lastNormalized = 0;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+
+    _scoreController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1200),
     );
-    _animation = Tween<double>(begin: 0, end: 0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    _scoreAnimation = Tween<double>(begin: 0, end: 0).animate(
+      CurvedAnimation(parent: _scoreController, curve: Curves.easeOut),
+    );
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _pulseAnimation = Tween<double>(begin: 0.7, end: 1.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _scoreController.dispose();
+    _pulseController.dispose();
     super.dispose();
+  }
+
+  void _updatePulse(double score) {
+    if (score < 30) {
+      if (!_pulseController.isAnimating) {
+        _pulseController.repeat(reverse: true);
+      }
+    } else {
+      _pulseController.stop();
+      _pulseController.value = 1.0;
+    }
   }
 
   @override
@@ -44,21 +67,23 @@ class _ChsRingWidgetState extends ConsumerState<ChsRingWidget>
 
     if (normalized != _lastNormalized) {
       _lastNormalized = normalized;
-      final begin = _animation.value;
+      final begin = _scoreAnimation.value;
       final end = normalized;
-      _animation = Tween<double>(begin: begin, end: end).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      _scoreAnimation = Tween<double>(begin: begin, end: end).animate(
+        CurvedAnimation(parent: _scoreController, curve: Curves.easeOut),
       );
-      _controller.forward(from: 0);
+      _scoreController.forward(from: 0);
     }
 
+    _updatePulse(score);
+
     return SizedBox(
-      width: 110,
-      height: 110,
+      width: 120,
+      height: 120,
       child: AnimatedBuilder(
-        animation: _animation,
+        animation: _scoreAnimation,
         builder: (context, child) {
-          final progress = _animation.value;
+          final progress = _scoreAnimation.value;
           final displayScore = (progress * 100).round();
           final arcColor = Color.lerp(
             AppColors.critical,
@@ -66,38 +91,41 @@ class _ChsRingWidgetState extends ConsumerState<ChsRingWidget>
             progress,
           )!;
 
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              CustomPaint(
-                size: const Size(110, 110),
-                painter: _RingPainter(
-                  progress: progress,
-                  arcColor: arcColor,
+          return Opacity(
+            opacity: _pulseAnimation.value,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CustomPaint(
+                  size: const Size(120, 120),
+                  painter: _RingPainter(
+                    progress: progress,
+                    arcColor: arcColor,
+                  ),
                 ),
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '$displayScore',
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '$displayScore',
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const Text(
-                    '/ 100',
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                  const Text(
-                    'Companion Health',
-                    style: TextStyle(fontSize: 10, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ],
+                    const Text(
+                      '/ 100',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    const Text(
+                      'Companion Health',
+                      style: TextStyle(fontSize: 9, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
         },
       ),
