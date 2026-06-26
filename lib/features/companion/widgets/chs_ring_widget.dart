@@ -39,7 +39,7 @@ class _ChsRingWidgetState extends ConsumerState<ChsRingWidget>
 
   @override
   Widget build(BuildContext context) {
-    final score = ref.watch(chsNotifierProvider).value?.score ?? 0;
+    final score = ref.watch(cHSNotifierProvider).value?.score ?? 0;
     final normalized = score / 100;
 
     if (normalized != _lastNormalized) {

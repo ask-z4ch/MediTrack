@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../core/database/app_database.dart';
 import '../../vitals/models/vitals_entry.dart';
 import '../../vitals/providers/vitals_provider.dart';
-import '../models/companion_health_score.dart';
 
 part 'vita_message_provider.g.dart';
 

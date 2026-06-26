@@ -19,7 +19,7 @@ class VitaMessageBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final message = ref.watch(vitaMessageNotifierProvider);
-    final chs = ref.watch(chsNotifierProvider).value;
+    final chs = ref.watch(cHSNotifierProvider).value;
     final score = chs?.score ?? 75.0;
     final color = _messageColor(score);
 

@@ -5,7 +5,6 @@ import 'package:lottie/lottie.dart';
 import '../../vitals/providers/vitals_provider.dart';
 import '../providers/chs_provider.dart';
 import '../providers/vita_message_provider.dart';
-import 'vita_message_banner.dart';
 
 class VitaCompanionView extends ConsumerStatefulWidget {
   const VitaCompanionView({super.key});
@@ -57,50 +56,45 @@ class _VitaCompanionViewState extends ConsumerState<VitaCompanionView>
     await _scaleController.reverse();
     await _scaleController.forward();
 
-    final chs = ref.read(chsNotifierProvider).value;
+    final chs = ref.read(cHSNotifierProvider).value;
     final todayVitals = ref.read(todaysVitalsProvider).valueOrNull;
     ref.read(vitaMessageNotifierProvider.notifier).showContextualMessage(chs, todayVitals);
   }
 
   @override
   Widget build(BuildContext context) {
-    final chs = ref.watch(chsNotifierProvider).value;
+    final chs = ref.watch(cHSNotifierProvider).value;
     final score = chs?.score ?? 75.0;
     final gradientColors = _backgroundGradient(score);
 
-    return Column(
-      children: [
-        const VitaMessageBanner(),
-        GestureDetector(
-          onTap: _onTap,
-          child: ScaleTransition(
-            scale: _scaleController,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 800),
+    return GestureDetector(
+      onTap: _onTap,
+      child: ScaleTransition(
+        scale: _scaleController,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 800),
+          height: 260,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: gradientColors,
+            ),
+          ),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 600),
+            child: Lottie.asset(
+              _lottieAsset(score),
+              key: ValueKey(_lottieAsset(score)),
+              width: double.infinity,
               height: 260,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: gradientColors,
-                ),
-              ),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 600),
-                child: Lottie.asset(
-                  _lottieAsset(score),
-                  key: ValueKey(_lottieAsset(score)),
-                  width: double.infinity,
-                  height: 260,
-                  fit: BoxFit.contain,
-                  repeat: true,
-                ),
-              ),
+              fit: BoxFit.contain,
+              repeat: true,
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
