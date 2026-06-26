@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../vitals/providers/vitals_provider.dart';
 import '../providers/chs_provider.dart';
+import '../providers/vita_message_provider.dart';
 import 'vita_message_banner.dart';
 
 class VitaCompanionView extends ConsumerStatefulWidget {
@@ -56,7 +58,8 @@ class _VitaCompanionViewState extends ConsumerState<VitaCompanionView>
     await _scaleController.forward();
 
     final chs = ref.read(chsNotifierProvider).value;
-    ref.read(vitaMessageProvider.notifier).showContextualMessage(chs);
+    final todayVitals = ref.read(todaysVitalsProvider).valueOrNull;
+    ref.read(vitaMessageNotifierProvider.notifier).showContextualMessage(chs, todayVitals);
   }
 
   @override
