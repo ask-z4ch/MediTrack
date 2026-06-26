@@ -11,6 +11,9 @@ class ColorCodedInput extends StatefulWidget {
   final TextInputType keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final VitalStatus Function(String) statusEvaluator;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
+  final EdgeInsets scrollPadding;
 
   const ColorCodedInput({
     super.key,
@@ -20,6 +23,9 @@ class ColorCodedInput extends StatefulWidget {
     required this.statusEvaluator,
     this.keyboardType = TextInputType.number,
     this.inputFormatters,
+    this.textInputAction,
+    this.onFieldSubmitted,
+    this.scrollPadding = const EdgeInsets.all(20),
   });
 
   @override
@@ -73,6 +79,9 @@ class _ColorCodedInputState extends State<ColorCodedInput> {
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
       decoration: _decoration(_status),
+      textInputAction: widget.textInputAction,
+      onFieldSubmitted: widget.onFieldSubmitted,
+      scrollPadding: widget.scrollPadding,
     );
   }
 }

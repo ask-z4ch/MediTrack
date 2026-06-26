@@ -96,6 +96,7 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(title: const Text('Log Vitals')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -110,6 +111,9 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
                   label: 'Systolic',
                   suffix: 'mmHg',
                   controller: _bpSystolicCtrl,
+                  scrollPadding: const EdgeInsets.only(bottom: 100),
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
                   statusEvaluator: (val) {
                     final v = int.tryParse(val);
                     if (v == null) return VitalStatus.normal;
@@ -122,6 +126,9 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
                   label: 'Diastolic',
                   suffix: 'mmHg',
                   controller: _bpDiastolicCtrl,
+                  scrollPadding: const EdgeInsets.only(bottom: 100),
+                  textInputAction: TextInputAction.next,
+                  onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
                   statusEvaluator: _bpDiastolicStatus,
                 );
 
@@ -150,6 +157,9 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
                 suffix: _isFasting ? '$unitLabel (fasting)' : '$unitLabel (post-meal)',
                 controller: _sugarCtrl,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
+                scrollPadding: const EdgeInsets.only(bottom: 100),
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
                 statusEvaluator: (val) {
                   final v = double.tryParse(val);
                   if (v == null) return VitalStatus.normal;
@@ -182,6 +192,9 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               suffix: '°C',
               controller: _tempCtrl,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
+              scrollPadding: const EdgeInsets.only(bottom: 100),
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
               statusEvaluator: _tempStatus,
             ),
             const SizedBox(height: 24),
@@ -192,6 +205,9 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               suffix: 'kg',
               controller: _weightCtrl,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
+              scrollPadding: const EdgeInsets.only(bottom: 100),
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
               statusEvaluator: _weightStatus,
             ),
             const SizedBox(height: 24),
@@ -201,6 +217,9 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
               label: 'SpO2',
               suffix: '%',
               controller: _spo2Ctrl,
+              scrollPadding: const EdgeInsets.only(bottom: 100),
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
               statusEvaluator: _spo2Status,
             ),
             const SizedBox(height: 24),
@@ -209,6 +228,9 @@ class _VitalsLogScreenState extends ConsumerState<VitalsLogScreen> {
             TextFormField(
               controller: _notesCtrl,
               maxLines: 3,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) => _save(),
+              scrollPadding: const EdgeInsets.only(bottom: 100),
               decoration: const InputDecoration(
                 hintText: 'Optional notes...',
                 border: OutlineInputBorder(),
