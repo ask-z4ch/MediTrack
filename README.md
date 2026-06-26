@@ -1,42 +1,60 @@
 # MediTrack
 
-A personal health tracking and medication management application built for individuals dealing with chronic conditions like diabetes, hypertension, or post-surgery recovery.
+## The Problem
+Patients managing chronic conditions like diabetes and hypertension forget medicines,
+skip vital logs, and arrive at doctor consultations with no organised health record.
+They leave without the data their doctor actually needed.
 
-## Architecture
+## Our Solution
+MediTrack is an offline-first health companion. It logs vitals, tracks medicines,
+and stores prescriptions — then generates a clean PDF summary for doctor visits.
+At its core is VITA: a 3D companion whose physical state directly reflects the
+user's real health data, creating genuine engagement through biological nurturing
+instincts rather than hollow gamification.
 
-- **Local Database:** SQLite via Drift — offline-first, all data stored locally
-- **Cloud Sync:** Supabase — data pushed on app resume when connected to WiFi
-- **State Management:** Riverpod with code generation
-- **Navigation:** GoRouter with ShellRoute for bottom nav tabs
+## Tech Stack
+| Layer | Technology |
+|---|---|
+| Mobile | Flutter (Dart) |
+| 3D Companion | Unity 2022 LTS via flutter_unity_widget |
+| Local Database | Drift (SQLite) |
+| State | Riverpod |
+| Charts | fl_chart |
+| Backend/Sync | Supabase (PostgreSQL + Storage) |
+| Notifications | flutter_local_notifications |
+| PDF | pdf + printing |
 
-## Sync Strategy
+## Download APK
+[Download MediTrack v1.0.apk](https://drive.google.com/drive/folders/1Yf5-1nCXRNXiY9Ol_kyhR4PlLDCzg9Zc?usp=drive_link)
 
-Data is written locally first and pushed to Supabase in the background. The sync service runs on app resume and only uploads over WiFi to conserve mobile data.
+## Test Account
+Email: `test@meditrack.app` | Password: `Demo@1234`
 
-**Conflict resolution:** Last-write-wins via upsert. Each record carries a `logged_at` / `calculated_at` / `visit_date` timestamp. If the same record was modified on two devices, the version that was synced last overwrites the server copy. Local writes are always the ground truth — the server is treated as a backup, not an authoritative store.
+## Features
+- [x] User profile with blood group, conditions, allergies
+- [x] Daily vitals logger — BP, blood sugar, temperature, weight, SpO2
+- [x] Real-time colour-coded inputs (normal / borderline / critical)
+- [x] Medicine reminders with exact alarm scheduling
+- [x] Dose tracking — taken / skipped per scheduled dose
+- [x] Symptom diary with severity rating
+- [x] Weekly and monthly trend charts for all vitals
+- [x] Doctor visit log with prescription photo/PDF storage
+- [x] One-tap PDF health report for any date range
+- [x] Emergency SOS with location to saved contact
+- [x] 3D VITA companion — health state driven by Companion Health Score
+- [x] Offline-first SQLite, optional Supabase sync on WiFi
+- [x] Dark and light theme
 
-### Known Bugs / Limitations
-
-- **Last-write-wins:** If the same record is edited on two devices before either has synced, the last one to sync overwrites the other's changes silently. No merge or diff is attempted.
-- **No offline queue UI:** Failed syncs are logged via `debugPrint` but not surfaced to the user. There is no retry queue or manual "Sync Now" button.
-- **WiFi-only sync:** Sync is skipped on mobile data. If the user never connects to WiFi, data stays local indefinitely.
-- **Supabase bucket setup:** The `prescriptions` Storage bucket must be created manually in the Supabase dashboard and set to private (authenticated access only).
-- **Auth required:** All features require a signed-in Supabase user. Sign-out clears the session but local data persists in SQLite.
-
-## Build
-
+## How to Run Locally
 ```bash
-flutter build apk --release \
-  --dart-define=SUPABASE_URL=https://your-project.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=your-anon-key
+git clone https://github.com/ask-z4ch/MediTrack
+cd meditrack
+flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
+flutter run --dart-define=SUPABASE_URL=xxx --dart-define=SUPABASE_ANON_KEY=yyy
 ```
 
-## Project Setup (changelog)
-
-1. feat: init flutter project for meditrack
-2. feat: add core dependencies - drift, riverpod, flutter_unity_widget, fl_chart
-3. feat: basic folder structure - screens models services widgets providers
-4. feat: android manifest - camera storage notification location permissions
-5. feat: placeholder home screen and bottom nav skeleton
-6. chore: app icon and colour scheme assets added
-7. chore: drift database class - empty schema stub
+## Known Bugs & Limitations
+- Supabase sync requires WiFi — mobile data sync intentionally disabled
+- PDF export with 90+ day range takes ~3–4 seconds on low-end devices
+- Blood sugar mmol/L conversion uses the standard 18.0 divisor (may have minor rounding)
