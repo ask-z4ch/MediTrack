@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../core/constants/app_colors.dart';
 import '../../vitals/providers/vitals_provider.dart';
 import '../providers/chs_provider.dart';
 import '../providers/vita_message_provider.dart';
@@ -44,12 +45,12 @@ class _VitaCompanionViewState extends ConsumerState<VitaCompanionView>
     return 'assets/lottie/vita_critical.json';
   }
 
-  List<Color> _backgroundGradient(double score) {
-    if (score >= 90) return [const Color(0xFF1B5E20), const Color(0xFF121212)];
-    if (score >= 70) return [const Color(0xFF0D47A1), const Color(0xFF121212)];
-    if (score >= 50) return [const Color(0xFFE65100), const Color(0xFF121212)];
-    if (score >= 30) return [const Color(0xFF4A148C), const Color(0xFF121212)];
-    return [const Color(0xFFB71C1C), const Color(0xFF121212)];
+  Color _stateColor(double score) {
+    if (score >= 90) return AppColors.thriving;
+    if (score >= 70) return AppColors.stable;
+    if (score >= 50) return AppColors.concerned;
+    if (score >= 30) return AppColors.struggling;
+    return AppColors.criticalBg;
   }
 
   Future<void> _onTap() async {
@@ -65,7 +66,7 @@ class _VitaCompanionViewState extends ConsumerState<VitaCompanionView>
   Widget build(BuildContext context) {
     final chs = ref.watch(cHSNotifierProvider).value;
     final score = chs?.score ?? 75.0;
-    final gradientColors = _backgroundGradient(score);
+    final stateColor = _stateColor(score);
 
     return GestureDetector(
       onTap: _onTap,
@@ -74,23 +75,33 @@ class _VitaCompanionViewState extends ConsumerState<VitaCompanionView>
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 800),
           height: 260,
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: gradientColors,
+              colors: [stateColor.withValues(alpha: 0.6), AppColors.background],
             ),
+            boxShadow: [
+              BoxShadow(
+                color: stateColor.withValues(alpha: 0.3),
+                blurRadius: 40,
+                spreadRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 600),
-            child: Lottie.asset(
-              _lottieAsset(score),
-              key: ValueKey(_lottieAsset(score)),
-              width: double.infinity,
-              height: 260,
-              fit: BoxFit.contain,
-              repeat: true,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 600),
+              child: Lottie.asset(
+                _lottieAsset(score),
+                key: ValueKey(_lottieAsset(score)),
+                fit: BoxFit.contain,
+                repeat: true,
+              ),
             ),
           ),
         ),
