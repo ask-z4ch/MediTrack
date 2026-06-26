@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../features/sos/widgets/sos_button.dart';
 
 class HomeScreen extends StatelessWidget {
   final Widget child;
@@ -45,6 +46,8 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: child,
+      floatingActionButton: const SosButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex(context),
         onTap: (int index) => _onTap(index, context),
