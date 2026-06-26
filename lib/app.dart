@@ -107,6 +107,14 @@ class _MediTrackAppState extends ConsumerState<MediTrackApp> {
         ),
         textTheme: GoogleFonts.nunitoTextTheme(
           ThemeData.dark().textTheme,
+        ).copyWith(
+          displayLarge: GoogleFonts.nunito(
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+          bodyMedium: GoogleFonts.nunito(
+            color: AppColors.textSecondary,
+          ),
         ),
       ),
       themeMode: switch (settings?.theme) {

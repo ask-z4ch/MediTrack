@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../widgets/companion_section.dart';
@@ -38,7 +37,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Text('MediTrack',
-                  style: GoogleFonts.nunito(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 20,
                     color: AppColors.textPrimary,

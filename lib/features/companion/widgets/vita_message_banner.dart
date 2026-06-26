@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../providers/vita_message_provider.dart';
@@ -43,7 +42,7 @@ class VitaMessageBanner extends ConsumerWidget {
             child: Text(
               message,
               key: ValueKey(message),
-              style: GoogleFonts.nunito(
+              style: TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
                 fontStyle: FontStyle.italic,
